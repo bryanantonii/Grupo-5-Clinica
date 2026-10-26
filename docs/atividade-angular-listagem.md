@@ -21,6 +21,7 @@ Data da revisão: 26 de outubro de 2026. Módulo escolhido para demonstrar a ati
 6. Registro e e-mail demonstrativos exibidos no cartão. A listagem considera profissionais ativos.
 7. develop local atualizada com a base oficial do professor no commit e36588a. Criada a branch profissionais/listagem.
 8. Prints da listagem, lista vazia e celular em docs/evidencias/.
+9. Pull Request [#2](https://github.com/bryanantonii/Grupo-5-Clinica/pull/2) aberto de profissionais/listagem para develop, com o print na descrição. Revisão e merge pendentes do grupo.
 
 ## Validação do front end
 
@@ -32,6 +33,10 @@ Data da revisão: 26 de outubro de 2026. Módulo escolhido para demonstrar a ati
 - Cartão reutilizado no início abriu o perfil correto.
 - Tela de 390 px sem transbordamento horizontal e navegador sem erros de console durante os testes.
 
+## Verificações adicionais do repositório
+
+Sem alterar arquivos de código do backend, foram aprovados o ESLint sem --fix, os oito testes unitários e o build do backend. Essas verificações não representam integração real da Clinora com a API.
+
 ## Limites do escopo
 
 A entrega atual é uma demonstração do front end. Não há autenticação real nem integração do domínio Clinora com a API. O contrato de Profissionais segue o manual, mas os dados de apresentação ainda usam slugs e registros fictícios. O cadastro, a edição e a inativação de profissionais previstos para etapas posteriores do manual não fazem parte da entrega de listagem desta aula.
@@ -40,4 +45,4 @@ A guarda do front end organiza a navegação e não substitui autorização no s
 
 ## Material de apoio
 
-O documento Word da atividade contém a matriz completa dos requisitos, exemplos do código, explicação dos conceitos, evidências e roteiro de apresentação. Sua versão final fica em docs/atividade-angular-clinora.docx.
+O documento Word da atividade contém a matriz completa dos requisitos, exemplos do código, explicação dos conceitos, evidências e roteiro de apresentação. Sua versão final está em [atividade-angular-clinora.docx](atividade-angular-clinora.docx).
