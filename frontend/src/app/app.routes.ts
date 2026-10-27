@@ -26,6 +26,31 @@ export const routes: Routes = [
         title: 'Profissionais · Clinora',
       },
       {
+        path: 'profissionais/gerenciar',
+        loadComponent: () =>
+          import('./features/profissionais/profissionais-lista/profissionais-lista').then(
+            (m) => m.ProfissionaisLista,
+          ),
+        data: { gestao: true },
+        title: 'Gerenciar profissionais · Clinora',
+      },
+      {
+        path: 'profissionais/novo',
+        loadComponent: () =>
+          import('./features/profissionais/profissional-form/profissional-form').then(
+            (m) => m.ProfissionalForm,
+          ),
+        title: 'Cadastrar profissional · Clinora',
+      },
+      {
+        path: 'profissionais/:id/editar',
+        loadComponent: () =>
+          import('./features/profissionais/profissional-form/profissional-form').then(
+            (m) => m.ProfissionalForm,
+          ),
+        title: 'Editar profissional · Clinora',
+      },
+      {
         path: 'profissionais/:id',
         loadComponent: () =>
           import('./features/profissionais/perfil-profissional/perfil-profissional').then(

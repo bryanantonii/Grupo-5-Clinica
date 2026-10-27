@@ -2522,3 +2522,99 @@ textarea:focus {
     scroll-behavior: auto !important;
   }
 }
+
+/* Gestão da equipe: cadastro, edição e retorno das operações. */
+.professional-page-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 28px;
+}
+.professional-page-heading > div {
+  flex: 1;
+}
+.professional-page-heading > .btn {
+  flex-shrink: 0;
+}
+.professional-form {
+  max-width: 1000px;
+  margin: 28px auto 0;
+}
+.professional-form fieldset {
+  border: 0;
+  padding: 0;
+  margin: 26px 0;
+  min-width: 0;
+}
+.professional-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 26px;
+}
+.professional-form-grid .field {
+  margin-bottom: 0;
+  min-width: 0;
+}
+.professional-form-note {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--soft);
+  border-radius: 16px;
+  padding: 20px;
+}
+.professional-form-note p {
+  font-size: 14px;
+  margin: 0;
+}
+.professional-form-note app-icon {
+  flex-shrink: 0;
+  color: var(--green);
+}
+.professional-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  margin-top: 20px;
+}
+.danger-link {
+  color: var(--error);
+}
+.btn-danger {
+  background: var(--error);
+  border-color: var(--error);
+}
+.btn-danger:hover {
+  background: #832526;
+  border-color: #832526;
+}
+.confirmation-panel {
+  margin: 24px 0;
+}
+.confirmation-panel h2 {
+  font-size: 26px;
+}
+.success-notice {
+  color: var(--green-dark);
+  background: var(--mint);
+}
+@media (max-width: 900px) {
+  .professional-page-heading {
+    flex-direction: column;
+    margin-bottom: 24px;
+  }
+}
+@media (max-width: 600px) {
+  .professional-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+  .professional-page-heading > .btn {
+    width: 100%;
+  }
+  .professional-form-page .form-actions {
+    align-items: stretch;
+  }
+}

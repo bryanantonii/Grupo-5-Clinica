@@ -1,68 +1,18 @@
-import { computed, Injectable, signal } from '@angular/core';
-import { Consulta, Especialidade, PerfilPaciente, Profissional } from './clinora.models';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { dataHoraFutura } from '../../shared/form-validadores';
+import { Consulta, PerfilPaciente } from './clinora.models';
+import { ESPECIALIDADES_DEMO } from '../profissionais/profissionais.dados';
+import { ProfissionaisStore } from '../profissionais/services/profissionais.store';
 
 /** Camada de demonstração isolada. Não armazena senhas e não chama o backend.
  * Os dados duram a sessão da aba. Consulte o README para integrar a API. */
 @Injectable({ providedIn: 'root' })
 export class ClinoraService {
-  readonly especialidades: Especialidade[] = [
-    {
-      _id: 'clinica-geral',
-      nome: 'Clínica geral',
-      descricao: 'Acompanhamento da sua saúde.',
-      icone: 'stethoscope',
-    },
-    {
-      _id: 'cardiologia',
-      nome: 'Cardiologia',
-      descricao: 'Atenção à saúde do coração.',
-      icone: 'heart',
-    },
-    {
-      _id: 'dermatologia',
-      nome: 'Dermatologia',
-      descricao: 'Cuidado com a sua pele.',
-      icone: 'sparkles',
-    },
-  ];
-  readonly profissionais: Profissional[] = [
-    {
-      _id: 'mariana-costa',
-      registro: 'DEMO-001',
-      email: 'mariana.costa@example.com',
-      telefone: '(51) 90000-0001',
-      ativo: true,
-      nome: 'Dra. Mariana Costa',
-      iniciais: 'MC',
-      especialidade: 'clinica-geral',
-      descricao: 'Escuta e cuidado em todas as fases da vida.',
-      titulo: 'Um cuidado próximo, em cada fase da vida.',
-    },
-    {
-      _id: 'rafael-mendes',
-      registro: 'DEMO-002',
-      email: 'rafael.mendes@example.com',
-      telefone: '(51) 90000-0002',
-      ativo: true,
-      nome: 'Dr. Rafael Mendes',
-      iniciais: 'RM',
-      especialidade: 'cardiologia',
-      descricao: 'Um olhar atento para a saúde do coração.',
-      titulo: 'Atenção ao que faz seu coração bater.',
-    },
-    {
-      _id: 'camila-oliveira',
-      registro: 'DEMO-003',
-      email: 'camila.oliveira@example.com',
-      telefone: '(51) 90000-0003',
-      ativo: true,
-      nome: 'Dra. Camila Oliveira',
-      iniciais: 'CO',
-      especialidade: 'dermatologia',
-      descricao: 'Cuidado com a pele e com o seu bem-estar.',
-      titulo: 'Cuidar da sua pele também é cuidar de você.',
-    },
-  ];
+  private readonly equipe = inject(ProfissionaisStore);
+  readonly especialidades = ESPECIALIDADES_DEMO;
+  get profissionais() {
+    return this.equipe.cartoes().filter((p) => p.ativo);
+  }
   private readonly perfilState = signal<PerfilPaciente | null>(this.ler('clinora.perfil', null));
   private readonly consultasState = signal<Consulta[]>(this.ler('clinora.consultas', []));
   readonly perfil = this.perfilState.asReadonly();
@@ -77,7 +27,7 @@ export class ClinoraService {
     return this.especialidades.find((e) => e._id === id)?.nome ?? id;
   }
   profissional(id: string) {
-    return this.profissionais.find((p) => p._id === id);
+    return this.equipe.cartoes().find((p) => p._id === id);
   }
   entrar(perfil: PerfilPaciente) {
     this.perfilState.set(perfil);
@@ -105,6 +55,11 @@ export class ClinoraService {
       .map((c) => c.horario);
   }
   agendar(dados: Omit<Consulta, '_id' | 'status'>): Consulta {
+    const profissional = this.profissional(dados.profissional);
+    if (!profissional?.ativo || profissional.especialidade !== dados.especialidade)
+      throw new Error('Escolha um profissional disponível para esta especialidade.');
+    if (!dataHoraFutura(dados.data, dados.horario))
+      throw new Error('Escolha uma data e um horário futuros.');
     if (this.horariosOcupados(dados.profissional, dados.data).includes(dados.horario))
       throw new Error('Esse horário acabou de ser reservado. Escolha outro horário.');
     const consulta: Consulta = { ...dados, _id: crypto.randomUUID(), status: 'confirmada' };

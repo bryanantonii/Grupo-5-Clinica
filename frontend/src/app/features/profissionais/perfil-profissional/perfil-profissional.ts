@@ -56,7 +56,8 @@ import { Icon } from '../../clinora/shared/icon';
 })
 export class PerfilProfissional {
   protected readonly dados = inject(ClinoraService);
-  protected readonly profissional = this.dados.profissional(
+  private readonly encontrado = this.dados.profissional(
     inject(ActivatedRoute).snapshot.paramMap.get('id') ?? '',
   );
+  protected readonly profissional = this.encontrado?.ativo ? this.encontrado : undefined;
 }

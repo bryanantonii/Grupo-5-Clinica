@@ -2,6 +2,8 @@
 
 Data da revisão: 26 de outubro de 2026. Módulo escolhido para demonstrar a atividade: Profissionais.
 
+> Atualização posterior: cadastro, edição, serviço mock próprio e estados da listagem foram completados. Consulte [Formulários reativos da Clinora](atividade-angular-formularios.md). O registro abaixo descreve a entrega original de listagem.
+
 ## O que já existia
 
 - Angular 21 com componentes standalone e organização core, layout, pages e features.

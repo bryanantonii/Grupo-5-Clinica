@@ -7,6 +7,8 @@ import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 import { ProdutosApiService } from './features/produtos/services/produtos-api.service';
 import { ProdutosMockService } from './features/produtos/services/produtos-mock.service';
+import { ProfissionaisService } from './features/profissionais/services/profissionais.service';
+import { ProfissionaisMockService } from './features/profissionais/services/profissionais-mock.service';
 import { ProdutosService } from './features/produtos/services/produtos.service';
 
 // Formatos brasileiros para moeda, datas e números (R$ 8,90)
@@ -21,6 +23,7 @@ export const appConfig: ApplicationConfig = {
       withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' }),
     ),
     provideHttpClient(),
+    { provide: ProfissionaisService, useClass: ProfissionaisMockService },
     { provide: LOCALE_ID, useValue: 'pt-BR' },
 
     // Escolhe a implementação do serviço conforme o environment.

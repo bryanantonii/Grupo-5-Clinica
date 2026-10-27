@@ -28,10 +28,19 @@ Use dados fictícios. Entre com o mesmo e-mail informado no agendamento e qualqu
 
 Os dados ficam na sessão da aba e sobrevivem ao recarregamento. Nenhuma consulta real é marcada e nenhum e-mail ou mensagem é enviado. A integração com o backend ainda precisa ser feita.
 
-Os componentes ficam em src/app/features/clinora/, os dados da demonstração em clinora.service.ts e os estilos em src/estilos-do-grupo.css. O backend e os exemplos didáticos foram preservados.
+Os fluxos públicos ficam em src/app/features/clinora/ e o módulo Profissionais em src/app/features/profissionais/. Os estilos ficam em src/estilos-do-grupo.css. O backend e os exemplos didáticos foram preservados.
 
 A configuração environment.usarMock continua controlando apenas o módulo didático Produtos. Ela não conecta Clinora à API automaticamente.
 
 ## Verificação
 
 Compilação de produção concluída e fluxos de agendamento, bloqueio de horário ocupado, persistência, consulta, cancelamento, contato e navegação no celular verificados no navegador.
+
+
+## Cadastro e edição de profissionais
+
+No rodapé, abra Área da equipe, ou acesse /profissionais/gerenciar. O mesmo formulário atende /profissionais/novo e /profissionais/:id/editar. A área permite cadastrar, editar e inativar com confirmação, usando somente dados fictícios.
+
+ProfissionaisService define o contrato e ProfissionaisMockService é configurado em app.config.ts. ProfissionaisStore mantém os dados compartilhados com início, perfis e agendamento. As alterações permanecem na sessão da aba; não são enviadas à API.
+
+Execute npm test para verificar os formulários e as regras do mock. Consulte [o registro dos formulários](../docs/atividade-angular-formularios.md) para a lista de validações, estados, rotas e testes realizados.

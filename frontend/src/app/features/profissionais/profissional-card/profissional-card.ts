@@ -13,6 +13,10 @@ export class ProfissionalCard {
   readonly profissional = input.required<ProfissionalCardDados>();
   readonly nomeEspecialidade = input.required<string>();
   readonly conhecer = output<ProfissionalCardDados>();
+  readonly gerenciar = input(false);
+  readonly ocupado = input(false);
+  readonly editar = output<ProfissionalCardDados>();
+  readonly inativar = output<ProfissionalCardDados>();
 
   protected pedirPerfil(): void {
     this.conhecer.emit(this.profissional());
