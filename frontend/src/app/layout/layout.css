@@ -169,7 +169,7 @@ main:focus {
     display: none;
   }
 }
-@media (max-width: 1050px) {
+@media (max-width: 1200px) {
   .header-inner {
     height: 80px;
   }
@@ -240,7 +240,7 @@ main:focus {
     grid-column: 1/-1;
   }
   .footer-grid > div:last-child p br {
-    display: none;
+    display: initial;
   }
   .footer-grid > div:last-child p {
     max-width: 230px;

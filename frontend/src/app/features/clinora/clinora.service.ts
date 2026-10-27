@@ -1,68 +1,18 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { ClinicaMockStore } from '../gestao/services/clinica-mock.store';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { Consulta, Especialidade, PerfilPaciente, Profissional } from './clinora.models';
 
 /** Camada de demonstração isolada. Não armazena senhas e não chama o backend.
  * Os dados duram a sessão da aba. Consulte o README para integrar a API. */
 @Injectable({ providedIn: 'root' })
 export class ClinoraService {
-  readonly especialidades: Especialidade[] = [
-    {
-      _id: 'clinica-geral',
-      nome: 'Clínica geral',
-      descricao: 'Acompanhamento da sua saúde.',
-      icone: 'stethoscope',
-    },
-    {
-      _id: 'cardiologia',
-      nome: 'Cardiologia',
-      descricao: 'Atenção à saúde do coração.',
-      icone: 'heart',
-    },
-    {
-      _id: 'dermatologia',
-      nome: 'Dermatologia',
-      descricao: 'Cuidado com a sua pele.',
-      icone: 'sparkles',
-    },
-  ];
-  readonly profissionais: Profissional[] = [
-    {
-      _id: 'mariana-costa',
-      registro: 'DEMO-001',
-      email: 'mariana.costa@example.com',
-      telefone: '(51) 90000-0001',
-      ativo: true,
-      nome: 'Dra. Mariana Costa',
-      iniciais: 'MC',
-      especialidade: 'clinica-geral',
-      descricao: 'Escuta e cuidado em todas as fases da vida.',
-      titulo: 'Um cuidado próximo, em cada fase da vida.',
-    },
-    {
-      _id: 'rafael-mendes',
-      registro: 'DEMO-002',
-      email: 'rafael.mendes@example.com',
-      telefone: '(51) 90000-0002',
-      ativo: true,
-      nome: 'Dr. Rafael Mendes',
-      iniciais: 'RM',
-      especialidade: 'cardiologia',
-      descricao: 'Um olhar atento para a saúde do coração.',
-      titulo: 'Atenção ao que faz seu coração bater.',
-    },
-    {
-      _id: 'camila-oliveira',
-      registro: 'DEMO-003',
-      email: 'camila.oliveira@example.com',
-      telefone: '(51) 90000-0003',
-      ativo: true,
-      nome: 'Dra. Camila Oliveira',
-      iniciais: 'CO',
-      especialidade: 'dermatologia',
-      descricao: 'Cuidado com a pele e com o seu bem-estar.',
-      titulo: 'Cuidar da sua pele também é cuidar de você.',
-    },
-  ];
+  private readonly cadastros = inject(ClinicaMockStore);
+  get especialidades(): Especialidade[] {
+    return this.cadastros.especialidades().filter((e) => e.ativo);
+  }
+  get profissionais(): Profissional[] {
+    return this.cadastros.profissionais().filter((p) => p.ativo);
+  }
   private readonly perfilState = signal<PerfilPaciente | null>(this.ler('clinora.perfil', null));
   private readonly consultasState = signal<Consulta[]>(this.ler('clinora.consultas', []));
   readonly perfil = this.perfilState.asReadonly();

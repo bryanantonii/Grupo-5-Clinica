@@ -19,6 +19,7 @@ export class Layout {
       this.url(),
     ),
   );
+  protected readonly gestao = computed(() => this.url().startsWith('/gestao'));
   protected readonly area = computed(() =>
     /^\/(minha-area|meus-dados|consultas|dados-atualizados|consulta-cancelada)/.test(this.url()),
   );

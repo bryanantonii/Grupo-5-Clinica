@@ -1,3 +1,24 @@
+import {
+  PacientesService,
+  PacientesMockService,
+} from './features/pacientes/services/pacientes.service';
+import {
+  ProfissionaisService,
+  ProfissionaisMockService,
+} from './features/profissionais/services/profissionais.service';
+import {
+  ConsultasService,
+  ConsultasMockService,
+} from './features/consultas/services/consultas.service';
+import {
+  EspecialidadesService,
+  EspecialidadesMockService,
+} from './features/especialidades/services/especialidades.service';
+import {
+  ConveniosService,
+  ConveniosMockService,
+} from './features/convenios/services/convenios.service';
+import { RelatoriosService, RelatoriosMockService } from './features/relatorios/relatorios.service';
 import { provideHttpClient } from '@angular/common/http';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
@@ -14,6 +35,12 @@ registerLocaleData(localePt);
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    { provide: PacientesService, useClass: PacientesMockService },
+    { provide: ProfissionaisService, useClass: ProfissionaisMockService },
+    { provide: ConsultasService, useClass: ConsultasMockService },
+    { provide: EspecialidadesService, useClass: EspecialidadesMockService },
+    { provide: ConveniosService, useClass: ConveniosMockService },
+    { provide: RelatoriosService, useClass: RelatoriosMockService },
     provideBrowserGlobalErrorListeners(),
     provideRouter(
       routes,

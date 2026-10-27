@@ -28,7 +28,18 @@
         aria-label="Navegação principal"
         (keydown.escape)="menuAberto.set(false); menuBotao.focus()"
       >
-        @if (area()) {
+        @if (gestao()) {
+          <a routerLink="/">Site da clínica</a
+          ><a
+            routerLink="/gestao"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            ariaCurrentWhenActive="page"
+            >Gestão</a
+          ><a routerLink="/gestao/relatorios" routerLinkActive="active" ariaCurrentWhenActive="page"
+            >Relatórios</a
+          >
+        } @else if (area()) {
           <a routerLink="/minha-area" routerLinkActive="active" ariaCurrentWhenActive="page"
             >Minhas consultas</a
           ><a routerLink="/meus-dados" routerLinkActive="active" ariaCurrentWhenActive="page"
@@ -50,6 +61,7 @@
           ><a routerLink="/contato" routerLinkActive="active" ariaCurrentWhenActive="page"
             >Contato</a
           ><a routerLink="/sobre" routerLinkActive="active" ariaCurrentWhenActive="page">Sobre</a
+          ><a routerLink="/gestao" routerLinkActive="active" ariaCurrentWhenActive="page">Gestão</a
           ><span class="nav-divider"></span
           ><a [routerLink]="dados.perfil() ? '/minha-area' : '/entrar'">{{
             dados.perfil() ? 'Minha área' : 'Entrar'

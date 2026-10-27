@@ -1,5 +1,6 @@
 /* Clinora — identidade do Penpot. Os estilos originais do professor são preservados em styles.css. */
 @import './clinora-fonts.css';
+@import './gestao.css';
 :root {
   --green: #007c68;
   --green-dark: #006353;

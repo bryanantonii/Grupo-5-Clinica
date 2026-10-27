@@ -16,6 +16,10 @@ export const routes: Routes = [
     path: '',
     component: Layout,
     children: [
+      {
+        path: 'gestao',
+        loadChildren: () => import('./features/gestao/gestao.routes').then((m) => m.GESTAO_ROUTES),
+      },
       { path: '', component: Inicio, title: 'Clinora · Cuidar de você é o nosso propósito' },
       {
         path: 'profissionais',
