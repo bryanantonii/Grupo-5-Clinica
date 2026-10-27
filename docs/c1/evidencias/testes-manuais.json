@@ -1,0 +1,93 @@
+{
+  "data": "2026-10-27",
+  "navegador": "Chromium no navegador integrado",
+  "verificacoes": [
+    {
+      "modulo": "Pacientes",
+      "teste": "Validação, cadastro e edição pelo parâmetro id",
+      "resultado": "Passou"
+    },
+    {
+      "modulo": "Pacientes",
+      "teste": "Manter cadastro, confirmar exclusão lógica, mostrar inativos, filtro vazio",
+      "resultado": "Passou"
+    },
+    {
+      "modulo": "Especialidades",
+      "teste": "Limites de duração e valor, criar, editar e excluir",
+      "resultado": "Passou"
+    },
+    {
+      "modulo": "Convênios",
+      "teste": "Cadastrar ANS com zeros, editar cobertura e excluir",
+      "resultado": "Passou"
+    },
+    {
+      "modulo": "Profissionais",
+      "teste": "Duplicidade de registro e sincronização do cadastro com catálogo público",
+      "resultado": "Passou"
+    },
+    {
+      "modulo": "Profissionais",
+      "teste": "Editar cadastro e confirmar inativação",
+      "resultado": "Passou"
+    },
+    {
+      "modulo": "Consultas",
+      "teste": "Cadastro, edição, confirmação, cancelamento e filtro por status",
+      "resultado": "Passou"
+    },
+    {
+      "modulo": "Estados",
+      "teste": "Falha simulada, tentar novamente e carregamento",
+      "resultado": "Passou",
+      "carregamentoObservado": false
+    },
+    {
+      "modulo": "Relatórios",
+      "teste": "Totais zerados e mensagem sem atendimentos",
+      "resultado": "Passou"
+    },
+    {
+      "modulo": "Rotas",
+      "teste": "Rota coringa para endereço inexistente",
+      "resultado": "Passou"
+    },
+    {
+      "modulo": "Guards",
+      "teste": "Aviso de alterações não salvas e opção de permanecer no formulário",
+      "resultado": "Passou"
+    },
+    {
+      "modulo": "Estados",
+      "teste": "Carregamento de relatórios observado na abertura",
+      "resultado": "Passou"
+    },
+    {
+      "modulo": "UX/UI",
+      "teste": "Painel, lista e formulário em 390 px sem overflow da página e campos rotulados",
+      "resultado": "Passou"
+    },
+    {
+      "modulo": "UX/UI",
+      "teste": "Formulário em 768 px; Tab entre campos; menu por Enter e fechamento por Escape com retorno de foco",
+      "resultado": "Passou"
+    },
+    {
+      "modulo": "UX/UI",
+      "teste": "Formulário em 360 px sem overflow horizontal da página",
+      "resultado": "Passou"
+    },
+    {
+      "modulo": "UX/UI",
+      "teste": "Link de pular conteúdo transfere foco ao main",
+      "resultado": "Passou"
+    },
+    {
+      "modulo": "Estados",
+      "teste": "Carregamento visível de pacientes durante nova tentativa",
+      "resultado": "Passou",
+      "carregamentoObservado": true
+    }
+  ]
+}
