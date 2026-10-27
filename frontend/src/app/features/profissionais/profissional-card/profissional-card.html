@@ -1,0 +1,41 @@
+<article class="professional-card">
+  <div class="avatar" aria-hidden="true">{{ profissional().iniciais }}</div>
+  <h3>{{ profissional().nome }}</h3>
+  <p class="specialty">{{ nomeEspecialidade() }}</p>
+  <p>{{ profissional().descricao }}</p>
+  <dl class="professional-meta">
+    <div>
+      <dt>Registro demonstrativo</dt>
+      <dd>{{ profissional().registro }}</dd>
+    </div>
+    <div>
+      <dt>E-mail demonstrativo</dt>
+      <dd>{{ profissional().email }}</dd>
+    </div>
+  </dl>
+  <button type="button" class="text-link card-link" (click)="pedirPerfil()">
+    Conhecer profissional <app-icon name="arrow" />
+  </button>
+  @if (gerenciar()) {
+    <div class="professional-card-actions">
+      <button
+        type="button"
+        class="text-link"
+        [disabled]="ocupado()"
+        (click)="editar.emit(profissional())"
+        [attr.aria-label]="'Editar ' + profissional().nome"
+      >
+        Editar
+      </button>
+      <button
+        type="button"
+        class="text-link danger-link"
+        [disabled]="ocupado()"
+        (click)="inativar.emit(profissional())"
+        [attr.aria-label]="'Inativar ' + profissional().nome"
+      >
+        Inativar
+      </button>
+    </div>
+  }
+</article>

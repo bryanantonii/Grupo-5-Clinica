@@ -1,0 +1,129 @@
+<div class="container page-content">
+  <p class="eyebrow">{{ gestao ? 'Equipe da clínica' : 'Nosso time' }}</p>
+  <div class="professional-page-heading">
+    <div>
+      <h1>{{ gestao ? 'Gerenciar profissionais' : 'Encontre quem vai cuidar de você.' }}</h1>
+      <p class="lead">
+        {{
+          gestao
+            ? 'Cadastre e mantenha os dados da equipe atualizados.'
+            : 'Escolha uma especialidade e conheça os perfis da equipe.'
+        }}
+      </p>
+    </div>
+    @if (gestao) {
+      <a class="btn" routerLink="/profissionais/novo"
+        >Cadastrar profissional <app-icon name="arrow"
+      /></a>
+    }
+  </div>
+  @if (gestao) {
+    <a class="text-link back-link" routerLink="/profissionais"
+      ><app-icon name="back" /> Ver página da equipe</a
+    >
+  }
+  @if (sucesso()) {
+    <p class="notice success-notice" role="status"><app-icon name="check" /> {{ sucesso() }}</p>
+  }
+  <form class="search-panel" [formGroup]="form" (ngSubmit)="buscar()">
+    <div class="field">
+      <label for="busca">Buscar profissional</label>
+      <div class="input-icon">
+        <app-icon name="search" /><input
+          id="busca"
+          type="search"
+          formControlName="busca"
+          placeholder="Nome ou especialidade"
+        />
+      </div>
+    </div>
+    <div class="field">
+      <label for="especialidade">Especialidade</label>
+      <select id="especialidade" formControlName="especialidade">
+        <option value="">Todas as especialidades</option>
+        @for (e of especialidades(); track e._id) {
+          <option [value]="e._id">{{ e.nome }}</option>
+        }
+      </select>
+    </div>
+    <button class="btn" type="submit" [disabled]="carregando() || inativando()">
+      Buscar <app-icon name="arrow" />
+    </button>
+  </form>
+
+  @if (erroOperacao()) {
+    <p class="error-notice" role="alert">{{ erroOperacao() }}</p>
+  }
+  @if (confirmacao(); as p) {
+    <section class="panel confirmation-panel" role="region" aria-labelledby="confirmar-inativacao">
+      <h2 id="confirmar-inativacao" tabindex="-1">Inativar {{ p.nome }}?</h2>
+      <p>
+        O profissional deixará de aparecer na equipe disponível para novos agendamentos. Os
+        registros existentes serão mantidos.
+      </p>
+      <div class="form-actions">
+        <button
+          type="button"
+          class="btn btn-danger"
+          [disabled]="inativando()"
+          (click)="confirmarInativacao()"
+        >
+          {{ inativando() ? 'Inativando...' : 'Confirmar inativação' }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline"
+          [disabled]="inativando()"
+          (click)="confirmacao.set(null)"
+        >
+          Cancelar
+        </button>
+      </div>
+    </section>
+  }
+
+  <section [attr.aria-busy]="carregando()" aria-label="Resultados de profissionais">
+    @if (carregando()) {
+      <p class="notice" role="status">Carregando profissionais...</p>
+    } @else if (erro()) {
+      <div class="panel" role="alert">
+        <h2>Não foi possível carregar os profissionais.</h2>
+        <p>{{ erro() }}</p>
+        <button class="btn btn-outline" type="button" (click)="carregar()">Tentar novamente</button>
+      </div>
+    } @else {
+      <p class="results-count" role="status">
+        {{ profissionais().length }}
+        {{ profissionais().length === 1 ? 'profissional encontrado' : 'profissionais encontrados' }}
+      </p>
+      <div class="three-grid professionals-grid">
+        @for (p of profissionais(); track p._id) {
+          <app-profissional-card
+            [profissional]="p"
+            [nomeEspecialidade]="nomeEspecialidade(p.especialidade)"
+            [gerenciar]="gestao"
+            [ocupado]="inativando()"
+            (conhecer)="abrirPerfil($event)"
+            (editar)="editar($event)"
+            (inativar)="pedirInativacao($event)"
+          />
+        } @empty {
+          <div class="empty-state">
+            <span class="icon-tile"><app-icon name="search" /></span>
+            <h2>Nenhum profissional encontrado.</h2>
+            <p>Tente outro nome ou escolha outra especialidade.</p>
+            <button type="button" class="btn btn-outline" (click)="limpar()">Limpar filtros</button>
+          </div>
+        }
+      </div>
+    }
+  </section>
+  <p class="notice">
+    <app-icon name="info" />
+    {{
+      gestao
+        ? 'Ambiente de demonstração. Use somente dados fictícios.'
+        : 'Os nomes e perfis são ilustrativos para este projeto acadêmico.'
+    }}
+  </p>
+</div>

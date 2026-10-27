@@ -1,0 +1,273 @@
+<div class="booking-shell">
+  <nav aria-label="Etapas do agendamento">
+    <ol class="stepper">
+      @for (nome of etapas; track $index) {
+        <li
+          [class.current]="etapa() === $index + 1"
+          [class.completed]="etapa() > $index + 1"
+          [attr.aria-current]="etapa() === $index + 1 ? 'step' : null"
+        >
+          <span class="step-number">
+            @if (etapa() > $index + 1) {
+              <app-icon name="check" />
+            } @else {
+              {{ $index + 1 }}
+            }</span
+          ><span>{{ nome }}</span>
+        </li>
+      }
+    </ol>
+  </nav>
+  @if (etapa() === 1) {
+    <h1 id="titulo-etapa" tabindex="-1">Qual cuidado você procura?</h1>
+    <p class="lead">Escolha uma especialidade para começar.</p>
+    <fieldset class="care-options">
+      <legend class="sr-only">Especialidade</legend>
+      @for (e of dados.especialidades; track e._id) {
+        <label class="care-option" [class.selected]="especialidade() === e._id"
+          ><input
+            type="radio"
+            name="cuidado"
+            [value]="e._id"
+            [checked]="especialidade() === e._id"
+            (change)="escolherEspecialidade(e._id)" /><span class="icon-tile"
+            ><app-icon [name]="e.icone" /></span
+          ><span
+            ><strong>{{ e.nome }}</strong
+            ><span>{{ e.descricao }}</span></span
+          ><span class="radio-circle" aria-hidden="true"></span
+        ></label>
+      }
+    </fieldset>
+    @if (!profissionais().length) {
+      <p class="notice" role="status">
+        Não há profissionais disponíveis para esta especialidade. Escolha outro cuidado ou fale com
+        a equipe.
+      </p>
+    }
+    <button
+      type="button"
+      class="btn booking-continue"
+      [disabled]="!profissional()"
+      (click)="continuar()"
+    >
+      Continuar <app-icon name="arrow" />
+    </button>
+    <p class="help-line">
+      Precisa de ajuda para escolher?
+      <a routerLink="/contato" class="text-link">Fale com a equipe</a>
+    </p>
+  } @else if (etapa() === 2) {
+    <h1 id="titulo-etapa" tabindex="-1">Escolha o melhor horário.</h1>
+    <p class="lead">Um momento para cuidar de você, no seu tempo.</p>
+    <div class="field professional-select">
+      <label for="profissional">Profissional</label
+      ><select
+        id="profissional"
+        [value]="profissional()"
+        (change)="escolherProfissional($any($event.target).value)"
+      >
+        @for (p of profissionais(); track p._id) {
+          <option [value]="p._id">{{ p.nome }}</option>
+        }
+      </select>
+    </div>
+    <div class="booking-calendar">
+      <div class="calendar-heading">
+        <h2>{{ mes() }}</h2>
+        <div>
+          <button
+            type="button"
+            class="icon-button"
+            (click)="mudarSemana(-1)"
+            [disabled]="semana() === 0"
+            aria-label="Semana anterior"
+          >
+            <app-icon name="back" /></button
+          ><button
+            type="button"
+            class="icon-button"
+            (click)="mudarSemana(1)"
+            aria-label="Próxima semana"
+          >
+            <app-icon name="arrow" />
+          </button>
+        </div>
+      </div>
+      <div class="date-options">
+        @for (d of dias(); track d.iso) {
+          <button
+            type="button"
+            [class.selected]="data() === d.iso"
+            [attr.aria-pressed]="data() === d.iso"
+            [attr.aria-label]="d.iso + 'T12:00:00' | date: 'EEEE, dd/MM/yyyy'"
+            (click)="escolherData(d.iso)"
+          >
+            <span>{{ d.dia }}</span
+            ><strong>{{ d.numero }}</strong>
+          </button>
+        }
+      </div>
+    </div>
+    <h3 class="selected-day">{{ dataExtensa() }}</h3>
+    <p>Horários disponíveis</p>
+    <div class="time-options">
+      @for (h of horarios; track h) {
+        <button
+          type="button"
+          [disabled]="!profissional() || ocupados().includes(h)"
+          [class.selected]="horario() === h"
+          [attr.aria-pressed]="horario() === h"
+          (click)="horario.set(h); erro.set('')"
+        >
+          @if (horario() === h) {
+            <app-icon name="check" />
+          }
+          {{ h }}<span class="sr-only">{{ ocupados().includes(h) ? ' indisponível' : '' }}</span>
+        </button>
+      }
+    </div>
+    <p class="notice">
+      <app-icon name="info" /> {{ dados.especialidade(especialidade()) }} · Consulta presencial.
+      Confirme a cobertura antes da visita.
+    </p>
+    <div class="form-actions spread">
+      <button type="button" class="text-link" (click)="ir(1)">
+        <app-icon name="back" /> Alterar especialidade</button
+      ><button
+        type="button"
+        class="btn booking-continue"
+        [disabled]="!profissional() || !horario()"
+        (click)="continuar()"
+      >
+        Continuar <app-icon name="arrow" />
+      </button>
+    </div>
+  } @else if (etapa() === 3) {
+    <h1 id="titulo-etapa" tabindex="-1">Agora, um pouco sobre você.</h1>
+    <p class="lead">Precisamos destas informações para o seu agendamento.</p>
+    <form [formGroup]="form" (ngSubmit)="continuar()" class="booking-form" novalidate>
+      <p class="form-hint">Os campos com * são obrigatórios. Use dados fictícios.</p>
+      <div class="field">
+        <label for="nome">Nome completo *</label
+        ><input
+          id="nome"
+          formControlName="nome"
+          autocomplete="name"
+          placeholder="Como podemos chamar você?"
+          [attr.aria-invalid]="invalido('nome')"
+          aria-describedby="nome-erro"
+        />
+        @if (invalido('nome')) {
+          <span id="nome-erro" class="field-error">Informe seu nome, entre 3 e 80 caracteres.</span>
+        }
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="email">E-mail *</label
+          ><input
+            id="email"
+            formControlName="email"
+            type="email"
+            autocomplete="email"
+            placeholder="voce@exemplo.com"
+            [attr.aria-invalid]="invalido('email')"
+            aria-describedby="email-erro"
+          />
+          @if (invalido('email')) {
+            <span id="email-erro" class="field-error">Informe um e-mail válido.</span>
+          }
+        </div>
+        <div class="field">
+          <label for="telefone">Celular *</label
+          ><input
+            id="telefone"
+            formControlName="telefone"
+            type="tel"
+            autocomplete="tel"
+            placeholder="(51) 99999-9999"
+            [attr.aria-invalid]="invalido('telefone')"
+            aria-describedby="telefone-erro"
+          />
+          @if (invalido('telefone')) {
+            <span id="telefone-erro" class="field-error">Use o formato (51) 99999-9999.</span>
+          }
+        </div>
+      </div>
+      <div class="field">
+        <label for="convenio">Forma de atendimento</label
+        ><select id="convenio" formControlName="convenio">
+          <option>Particular</option>
+          <option>Convênio (confirmar cobertura)</option>
+        </select>
+      </div>
+      <label class="checkbox-label"
+        ><input type="checkbox" formControlName="ciente" /><span
+          >Entendo que este agendamento é uma demonstração acadêmica e usarei dados fictícios.</span
+        ></label
+      >
+      @if (invalido('ciente')) {
+        <p class="field-error">Confirme que leu a informação acima.</p>
+      }
+      <p class="privacy-note">
+        <app-icon name="shield" /> Seus dados serão usados apenas nesta demonstração.
+      </p>
+      <div class="form-actions spread">
+        <button type="button" class="text-link" (click)="ir(2)">
+          <app-icon name="back" /> Voltar</button
+        ><button
+          type="submit"
+          class="btn booking-continue"
+          [disabled]="form.invalid || form.pending"
+        >
+          Revisar agendamento <app-icon name="arrow" />
+        </button>
+      </div>
+    </form>
+  } @else {
+    <h1 id="titulo-etapa" tabindex="-1">Está tudo certo?</h1>
+    <p class="lead">Revise as informações antes de confirmar.</p>
+    <div class="panel review-panel">
+      <dl class="review-grid">
+        <div>
+          <dt>Especialidade</dt>
+          <dd>{{ dados.especialidade(especialidade()) }}</dd>
+        </div>
+        <div>
+          <dt>Profissional</dt>
+          <dd>{{ dados.profissional(profissional())?.nome }}</dd>
+        </div>
+        <div>
+          <dt>Data e horário</dt>
+          <dd>{{ data() + 'T12:00:00' | date: 'dd/MM/yyyy' }} · {{ horario() }}</dd>
+        </div>
+        <div>
+          <dt>Atendimento</dt>
+          <dd>Presencial · {{ form.controls.convenio.value }}</dd>
+        </div>
+        <div class="review-wide">
+          <dt>Contato</dt>
+          <dd>
+            {{ form.controls.nome.value }} · {{ form.controls.email.value }}<br />{{
+              form.controls.telefone.value
+            }}
+          </dd>
+        </div>
+      </dl>
+    </div>
+    <p class="notice">
+      <app-icon name="info" /> Este é um agendamento demonstrativo. Em um serviço real, você
+      receberia a confirmação pelos contatos informados.
+    </p>
+    <div class="form-actions spread">
+      <button type="button" class="text-link" (click)="ir(3)">
+        <app-icon name="back" /> Corrigir meus dados</button
+      ><button type="button" class="btn" [disabled]="salvando()" (click)="confirmar()">
+        {{ salvando() ? 'Confirmando…' : 'Confirmar agendamento' }} <app-icon name="check" />
+      </button>
+    </div>
+  }
+  @if (erro()) {
+    <p class="error-notice" role="alert">{{ erro() }}</p>
+  }
+</div>

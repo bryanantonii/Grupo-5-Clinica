@@ -5,6 +5,18 @@ Para receber: veja o **Passo 4** de [`COMECE-AQUI.md`](COMECE-AQUI.md).
 
 ---
 
+## v1.3 — Exemplos dos documentos do grupo
+
+**Etiqueta:** `base-v1.3`
+
+- Nova pasta `guia/exemplos/` com um exemplo preenchido de cada documento: Documento de Visão, Contrato da API, Dicionário de Dados, Plano de Testes, Manual do Usuário, Roteiro da Apresentação e as respostas às perguntas de verificação.
+- Os exemplos descrevem um sistema fictício (*Bom Preço — Gestão do Mercadinho*), que não é um dos temas da turma.
+- Links para os exemplos em `docs/LEIA-ME.md`, `guia/README.md` e `COMECE-AQUI.md`.
+
+**O que o grupo precisa fazer:** só o merge. Se o grupo já tinha mudado o `docs/LEIA-ME.md` e der conflito, aceite as duas versões (**Accept Both Changes**).
+
+---
+
 ## v1.2 — Ajuste dos temas e guia de Git
 
 **Etiqueta:** `base-v1.2`

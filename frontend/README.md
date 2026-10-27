@@ -1,10 +1,46 @@
-# Front-end — Angular
+# Clinora — Front-end Angular
 
-Instruções completas no [README principal](../README.md).
+Projeto Integrador SENAI. Interface baseada no Penpot, com a marca e a foto originais.
 
-| Comando | O que faz |
-| --- | --- |
-| `npm start` | Sobe o front em http://localhost:4200 |
-| `npm run build` | Gera a versão de produção em `dist/` |
+## Executar
 
-Para alternar entre dados de exemplo (mock) e a API real, mude `usarMock` em `src/environments/environment.ts`.
+Na pasta frontend:
+
+```powershell
+npm ci
+npm start
+```
+
+Abra http://localhost:4200. As dependências já estão instaladas nesta máquina.
+
+Para gerar a produção, execute npm run build. Os arquivos ficam em dist/frontend/browser/.
+
+## Funcionalidades
+
+- Início, profissionais com busca e filtro, perfil, convênios, contato e sobre.
+- Agendamento em quatro etapas, confirmação, área do paciente, edição do perfil e cancelamento.
+- Telas de acesso, cadastro e recuperação de senha para demonstração.
+- Layout responsivo, menu para celular, navegação por teclado e formulários validados.
+
+## Demonstração
+
+Use dados fictícios. Entre com o mesmo e-mail informado no agendamento e qualquer senha fictícia de oito ou mais caracteres. Nenhuma senha é armazenada.
+
+Os dados ficam na sessão da aba e sobrevivem ao recarregamento. Nenhuma consulta real é marcada e nenhum e-mail ou mensagem é enviado. A integração com o backend ainda precisa ser feita.
+
+Os fluxos públicos ficam em src/app/features/clinora/ e o módulo Profissionais em src/app/features/profissionais/. Os estilos ficam em src/estilos-do-grupo.css. O backend e os exemplos didáticos foram preservados.
+
+A configuração environment.usarMock continua controlando apenas o módulo didático Produtos. Ela não conecta Clinora à API automaticamente.
+
+## Verificação
+
+Compilação de produção concluída e fluxos de agendamento, bloqueio de horário ocupado, persistência, consulta, cancelamento, contato e navegação no celular verificados no navegador.
+
+
+## Cadastro e edição de profissionais
+
+No rodapé, abra Área da equipe, ou acesse /profissionais/gerenciar. O mesmo formulário atende /profissionais/novo e /profissionais/:id/editar. A área permite cadastrar, editar e inativar com confirmação, usando somente dados fictícios.
+
+ProfissionaisService define o contrato e ProfissionaisMockService é configurado em app.config.ts. ProfissionaisStore mantém os dados compartilhados com início, perfis e agendamento. As alterações permanecem na sessão da aba; não são enviadas à API.
+
+Execute npm test para verificar os formulários e as regras do mock. Consulte [o registro dos formulários](../docs/atividade-angular-formularios.md) para a lista de validações, estados, rotas e testes realizados.

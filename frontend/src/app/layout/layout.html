@@ -1,16 +1,108 @@
-<header class="topo">
-  <span class="marca">{{ nomeSistema }}</span>
-  <!-- TODO (aula 12/13): nome do usuário logado e botão Sair -->
+<a class="skip-link" href="#conteudo" (click)="pularParaConteudo($event)">Pular para o conteúdo</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a routerLink="/" class="brand" aria-label="Clinora — página inicial"
+      ><img
+        src="/images/clinora-branca.png"
+        alt="Clinora — Clínica Geral Integrada"
+        width="183"
+        height="49"
+    /></a>
+    @if (simples()) {
+      <a routerLink="/" class="back-site"><app-icon name="back" /> Voltar ao site</a>
+    } @else {
+      <button
+        type="button"
+        class="menu-toggle"
+        #menuBotao
+        (click)="menuAberto.set(!menuAberto())"
+        [attr.aria-expanded]="menuAberto()"
+        aria-controls="navegacao"
+        [attr.aria-label]="menuAberto() ? 'Fechar menu' : 'Abrir menu'"
+      >
+        <app-icon [name]="menuAberto() ? 'close' : 'menu'" />
+      </button>
+      <nav
+        id="navegacao"
+        [class.open]="menuAberto()"
+        aria-label="Navegação principal"
+        (keydown.escape)="menuAberto.set(false); menuBotao.focus()"
+      >
+        @if (area()) {
+          <a routerLink="/minha-area" routerLinkActive="active" ariaCurrentWhenActive="page"
+            >Minhas consultas</a
+          ><a routerLink="/meus-dados" routerLinkActive="active" ariaCurrentWhenActive="page"
+            >Meus dados</a
+          ><a routerLink="/agendar" class="btn header-book"
+            ><app-icon name="calendar" /> Agendar consulta</a
+          ><button class="nav-logout" type="button" (click)="sair()">Sair</button>
+        } @else {
+          <a
+            routerLink="/"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            ariaCurrentWhenActive="page"
+            >Início</a
+          ><a routerLink="/profissionais" routerLinkActive="active" ariaCurrentWhenActive="page"
+            >Profissionais</a
+          ><a routerLink="/convenios" routerLinkActive="active" ariaCurrentWhenActive="page"
+            >Convênios</a
+          ><a routerLink="/contato" routerLinkActive="active" ariaCurrentWhenActive="page"
+            >Contato</a
+          ><a routerLink="/sobre" routerLinkActive="active" ariaCurrentWhenActive="page">Sobre</a
+          ><span class="nav-divider"></span
+          ><a [routerLink]="dados.perfil() ? '/minha-area' : '/entrar'">{{
+            dados.perfil() ? 'Minha área' : 'Entrar'
+          }}</a>
+          @if (!dados.perfil()) {
+            <a routerLink="/criar-conta" class="btn header-account">Criar conta</a>
+          }
+          <a routerLink="/agendar" class="btn header-book"><app-icon name="calendar" /> Agendar</a>
+        }
+      </nav>
+    }
+  </div>
 </header>
-
-<div class="corpo">
-  <nav class="menu" aria-label="Menu principal">
-    <a routerLink="/" routerLinkActive="ativo" [routerLinkActiveOptions]="{ exact: true }">Início</a>
-    <a routerLink="/produtos" routerLinkActive="ativo">Produtos</a>
-    <!-- TODO (aula 02): um link para o módulo de cada aluno -->
-  </nav>
-
-  <main class="conteudo">
-    <router-outlet />
-  </main>
-</div>
+<main id="conteudo" tabindex="-1"><router-outlet /></main>
+@if (dados.aviso()) {
+  <div class="container notice" role="status">{{ dados.aviso() }}</div>
+}
+@if (!simples()) {
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a routerLink="/" aria-label="Clinora — início"
+            ><img
+              src="/images/clinora-branca.png"
+              alt="Clinora"
+              width="210"
+              height="56"
+              loading="lazy"
+          /></a>
+          <p>Cuidar de você é o nosso propósito.</p>
+        </div>
+        <div>
+          <h2>A clínica</h2>
+          <a routerLink="/profissionais">Profissionais</a><a routerLink="/convenios">Convênios</a
+          ><a routerLink="/contato">Contato</a><a routerLink="/sobre">Sobre a Clinora</a>
+        </div>
+        <div>
+          <h2>Seu cuidado</h2>
+          <a routerLink="/agendar">Agendar consulta</a
+          ><a routerLink="/minha-area">Área do paciente</a
+          ><a routerLink="/criar-conta">Criar conta</a>
+        </div>
+        <div>
+          <h2>Atendimento</h2>
+          <a routerLink="/profissionais/gerenciar">Área da equipe</a>
+          <p>Segunda a sexta<br />Horários a confirmar<br />Confirme o acesso físico</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>Clinora · Projeto acadêmico SENAI</span
+        ><span>Perfis, horários e contatos ilustrativos.</span>
+      </div>
+    </div>
+  </footer>
+}

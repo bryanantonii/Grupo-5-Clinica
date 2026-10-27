@@ -1,0 +1,168 @@
+<section class="container page-content professional-form-page">
+  <a class="text-link back-link" routerLink="/profissionais/gerenciar">
+    <app-icon name="back" /> Voltar à equipe
+  </a>
+  <p class="eyebrow">Equipe da clínica</p>
+  <h1>{{ id() ? 'Editar profissional' : 'Cadastrar profissional' }}</h1>
+  <p class="lead">Mantenha os dados de contato e a especialidade da equipe atualizados.</p>
+
+  @if (carregando()) {
+    <p class="notice" role="status">Carregando os dados do formulário...</p>
+  }
+  @if (erroCarregamento()) {
+    <div class="panel" role="alert">
+      <h2>Não foi possível abrir o formulário.</h2>
+      <p>{{ erroCarregamento() }}</p>
+      <button class="btn btn-outline" type="button" (click)="recarregar()">Tentar novamente</button>
+    </div>
+  } @else {
+    <form
+      #formulario
+      class="panel professional-form"
+      [formGroup]="form"
+      (ngSubmit)="salvar()"
+      [attr.aria-busy]="carregando() || salvando()"
+      novalidate
+    >
+      <p class="form-hint" id="profissional-ajuda">
+        Os campos com * são obrigatórios. Use dados fictícios nesta demonstração.
+      </p>
+      <fieldset [disabled]="carregando() || salvando()" aria-describedby="profissional-ajuda">
+        <legend class="sr-only">Dados do profissional</legend>
+        <div class="professional-form-grid">
+          <div class="field">
+            <label for="profissional-nome">Nome completo *</label>
+            <input
+              id="profissional-nome"
+              formControlName="nome"
+              autocomplete="name"
+              placeholder="Ex.: Dra. Ana Lima"
+              (blur)="normalizar('nome')"
+              [attr.aria-invalid]="invalido('nome')"
+              [attr.aria-describedby]="invalido('nome') ? 'nome-ajuda nome-erro' : 'nome-ajuda'"
+            />
+            <span class="form-hint" id="nome-ajuda">Entre 3 e 80 caracteres.</span>
+            @if (invalido('nome')) {
+              <span class="field-error" id="nome-erro">{{ mensagem('nome') }}</span>
+            }
+          </div>
+          <div class="field">
+            <label for="profissional-registro">Registro profissional (CRM, CRP...) *</label>
+            <input
+              id="profissional-registro"
+              formControlName="registro"
+              spellcheck="false"
+              placeholder="Ex.: CRM-RS 45678"
+              (blur)="normalizar('registro')"
+              [attr.aria-invalid]="invalido('registro')"
+              [attr.aria-describedby]="
+                invalido('registro') ? 'registro-ajuda registro-erro' : 'registro-ajuda'
+              "
+            />
+            <span class="form-hint" id="registro-ajuda"
+              >De 4 a 20 caracteres. Será salvo em maiúsculas e deve ser único.</span
+            >
+            @if (invalido('registro')) {
+              <span class="field-error" id="registro-erro">{{ mensagem('registro') }}</span>
+            }
+          </div>
+          <div class="field">
+            <label for="profissional-especialidade">Especialidade *</label>
+            <select
+              id="profissional-especialidade"
+              formControlName="especialidade"
+              [attr.aria-invalid]="invalido('especialidade')"
+              [attr.aria-describedby]="
+                invalido('especialidade')
+                  ? 'especialidade-ajuda especialidade-erro'
+                  : 'especialidade-ajuda'
+              "
+            >
+              <option value="">Selecione uma especialidade</option>
+              @for (e of especialidades(); track e._id) {
+                <option [value]="e._id">{{ e.nome }}</option>
+              }
+            </select>
+            <span class="form-hint" id="especialidade-ajuda"
+              >Escolha uma das especialidades disponíveis na clínica.</span
+            >
+            @if (invalido('especialidade')) {
+              <span class="field-error" id="especialidade-erro">{{
+                mensagem('especialidade')
+              }}</span>
+            }
+          </div>
+          <div class="field">
+            <label for="profissional-email">E-mail *</label>
+            <input
+              id="profissional-email"
+              type="email"
+              formControlName="email"
+              autocomplete="email"
+              placeholder="Ex.: ana.lima@example.com"
+              (blur)="normalizar('email')"
+              [attr.aria-invalid]="invalido('email')"
+              [attr.aria-describedby]="invalido('email') ? 'email-ajuda email-erro' : 'email-ajuda'"
+            />
+            <span class="form-hint" id="email-ajuda"
+              >Informe um endereço único para este profissional.</span
+            >
+            @if (invalido('email')) {
+              <span class="field-error" id="email-erro">{{ mensagem('email') }}</span>
+            }
+          </div>
+          <div class="field">
+            <label for="profissional-telefone">Telefone *</label>
+            <input
+              id="profissional-telefone"
+              type="tel"
+              formControlName="telefone"
+              autocomplete="tel"
+              placeholder="(51) 99999-9999"
+              (blur)="normalizar('telefone')"
+              [attr.aria-invalid]="invalido('telefone')"
+              [attr.aria-describedby]="
+                invalido('telefone') ? 'telefone-ajuda telefone-erro' : 'telefone-ajuda'
+              "
+            />
+            <span class="form-hint" id="telefone-ajuda">Inclua o DDD. Ex.: (51) 99999-9999.</span>
+            @if (invalido('telefone')) {
+              <span class="field-error" id="telefone-erro">{{ mensagem('telefone') }}</span>
+            }
+          </div>
+          <div class="professional-form-note">
+            <app-icon name="info" />
+            <p>
+              Novos profissionais ficam ativos automaticamente. A inativação é feita na gestão da
+              equipe.
+            </p>
+          </div>
+        </div>
+      </fieldset>
+
+      @if (erro()) {
+        <p class="error-notice" role="alert">{{ erro() }}</p>
+      }
+      <p class="form-hint" role="status">
+        {{
+          form.invalid
+            ? 'Confira os campos obrigatórios para habilitar o botão Salvar.'
+            : form.dirty
+              ? 'Há alterações ainda não salvas.'
+              : 'Os dados estão prontos para salvar.'
+        }}
+      </p>
+      <div class="form-actions spread">
+        <a class="text-link" routerLink="/profissionais/gerenciar">Cancelar</a>
+        <button
+          class="btn"
+          type="submit"
+          [disabled]="form.invalid || form.pending || salvando() || carregando()"
+        >
+          {{ salvando() ? 'Salvando...' : id() ? 'Salvar alterações' : 'Cadastrar profissional' }}
+          <app-icon name="check" />
+        </button>
+      </div>
+    </form>
+  }
+</section>
