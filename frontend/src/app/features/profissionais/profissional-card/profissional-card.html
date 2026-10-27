@@ -1,0 +1,19 @@
+<article class="professional-card">
+  <div class="avatar" aria-hidden="true">{{ profissional().iniciais }}</div>
+  <h3>{{ profissional().nome }}</h3>
+  <p class="specialty">{{ nomeEspecialidade() }}</p>
+  <p>{{ profissional().descricao }}</p>
+  <dl class="professional-meta">
+    <div>
+      <dt>Registro demonstrativo</dt>
+      <dd>{{ profissional().registro }}</dd>
+    </div>
+    <div>
+      <dt>E-mail demonstrativo</dt>
+      <dd>{{ profissional().email }}</dd>
+    </div>
+  </dl>
+  <button type="button" class="text-link card-link" (click)="pedirPerfil()">
+    Conhecer profissional <app-icon name="arrow" />
+  </button>
+</article>

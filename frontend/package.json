@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "test:c1": "node --test testes-c1/*.test.mjs",
     "watch": "ng build --watch --configuration development"
   },
   "private": true,

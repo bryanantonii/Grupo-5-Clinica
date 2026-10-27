@@ -11,6 +11,7 @@ Material do professor. **Não altere os arquivos desta pasta**: eles são atuali
 | `Manual de Construção - Projeto Integrador.docx` | Como fazer cada etapa, aula a aula (abra no Word ou no Google Docs) |
 | `Responsabilidades dos Integrantes - Projeto Integrador.docx` | O que cada papel transversal entrega |
 | [`templates/`](templates/) | Modelos dos documentos do grupo. Copie para `docs/`, preencha e entregue |
+| [`exemplos/`](exemplos/) | Um exemplo preenchido de cada documento (sistema fictício) para ver o nível de detalhe esperado |
 
 ## Manuais dos temas
 

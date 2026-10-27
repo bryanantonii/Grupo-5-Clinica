@@ -1,0 +1,104 @@
+<a class="text-link" [routerLink]="['/gestao', config.modulo]"
+  >← Voltar para {{ config.titulo.toLowerCase() }}</a
+>
+<header class="c1-form-heading">
+  <p class="eyebrow">{{ id ? 'Editar cadastro' : 'Novo cadastro' }}</p>
+  <h1>{{ id ? 'Editar' : 'Cadastrar' }} {{ config.singular }}</h1>
+  <p>Os campos com asterisco são obrigatórios.</p>
+</header>
+@if (carregando()) {
+  <div class="c1-loading" role="status">
+    <span class="c1-spinner" aria-hidden="true"></span>Carregando cadastro...
+  </div>
+} @else {
+  @if (erro()) {
+    <div class="c1-feedback c1-error" role="alert">
+      {{ erro() }}
+      @if (!encontrado()) {
+        <button class="btn btn-outline" type="button" (click)="carregar()">Tentar novamente</button>
+      }
+    </div>
+  }
+  @if (encontrado()) {
+    <form
+      class="c1-form"
+      [formGroup]="form"
+      (ngSubmit)="salvar()"
+      novalidate
+      [attr.aria-busy]="salvando()"
+    >
+      <fieldset [disabled]="salvando()">
+        <legend class="sr-only">Dados de {{ config.singular }}</legend>
+        <div class="c1-fields">
+          @for (campo of config.campos; track campo.nome) {
+            <div class="field" [class.c1-full-field]="campo.tipo === 'textarea'">
+              <label [for]="'campo-' + campo.nome"
+                >{{ campo.rotulo }}{{ campo.obrigatorio ? ' *' : '' }}</label
+              >
+              @switch (campo.tipo) {
+                @case ('select') {
+                  <select
+                    [id]="'campo-' + campo.nome"
+                    [formControlName]="campo.nome"
+                    [attr.aria-required]="campo.obrigatorio || null"
+                    [attr.aria-invalid]="invalido(campo)"
+                    [attr.aria-describedby]="'ajuda-' + campo.nome + ' erro-' + campo.nome"
+                  >
+                    <option value="">
+                      {{ campo.obrigatorio ? 'Selecione uma opção' : 'Sem convênio / particular' }}
+                    </option>
+                    @for (opcao of opcoes(campo); track opcao.id) {
+                      <option [value]="opcao.id">{{ opcao.nome }}</option>
+                    }
+                  </select>
+                }
+                @case ('textarea') {
+                  <textarea
+                    [id]="'campo-' + campo.nome"
+                    [formControlName]="campo.nome"
+                    [attr.maxlength]="campo.maxLength ?? null"
+                    rows="4"
+                    [attr.aria-invalid]="invalido(campo)"
+                    [attr.aria-describedby]="'ajuda-' + campo.nome + ' erro-' + campo.nome"
+                  ></textarea>
+                }
+                @default {
+                  <input
+                    [id]="'campo-' + campo.nome"
+                    [type]="campo.tipo"
+                    [formControlName]="campo.nome"
+                    [attr.aria-required]="campo.obrigatorio || null"
+                    [attr.minlength]="campo.minLength ?? null"
+                    [attr.maxlength]="campo.maxLength ?? null"
+                    [attr.min]="campo.min ?? null"
+                    [attr.max]="campo.max ?? null"
+                    [attr.step]="campo.tipo === 'number' ? (campo.inteiro ? '1' : '0.01') : null"
+                    [attr.aria-invalid]="invalido(campo)"
+                    [attr.aria-describedby]="'ajuda-' + campo.nome + ' erro-' + campo.nome"
+                    [attr.autocomplete]="
+                      campo.tipo === 'email' ? 'email' : campo.tipo === 'tel' ? 'tel' : 'off'
+                    "
+                  />
+                }
+              }
+              <small [id]="'ajuda-' + campo.nome" class="c1-field-help">{{
+                campo.ajuda ?? ''
+              }}</small>
+              @if (invalido(campo)) {
+                <span [id]="'erro-' + campo.nome" class="c1-field-error">{{
+                  mensagem(campo)
+                }}</span>
+              }
+            </div>
+          }
+        </div>
+        <div class="c1-form-actions">
+          <a class="btn btn-outline" [routerLink]="['/gestao', config.modulo]">Cancelar</a
+          ><button class="btn" type="submit" [disabled]="salvando()">
+            {{ salvando() ? 'Salvando...' : 'Salvar ' + config.singular }}
+          </button>
+        </div>
+      </fieldset>
+    </form>
+  }
+}

@@ -137,6 +137,7 @@ Se travar, **não apague a pasta nem force nada**: chame o professor.
 | Resolver referência entre módulos, busca, datas, status | `guia/RECEITAS.md` |
 | Saber o que o meu papel transversal entrega | `guia/Responsabilidades dos Integrantes - Projeto Integrador.docx` |
 | Preencher os documentos do grupo | `guia/templates/` → salve a versão preenchida em `docs/` |
+| Ver um exemplo de cada documento já preenchido | [`guia/exemplos/`](guia/exemplos/) |
 | Ver o que mudou na base | `ATUALIZACOES.md` |
 
 | Tema | Manual |
