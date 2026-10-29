@@ -1,0 +1,9 @@
+{
+  "data": "2026-10-29",
+  "commitCodigo": "68094a85b69d3d8c6ccacc7b53e661007b01d1ea",
+  "workflow": "Testes automáticos",
+  "execucao": "https://github.com/bryanantonii/Grupo-5-Clinica/actions/runs/40963858950",
+  "backend": "SUCCESS",
+  "frontend": "SUCCESS",
+  "observacao": "A execução padrão da CI passou para os commits de código compartilhados com o PR 5; os commits posteriores acrescentam apenas documentação e evidências."
+}

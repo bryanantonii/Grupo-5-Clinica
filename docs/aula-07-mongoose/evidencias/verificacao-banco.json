@@ -1,0 +1,114 @@
+{
+  "banco": "clinora",
+  "colecao": "convenios",
+  "injecaoNest": true,
+  "exemplosEncontrados": 5,
+  "total": 5,
+  "ativos": 4,
+  "duplicidadeBloqueada": true,
+  "indices": [
+    {
+      "v": 2,
+      "key": {
+        "_id": 1
+      },
+      "name": "_id_"
+    },
+    {
+      "v": 2,
+      "key": {
+        "nome": 1
+      },
+      "name": "convenios_nome_unico",
+      "unique": true,
+      "collation": {
+        "locale": "pt",
+        "caseLevel": false,
+        "caseFirst": "off",
+        "strength": 1,
+        "numericOrdering": false,
+        "alternate": "non-ignorable",
+        "maxVariable": "punct",
+        "normalization": false,
+        "backwards": false,
+        "version": "57.1"
+      }
+    },
+    {
+      "v": 2,
+      "key": {
+        "codigoAns": 1
+      },
+      "name": "convenios_ans_unico",
+      "unique": true
+    },
+    {
+      "v": 2,
+      "key": {
+        "ativo": 1,
+        "nome": 1
+      },
+      "name": "convenios_ativos_nome"
+    }
+  ],
+  "registros": [
+    {
+      "_id": "6ae3c03794a39ad7b4c44d56",
+      "codigoAns": "045678",
+      "__v": 0,
+      "ativo": true,
+      "createdAt": "2026-10-29T21:52:55.690Z",
+      "modalidade": "coletivo",
+      "nome": "Proteção Familiar",
+      "percentualCobertura": 50,
+      "updatedAt": "2026-10-29T21:52:55.690Z"
+    },
+    {
+      "_id": "6ae3c03794a39ad7b4c44d53",
+      "codigoAns": "123456",
+      "__v": 0,
+      "ativo": true,
+      "createdAt": "2026-10-29T21:52:55.585Z",
+      "modalidade": "individual",
+      "nome": "Saúde Mais",
+      "percentualCobertura": 80,
+      "telefone": "(51) 90000-0101",
+      "updatedAt": "2026-10-29T21:52:55.585Z"
+    },
+    {
+      "_id": "6ae3c03794a39ad7b4c44d54",
+      "codigoAns": "234567",
+      "__v": 0,
+      "ativo": true,
+      "createdAt": "2026-10-29T21:52:55.618Z",
+      "modalidade": "coletivo",
+      "nome": "Vida Plena",
+      "percentualCobertura": 70,
+      "telefone": "(51) 90000-0102",
+      "updatedAt": "2026-10-29T21:52:55.618Z"
+    },
+    {
+      "_id": "6ae3c03794a39ad7b4c44d55",
+      "codigoAns": "345678",
+      "__v": 0,
+      "ativo": true,
+      "createdAt": "2026-10-29T21:52:55.647Z",
+      "modalidade": "individual",
+      "nome": "Bem Cuidar",
+      "percentualCobertura": 100,
+      "telefone": "(51) 90000-0103",
+      "updatedAt": "2026-10-29T21:52:55.647Z"
+    },
+    {
+      "_id": "6ae3c03794a39ad7b4c44d57",
+      "codigoAns": "567890",
+      "__v": 0,
+      "ativo": false,
+      "createdAt": "2026-10-29T21:52:55.724Z",
+      "modalidade": "individual",
+      "nome": "Horizonte Saúde",
+      "percentualCobertura": 0,
+      "updatedAt": "2026-10-29T21:52:55.724Z"
+    }
+  ]
+}

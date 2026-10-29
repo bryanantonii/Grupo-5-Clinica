@@ -1,0 +1,31 @@
+{
+  "Data": "2026-10-29",
+  "Ferramenta": "Jest com resolvedor JavaScript local",
+  "Motivo": "Controle de Aplicativo do Windows bloqueia a extensão nativa do resolvedor padrão",
+  "ConfiguracaoRepositorioPreservada": true,
+  "Aprovados": 25,
+  "Suites": 2,
+  "TestesSchemaConvenios": 17,
+  "TestesProdutos": 8,
+  "SeedPrimeiraExecucao": {
+    "ConveniosInseridos": 5,
+    "ProdutosInseridos": 5
+  },
+  "SeedSegundaExecucao": {
+    "ConveniosInseridos": 0,
+    "ConveniosExistentes": 5,
+    "ProdutosInseridos": 0,
+    "ProdutosExistentes": 5,
+    "RegistrosEDatasPreservados": true
+  },
+  "BuildBackend": "aprovado",
+  "LintBackend": "aprovado",
+  "BuildFrontend": "aprovado",
+  "Atlas": {
+    "Banco": "clinora",
+    "Colecao": "convenios",
+    "Documentos": 5,
+    "Indices": 4
+  },
+  "Compass": "Aprovado no Compass 1.53.2: cinco documentos, quatro ativos, um inativo, ANS 045678 como texto e quatro índices READY; detalhes em compass-verificacao.json"
+}

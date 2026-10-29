@@ -1,0 +1,79 @@
+{
+  "data": "2026-10-29",
+  "aplicativo": "MongoDB Compass",
+  "versao": "1.53.2",
+  "banco": "clinora",
+  "colecao": "convenios",
+  "tipoConferencia": "Visual no aplicativo aberto neste PC",
+  "consultas": [
+    {
+      "verificacao": "Todos os registros",
+      "filtro": "{}",
+      "resultado": 5,
+      "camposConferidos": [
+        "_id",
+        "codigoAns",
+        "nome",
+        "percentualCobertura",
+        "modalidade",
+        "ativo",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    {
+      "verificacao": "Convênios ativos",
+      "filtro": "{\"ativo\":true}",
+      "resultado": 4
+    },
+    {
+      "verificacao": "Convênio inativo",
+      "filtro": "{\"ativo\":false}",
+      "resultado": 1,
+      "nome": "Horizonte Saúde"
+    },
+    {
+      "verificacao": "ANS como texto com zero inicial",
+      "filtro": "{\"codigoAns\":\"045678\"}",
+      "resultado": 1,
+      "nome": "Proteção Familiar",
+      "codigoAns": "045678"
+    }
+  ],
+  "indices": [
+    {
+      "nome": "_id_",
+      "unico": true,
+      "status": "READY"
+    },
+    {
+      "nome": "convenios_nome_unico",
+      "unico": true,
+      "collation": true,
+      "status": "READY"
+    },
+    {
+      "nome": "convenios_ans_unico",
+      "unico": true,
+      "status": "READY"
+    },
+    {
+      "nome": "convenios_ativos_nome",
+      "composto": true,
+      "campos": {
+        "ativo": 1,
+        "nome": 1
+      },
+      "status": "READY"
+    }
+  ],
+  "tiposObservados": {
+    "_id": "ObjectId",
+    "codigoAns": "String",
+    "ativo": "Boolean",
+    "createdAt": "Date",
+    "updatedAt": "Date"
+  },
+  "gravacoesRealizadas": false,
+  "conexaoSalva": false
+}
