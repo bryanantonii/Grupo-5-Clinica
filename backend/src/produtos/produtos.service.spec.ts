@@ -11,11 +11,12 @@ import { ProdutosService } from './produtos.service';
 import { Produto } from './schemas/produto.schema';
 
 /**
- * Testes unitários do Service com o Model "dublê" (mock), como na Sprint 4.
- * Não precisam do MongoDB rodando.
+ * Testes unitários do Service com o Model "dublê" (mock), como na Sprint 4 (aula 10, slide 13).
+ * Não precisam do MongoDB rodando: rodam em segundos no PC e no GitHub Actions.
  */
 
 // Cria um objeto que imita a cadeia .lean().exec() do Mongoose
+// (se o seu service usar .populate(), acrescente populate: jest.fn().mockReturnThis())
 const consulta = <T>(resultado: T) => ({
   sort: jest.fn().mockReturnThis(),
   lean: jest.fn().mockReturnThis(),
@@ -55,8 +56,11 @@ describe('ProdutosService', () => {
   });
 
   it('lista os produtos filtrando por categoria', async () => {
+    // Arrange
     modelMock.find.mockReturnValue(consulta([produto]));
+    // Act
     const resultado = await service.listar('alimento');
+    // Assert
     expect(modelMock.find).toHaveBeenCalledWith({ categoria: 'alimento' });
     expect(resultado).toEqual([produto]);
   });
@@ -66,8 +70,10 @@ describe('ProdutosService', () => {
     await expect(service.buscarPorId(id)).resolves.toEqual(produto);
   });
 
+  // Arrange: o Model "dublê" devolve null
   it('lança 404 quando o produto não existe', async () => {
     modelMock.findById.mockReturnValue(consulta(null));
+    // Act + Assert
     await expect(service.buscarPorId(id)).rejects.toBeInstanceOf(
       NotFoundException,
     );
