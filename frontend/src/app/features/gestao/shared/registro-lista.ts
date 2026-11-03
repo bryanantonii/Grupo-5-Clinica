@@ -1,6 +1,6 @@
 import { Component, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { finalize, Subscription } from 'rxjs';
+import { finalize, forkJoin, map, of, Subscription } from 'rxjs';
 import { Coluna, ModuloConfig } from '../modulo-config';
 import { Registro, ROTULOS_STATUS, StatusConsulta, TRANSICOES } from '../gestao.models';
 import { ClinicaMockStore } from '../services/clinica-mock.store';
@@ -15,6 +15,7 @@ export class RegistroLista implements OnInit, OnDestroy {
   readonly config = this.route.snapshot.data['config'] as ModuloConfig;
   private readonly servico = inject(this.config.servico);
   readonly store = inject(ClinicaMockStore);
+  private readonly referencias = this.config.referencias ? inject(this.config.referencias) : null;
   readonly itens = signal<Registro[]>([]);
   readonly carregando = signal(true);
   readonly erro = signal('');
@@ -37,13 +38,18 @@ export class RegistroLista implements OnInit, OnDestroy {
     this.leitura?.unsubscribe();
     this.carregando.set(true);
     this.erro.set('');
-    this.leitura = this.servico
-      .listar({
+    this.leitura = forkJoin({
+      referencias: this.referencias?.carregar() ?? of(undefined),
+      lista: this.servico.listar({
         busca: this.busca(),
         status: this.statusFiltro(),
         mostrarInativos: this.inativos(),
-      })
-      .pipe(finalize(() => this.carregando.set(false)))
+      }),
+    })
+      .pipe(
+        map(({ lista }) => lista),
+        finalize(() => this.carregando.set(false)),
+      )
       .subscribe({
         next: (lista) => this.itens.set(lista),
         error: (e: Error) => this.erro.set(e.message),
@@ -61,7 +67,11 @@ export class RegistroLista implements OnInit, OnDestroy {
   }
   formatar(item: Registro, coluna: Coluna): string {
     const valor = item[coluna.campo];
-    if (coluna.referencia) return this.store.nomeReferencia(coluna.referencia, String(valor ?? ''));
+    if (coluna.referencia)
+      return (
+        this.referencias?.nome(coluna.referencia, String(valor ?? '')) ??
+        this.store.nomeReferencia(coluna.referencia, String(valor ?? ''))
+      );
     if (coluna.formato === 'data') {
       const d = new Date(`${valor}T12:00:00`);
       return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString('pt-BR');

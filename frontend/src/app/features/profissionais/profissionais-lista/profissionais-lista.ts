@@ -25,6 +25,9 @@ export class ProfissionaisLista {
     busca: [''],
     especialidade: [''],
   });
+  constructor() {
+    this.dados.carregarEquipe().subscribe();
+  }
   private readonly filtro = signal({ busca: '', especialidade: '' });
   protected readonly profissionais = computed(() => {
     const f = this.filtro();
@@ -39,6 +42,9 @@ export class ProfissionaisLista {
   });
   protected abrirPerfil(profissional: ProfissionalCardDados): void {
     void this.router.navigate(['/profissionais', profissional._id]);
+  }
+  protected recarregar() {
+    this.dados.carregarEquipe().subscribe();
   }
   protected buscar() {
     this.filtro.set(this.form.getRawValue());

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ClinoraService } from '../../clinora/clinora.service';
 import { Icon } from '../../clinora/shared/icon';
@@ -11,7 +11,14 @@ import { Icon } from '../../clinora/shared/icon';
       <a routerLink="/profissionais" class="text-link back-link"
         ><app-icon name="back" /> Voltar aos profissionais</a
       >
-      @if (profissional; as p) {
+      @if (dados.carregandoEquipe()) {
+        <p class="notice" role="status">Carregando profissional...</p>
+      } @else if (dados.erroEquipe()) {
+        <div class="empty-state" role="alert">
+          <p>{{ dados.erroEquipe() }}</p>
+          <a routerLink="/profissionais" class="btn">Voltar à equipe</a>
+        </div>
+      } @else if (profissional(); as p) {
         <div class="profile-heading">
           <div class="avatar avatar-large" aria-hidden="true">{{ p.iniciais }}</div>
           <div>
@@ -56,7 +63,9 @@ import { Icon } from '../../clinora/shared/icon';
 })
 export class PerfilProfissional {
   protected readonly dados = inject(ClinoraService);
-  protected readonly profissional = this.dados.profissional(
-    inject(ActivatedRoute).snapshot.paramMap.get('id') ?? '',
-  );
+  private readonly id = inject(ActivatedRoute).snapshot.paramMap.get('id') ?? '';
+  protected readonly profissional = computed(() => this.dados.profissional(this.id));
+  constructor() {
+    this.dados.carregarEquipe().subscribe();
+  }
 }

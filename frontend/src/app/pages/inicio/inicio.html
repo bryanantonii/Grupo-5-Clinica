@@ -165,15 +165,23 @@
       /></a>
     </div>
     <p class="section-description">Conheça os perfis demonstrativos da equipe Clinora.</p>
-    <div class="three-grid professionals-grid">
-      @for (p of dados.profissionais; track p._id) {
-        <app-profissional-card
-          [profissional]="p"
-          [nomeEspecialidade]="dados.especialidade(p.especialidade)"
-          (conhecer)="abrirPerfil($event)"
-        />
-      }
-    </div>
+    @if (dados.carregandoEquipe()) {
+      <p class="notice" role="status">Carregando equipe...</p>
+    } @else if (dados.erroEquipe()) {
+      <p class="notice" role="alert">
+        {{ dados.erroEquipe() }} <a routerLink="/profissionais">Tentar novamente</a>
+      </p>
+    } @else {
+      <div class="three-grid professionals-grid">
+        @for (p of dados.profissionais; track p._id) {
+          <app-profissional-card
+            [profissional]="p"
+            [nomeEspecialidade]="dados.especialidade(p.especialidade)"
+            (conhecer)="abrirPerfil($event)"
+          />
+        }
+      </div>
+    }
   </div>
 </section>
 <section class="insurance-home">

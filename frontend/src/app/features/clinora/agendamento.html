@@ -18,7 +18,14 @@
       }
     </ol>
   </nav>
-  @if (etapa() === 1) {
+  @if (dados.carregandoEquipe()) {
+    <p class="notice" role="status">Carregando equipe...</p>
+  } @else if (dados.erroEquipe()) {
+    <div class="notice" role="alert">
+      <p>{{ dados.erroEquipe() }}</p>
+      <a routerLink="/profissionais" class="text-link">Voltar à equipe e tentar novamente</a>
+    </div>
+  } @else if (etapa() === 1) {
     <h1 id="titulo-etapa" tabindex="-1">Qual cuidado você procura?</h1>
     <p class="lead">Escolha uma especialidade para começar.</p>
     <fieldset class="care-options">

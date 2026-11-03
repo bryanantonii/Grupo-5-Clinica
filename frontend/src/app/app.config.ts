@@ -19,6 +19,7 @@ import {
   ConveniosMockService,
 } from './features/convenios/services/convenios.service';
 import { RelatoriosService, RelatoriosMockService } from './features/relatorios/relatorios.service';
+import { ProfissionaisApiService } from './features/profissionais/services/profissionais-api.service';
 import { provideHttpClient } from '@angular/common/http';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
@@ -36,7 +37,12 @@ registerLocaleData(localePt);
 export const appConfig: ApplicationConfig = {
   providers: [
     { provide: PacientesService, useClass: PacientesMockService },
-    { provide: ProfissionaisService, useClass: ProfissionaisMockService },
+    {
+      provide: ProfissionaisService,
+      useClass: environment.usarMockProfissionais
+        ? ProfissionaisMockService
+        : ProfissionaisApiService,
+    },
     { provide: ConsultasService, useClass: ConsultasMockService },
     { provide: EspecialidadesService, useClass: EspecialidadesMockService },
     { provide: ConveniosService, useClass: ConveniosMockService },

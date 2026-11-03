@@ -54,6 +54,7 @@ export class Inicio {
   private readonly destruir = inject(DestroyRef);
 
   constructor() {
+    this.dados.carregarEquipe().subscribe();
     afterNextRender(() => {
       const elemento = this.faixa()?.nativeElement;
       if (!elemento) return;

@@ -1,3 +1,5 @@
+import { environment } from '../../../environments/environment';
+import { ProfissionaisCatalogoService } from './services/profissionais-catalogo.service';
 import { ModuloConfig } from '../gestao/modulo-config';
 import { ProfissionaisService } from './services/profissionais.service';
 export const PROFISSIONAIS_CONFIG: ModuloConfig = {
@@ -43,7 +45,7 @@ export const PROFISSIONAIS_CONFIG: ModuloConfig = {
         rotulo: 'Telefone',
         tipo: 'tel',
         obrigatorio: true,
-        pattern: '^\\(?\\d{2}\\)?\\s?9?\\d{4}-?\\d{4}$',
+        pattern: '^\\(\\d{2}\\) \\d{4,5}-\\d{4}$',
         ajuda: 'Formato: (51) 99999-9999.',
       },
     ],
@@ -77,4 +79,5 @@ export const PROFISSIONAIS_CONFIG: ModuloConfig = {
     ],
   },
   servico: ProfissionaisService,
+  referencias: environment.usarMockProfissionais ? undefined : ProfissionaisCatalogoService,
 };

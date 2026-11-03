@@ -94,7 +94,7 @@
         </div>
         <div class="c1-form-actions">
           <a class="btn btn-outline" [routerLink]="['/gestao', config.modulo]">Cancelar</a
-          ><button class="btn" type="submit" [disabled]="salvando()">
+          ><button class="btn" type="submit" [disabled]="salvando() || form.invalid">
             {{ salvando() ? 'Salvando...' : 'Salvar ' + config.singular }}
           </button>
         </div>

@@ -1,17 +1,29 @@
+import { Observable, of } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { ProfissionaisCatalogoService } from '../profissionais/services/profissionais-catalogo.service';
 import { ClinicaMockStore } from '../gestao/services/clinica-mock.store';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Consulta, Especialidade, PerfilPaciente, Profissional } from './clinora.models';
 
-/** Camada de demonstração isolada. Não armazena senhas e não chama o backend.
- * Os dados duram a sessão da aba. Consulte o README para integrar a API. */
+/** Profissionais usa a API; acesso e agendamento continuam em demonstração na sessão. */
 @Injectable({ providedIn: 'root' })
 export class ClinoraService {
   private readonly cadastros = inject(ClinicaMockStore);
+  private readonly catalogo = inject(ProfissionaisCatalogoService);
+  readonly carregandoEquipe = this.catalogo.carregando;
+  readonly erroEquipe = this.catalogo.erro;
+  carregarEquipe(): Observable<void> {
+    return environment.usarMockProfissionais ? of(undefined) : this.catalogo.carregarEquipe();
+  }
   get especialidades(): Especialidade[] {
-    return this.cadastros.especialidades().filter((e) => e.ativo);
+    return environment.usarMockProfissionais
+      ? this.cadastros.especialidades().filter((e) => e.ativo)
+      : this.catalogo.especialidades();
   }
   get profissionais(): Profissional[] {
-    return this.cadastros.profissionais().filter((p) => p.ativo);
+    return environment.usarMockProfissionais
+      ? this.cadastros.profissionais().filter((p) => p.ativo)
+      : this.catalogo.profissionais();
   }
   private readonly perfilState = signal<PerfilPaciente | null>(this.ler('clinora.perfil', null));
   private readonly consultasState = signal<Consulta[]>(this.ler('clinora.consultas', []));
