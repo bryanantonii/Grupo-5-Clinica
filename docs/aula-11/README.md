@@ -2,6 +2,7 @@
 
 Entrega de ValentinadelosAngeles, de 4 de novembro de 2026, na branch `convenios/regras-aula11`.
 
+- [Pull Request 7 para develop](https://github.com/bryanantonii/Grupo-5-Clinica/pull/7).
 - [Registro completo e roteiro para apresentação](registro-2026-11-04.md).
 - [Documento Word](aula-11-convenios-2026-11-04.docx).
 - [Checklist](checklist.md).

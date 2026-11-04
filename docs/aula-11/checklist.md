@@ -16,8 +16,9 @@
 - [x] Documentação e respostas da aula preparadas em docs/aula-11.
 - [x] Nenhum arquivo didático protegido foi alterado nesta aula.
 - [x] Nenhuma credencial foi incluída na entrega.
-- [ ] PR publicado pela conta ValentinadelosAngeles para develop.
-- [ ] CI do novo PR aprovada.
+- [x] PR 7 publicado pela conta ValentinadelosAngeles para develop.
 - [ ] Revisão de outro integrante e merge na develop.
+
+As verificações automáticas do GitHub podem ser acompanhadas na [aba Checks do PR 7](https://github.com/bryanantonii/Grupo-5-Clinica/pull/7/checks), que apresenta o estado da revisão mais recente.
 
 JWT, senhas, perfis, controller HTTP de Convênios e integração do Angular não fazem parte desta entrega. A revisão de modalidade pelo grupo e pelo PO continua pendente conforme a documentação anterior.
