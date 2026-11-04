@@ -1,0 +1,14 @@
+{
+  "data": "2026-11-04",
+  "total": 49,
+  "aprovados": 49,
+  "falhas": 0,
+  "suites": 3,
+  "testesNovosService": 24,
+  "testesSchemaExistentes": 17,
+  "testesProdutosExistentes": 8,
+  "resolvedorLocal": "JavaScript, devido ao bloqueio nativo deste Windows",
+  "buildBackend": "aprovado",
+  "lintBackend": "aprovado",
+  "verificacaoReal": "9 casos aprovados em banco temporário"
+}
