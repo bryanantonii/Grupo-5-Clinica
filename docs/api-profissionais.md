@@ -180,3 +180,13 @@ A API ainda não tem autenticação/autorização real da equipe. As telas de ac
 5. Na gestão Angular, localizar o cadastro, editar e recarregar para mostrar a persistência.
 6. Excluir com confirmação e marcar Mostrar inativos para comprovar a preservação.
 7. Mostrar os testes passando e o PR destinado à develop.
+
+## Configuração do VS Code
+
+O editor deve usar o TypeScript instalado no projeto. Backend e frontend usam atualmente TypeScript 5.9.3. O TypeScript 6.0.3 embutido nesta instalação do VS Code apresentava 33 diagnósticos: nomes globais do Jest não reconhecidos no teste de Produtos e dois diagnósticos no tsconfig.json.
+
+O arquivo .vscode/settings.json aponta o SDK para backend/node_modules/typescript/lib e oferece o uso da versão do projeto. Depois de instalar as dependências, execute no VS Code o comando **TypeScript: Select TypeScript Version** e selecione **Use Workspace Version**. Se necessário, execute **TypeScript: Restart TS Server**.
+
+A seleção alinha a análise do editor à versão usada pelo terminal e pelo CI. As validações do TypeScript permanecem ativas e os testes continuam sendo verificados. A conferência local incluiu os 45 testes Jest e a análise completa do backend com node node_modules/typescript/bin/tsc --noEmit -p tsconfig.json.
+
+Após selecionar o SDK 5.9.3 do projeto, o painel Problems do VS Code passou de 33 erros para **No problems have been detected in the workspace**.
