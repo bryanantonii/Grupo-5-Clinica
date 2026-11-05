@@ -1,6 +1,7 @@
 # Pasta de documentação do grupo
 
 - [Banco da Clinora: coleções, diferença entre convênios e planos e correção de Produtos](banco-clinica-2026-11-05.md).
+- [Rotas da Clinora: páginas, cadastros, API e localização dos arquivos](rotas-clinora.md).
 
 Coloque aqui os documentos do projeto (a partir dos templates entregues pelo professor):
 

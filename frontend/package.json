@@ -8,7 +8,8 @@
     "test:c1": "node --test testes-c1/*.test.mjs",
     "watch": "ng build --watch --configuration development",
     "test:api": "node --test testes-c1/profissionais-api.test.mjs",
-    "test": "npm run test:c1 && node scripts/testar-formularios.mjs"
+    "test:rotas": "node scripts/testar-rotas.mjs",
+    "test": "npm run test:c1 && node scripts/testar-formularios.mjs && npm run test:rotas"
   },
   "private": true,
   "dependencies": {

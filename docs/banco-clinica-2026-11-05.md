@@ -78,7 +78,9 @@ para testes devem continuar fictícios.
   exponha rotas nem recrie a coleção na inicialização da Clinora.
 - Retirei a rota `/produtos` e os providers de Produtos do Angular. O endereço
   passa a ser tratado pela página não encontrada já existente.
-- Mantive os arquivos didáticos de Produtos para consulta pelo grupo.
+- Mantive os arquivos didáticos de Produtos para consulta pelo grupo. Após a
+  revisão das rotas, eles foram movidos para `referencias/produtos/`, fora dos
+  aplicativos.
 - O comando `npm run seed` agora insere somente os exemplos dos módulos
   disponíveis: cinco Convênios, três Especialidades básicas e três Profissionais.
 - Unifiquei o seed em uma conexão e preservei `npm run seed:profissionais`.
@@ -105,7 +107,7 @@ O backup permanece salvo localmente como
 `backup-produtos-2026-11-05T21-44-40-981Z.json`. A evidência da limpeza está em
 [limpeza-produtos-2026-11-05.json](evidencias/limpeza-produtos-2026-11-05.json).
 
-## Conferência da correção
+## Conferência inicial da correção do seed
 
 - 86 testes unitários do backend aprovados.
 - 30 testes do frontend aprovados.
@@ -114,6 +116,22 @@ O backup permanece salvo localmente como
   A conferência executa o seed duas vezes, verifica as três coleções esperadas,
   as referências dos Profissionais e a preservação de IDs, datas, edições e
   registros inativos. O banco temporário é removido ao finalizar.
+
+## Organização das rotas no projeto
+
+Na revisão seguinte, retirei também os arquivos de rotas e controllers de
+Produtos das pastas de desenvolvimento. Os 18 arquivos do exemplo estão em
+`referencias/produtos/`, com o conteúdo preservado. O link “Área da equipe” foi
+atualizado para `/gestao` e a configuração antiga `usarMock` foi retirada.
+
+Os testes atuais da clínica são 78 no backend e 53 no frontend, incluindo 23
+testes de navegação real com o Router do Angular. Os oito testes didáticos de
+Produtos acompanham o exemplo arquivado e não entram mais nessa contagem.
+ESLint, TypeScript e os builds dos dois aplicativos passaram novamente após a
+organização.
+
+Os caminhos dos arquivos, as URLs e o que já existe na API estão em
+[Rotas da Clinora](rotas-clinora.md).
 
 ## Próximas entregas para o grupo
 

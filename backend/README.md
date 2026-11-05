@@ -2,8 +2,9 @@
 
 Instruções completas no [README principal](../README.md).
 
-A aplicação registra apenas módulos da clínica. O exemplo Produtos continua no
-código para consulta, mas não expõe rotas nem participa do seed. A análise dos
+A aplicação registra apenas módulos da clínica. O exemplo Produtos está em
+`referencias/produtos/backend`, fora deste aplicativo, e não expõe rotas nem
+participa do seed. A análise dos
 cadastros, do que já está no MongoDB e das próximas integrações está em
 [Banco da Clinora](../docs/banco-clinica-2026-11-05.md).
 

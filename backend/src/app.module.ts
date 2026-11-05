@@ -20,7 +20,7 @@ import { ConveniosModule } from './convenios/convenios.module';
       }),
     }),
 
-    // Módulos da Clinora. O exemplo Produtos permanece apenas como referência.
+    // Módulos disponíveis da Clinora.
     ProfissionaisModule,
     ConveniosModule,
   ],

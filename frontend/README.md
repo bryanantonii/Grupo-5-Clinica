@@ -30,7 +30,7 @@ Os dados dos fluxos demonstrativos ficam na sessão da aba. Nenhuma consulta rea
 
 Os fluxos públicos ficam em src/app/features/clinora/ e os estilos em src/estilos-do-grupo.css. Os componentes reutilizados da gestão ficam em features/gestao/shared.
 
-O exemplo didático Produtos permanece no código para consulta e não está registrado nas rotas nem nos providers da Clinora. A configuração environment.usarMock não ativa funcionalidades da clínica.
+Os arquivos didáticos de Produtos foram movidos para referencias/produtos/frontend, fora do aplicativo Angular. As rotas e os serviços de Produtos não participam da Clinora. A relação das rotas reais está em [Rotas da Clinora](../docs/rotas-clinora.md).
 
 ## Checkpoint C1
 
@@ -55,7 +55,7 @@ Compilação de produção concluída e fluxos de agendamento, bloqueio de horá
 
 ## API de Profissionais — aulas 09 e 10
 
-Em src/environments/environment.ts, usarMockProfissionais=false ativa a API; true volta ao mock C1. A opção usarMock pertence ao exemplo didático desativado.
+Em src/environments/environment.ts, usarMockProfissionais=false ativa a API; true volta ao mock C1. A opção antiga usarMock foi removida porque era usada somente pelo exemplo didático.
 
 Inicie o MongoDB e, em backend, configure o .env conforme .env.example, execute npm ci, npm run seed:profissionais e npm run start:dev. Depois inicie o Angular em http://localhost:4200. O seed insere exemplos ausentes sem limpar o banco.
 
@@ -74,5 +74,6 @@ O acesso demonstrativo mantém as validações e os recursos de acessibilidade d
 PR #2. O agendamento valida profissional ativo, especialidade e data futura.
 
 Execute npm test para conferir os testes do C1, do adaptador HTTP, dos formulários
-de acesso e da integração do agendamento com o catálogo. npm run build verifica
+de acesso, da integração do agendamento e da navegação real com o Router. Para
+conferir somente a navegação, execute npm run test:rotas. npm run build verifica
 os templates e gera o frontend de produção.
