@@ -5,9 +5,15 @@
  */
 import 'dotenv/config';
 import mongoose from 'mongoose';
-import { ProdutoSchema } from '../produtos/schemas/produto.schema';
+import {
+  Produto as ProdutoEntidade,
+  ProdutoSchema,
+} from '../produtos/schemas/produto.schema';
+import { Convenio, ConvenioSchema } from '../convenios/schemas/convenio.schema';
+import { CONVENIOS_EXEMPLO } from '../convenios/seed/convenios.dados';
+import { inserirExemplos } from './inserir-exemplos';
 
-const produtos = [
+const produtos: Partial<ProdutoEntidade>[] = [
   {
     nome: 'Arroz integral 1 kg',
     preco: 8.9,
@@ -23,19 +29,27 @@ const produtos = [
 async function seed() {
   const uri =
     process.env.MONGODB_URI ?? 'mongodb://localhost:27017/projeto-integrador';
-  await mongoose.connect(uri);
-
-  const Produto = mongoose.model('Produto', ProdutoSchema, 'produtos');
-  await Produto.deleteMany({});
-  await Produto.insertMany(produtos);
-  console.log(`✔ ${produtos.length} produtos inseridos`);
-
-  // TODO (aula 08): insira aqui os dados de exemplo do seu módulo
-
-  await mongoose.disconnect();
+  try {
+    await mongoose.connect(uri, { serverSelectionTimeoutMS: 15000 });
+    console.log(`Banco: ${mongoose.connection.name}`);
+    const Produto = mongoose.model('Produto', ProdutoSchema, 'produtos');
+    const ConvenioModel = mongoose.model(Convenio.name, ConvenioSchema);
+    const resultadoProdutos = await inserirExemplos(Produto, produtos, 'nome');
+    const resultadoConvenios = await inserirExemplos(
+      ConvenioModel,
+      CONVENIOS_EXEMPLO,
+      'codigoAns',
+    );
+    console.log('Produtos:', resultadoProdutos);
+    console.log('Convênios:', resultadoConvenios);
+    console.log(`Total de convênios: ${await ConvenioModel.countDocuments()}`);
+  } finally {
+    await mongoose.disconnect();
+  }
 }
 
-seed().catch((erro) => {
-  console.error('Erro no seed:', erro);
-  process.exit(1);
+seed().catch((erro: unknown) => {
+  const nome = erro instanceof Error ? erro.name : 'Erro desconhecido';
+  console.error(`Falha no seed (${nome}). Confira conexão, dados e índices.`);
+  process.exitCode = 1;
 });

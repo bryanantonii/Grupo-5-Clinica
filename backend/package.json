@@ -16,7 +16,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "seed": "ts-node src/seed/seed.ts"
+    "seed": "ts-node src/seed/seed.ts",
+    "verificar:convenios": "ts-node src/convenios/verificar-seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
