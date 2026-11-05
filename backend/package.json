@@ -17,7 +17,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "seed": "ts-node src/seed/seed.ts",
-    "seed:profissionais": "ts-node src/profissionais/seed-profissionais.ts"
+    "seed:profissionais": "ts-node src/profissionais/seed-profissionais.ts",
+    "verificar:convenios": "ts-node src/convenios/verificar-seed.ts",
+    "verificar:regras:convenios": "ts-node src/convenios/verificar-regras.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

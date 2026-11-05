@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProdutosModule } from './produtos/produtos.module';
 import { ProfissionaisModule } from './profissionais/profissionais.module';
+import { ConveniosModule } from './convenios/convenios.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ProfissionaisModule } from './profissionais/profissionais.module';
     // seguindo este modelo e o registra aqui.
     ProdutosModule,
     ProfissionaisModule,
+    ConveniosModule,
   ],
 })
 export class AppModule {}
