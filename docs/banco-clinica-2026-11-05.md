@@ -90,6 +90,21 @@ para testes devem continuar fictícios.
 Nenhum documento de Produtos foi transformado em plano ou cadastro clínico.
 A correção do código não apaga automaticamente a coleção já existente.
 
+## Limpeza autorizada no MongoDB
+
+Após a confirmação do responsável pelo projeto, removi somente a coleção
+`clinora.produtos`, com os cinco exemplos didáticos. Antes da exclusão, conferi
+que todos os documentos continuavam iguais ao backup completo, que inclui os
+registros e os índices.
+
+Comparei também o conteúdo integral das outras coleções antes e depois da
+limpeza. Os documentos foram preservados: cinco Convênios, três Especialidades
+e três Profissionais. A coleção Produtos não existe mais nesse banco.
+
+O backup permanece salvo localmente como
+`backup-produtos-2026-11-05T21-44-40-981Z.json`. A evidência da limpeza está em
+[limpeza-produtos-2026-11-05.json](evidencias/limpeza-produtos-2026-11-05.json).
+
 ## Conferência da correção
 
 - 86 testes unitários do backend aprovados.
