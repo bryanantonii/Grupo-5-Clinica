@@ -19,6 +19,8 @@ Organização conferida em 5 de novembro de 2026.
 Os arquivos `produtos.routes.ts`, `produtos.controller.ts` e os demais arquivos
 didáticos foram movidos para `referencias/produtos/`. São 18 arquivos com o
 conteúdo original preservado, fora das pastas `src` e dos builds dos aplicativos.
+Na pasta de referência, as extensões são `.ts.txt` e `.html.txt` para que o editor
+não trate esses documentos como código executável nem gere erros de imports.
 O projeto não possui uma funcionalidade ativa de Produtos.
 
 ## Site público
@@ -89,3 +91,7 @@ navegador. `npm run build` também confere os templates usados pela aplicação.
 
 Os oito testes de Produtos acompanham o exemplo em `referencias/`; eles não são
 testes de funcionalidades da clínica.
+
+`npm test` confere também a tipagem dos arquivos de teste com
+`tsconfig.tests.json` e os tipos do Node instalados no frontend. O VS Code
+encontra essa configuração pela referência em `frontend/tsconfig.json`.

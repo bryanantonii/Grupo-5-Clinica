@@ -77,3 +77,8 @@ Execute npm test para conferir os testes do C1, do adaptador HTTP, dos formulár
 de acesso, da integração do agendamento e da navegação real com o Router. Para
 conferir somente a navegação, execute npm run test:rotas. npm run build verifica
 os templates e gera o frontend de produção.
+
+Os testes TypeScript possuem configuração própria em `tsconfig.tests.json` e os
+tipos do Node como dependência de desenvolvimento. `npm run test:tipos` confere
+esses arquivos antes da execução dos testes; essa etapa também faz parte de
+`npm test`.
