@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ProdutosModule } from './produtos/produtos.module';
 import { ProfissionaisModule } from './profissionais/profissionais.module';
 import { ConveniosModule } from './convenios/convenios.module';
 
@@ -21,9 +20,7 @@ import { ConveniosModule } from './convenios/convenios.module';
       }),
     }),
 
-    // Módulo de exemplo. Cada aluno cria o módulo do seu domínio
-    // seguindo este modelo e o registra aqui.
-    ProdutosModule,
+    // Módulos da Clinora. O exemplo Produtos permanece apenas como referência.
     ProfissionaisModule,
     ConveniosModule,
   ],

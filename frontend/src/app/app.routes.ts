@@ -216,12 +216,6 @@ export const routes: Routes = [
           textoSecundario: 'Voltar para minha área',
         },
       },
-      // Módulo de exemplo do professor, preservado para consulta pelo grupo.
-      {
-        path: 'produtos',
-        loadChildren: () =>
-          import('./features/produtos/produtos.routes').then((m) => m.PRODUTOS_ROUTES),
-      },
       {
         path: '**',
         loadComponent: resultado,

@@ -30,7 +30,7 @@ Os dados dos fluxos demonstrativos ficam na sessão da aba. Nenhuma consulta rea
 
 Os fluxos públicos ficam em src/app/features/clinora/ e os estilos em src/estilos-do-grupo.css. Os componentes reutilizados da gestão ficam em features/gestao/shared.
 
-A configuração environment.usarMock continua controlando apenas o módulo didático Produtos. Ela não conecta Clinora à API automaticamente.
+O exemplo didático Produtos permanece no código para consulta e não está registrado nas rotas nem nos providers da Clinora. A configuração environment.usarMock não ativa funcionalidades da clínica.
 
 ## Checkpoint C1
 
@@ -55,7 +55,7 @@ Compilação de produção concluída e fluxos de agendamento, bloqueio de horá
 
 ## API de Profissionais — aulas 09 e 10
 
-Em src/environments/environment.ts, usarMockProfissionais=false ativa a API; true volta ao mock C1. A opção usarMock continua controlando somente Produtos.
+Em src/environments/environment.ts, usarMockProfissionais=false ativa a API; true volta ao mock C1. A opção usarMock pertence ao exemplo didático desativado.
 
 Inicie o MongoDB e, em backend, configure o .env conforme .env.example, execute npm ci, npm run seed:profissionais e npm run start:dev. Depois inicie o Angular em http://localhost:4200. O seed insere exemplos ausentes sem limpar o banco.
 

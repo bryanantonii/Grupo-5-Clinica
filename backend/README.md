@@ -2,10 +2,17 @@
 
 Instruções completas no [README principal](../README.md).
 
+A aplicação registra apenas módulos da clínica. O exemplo Produtos continua no
+código para consulta, mas não expõe rotas nem participa do seed. A análise dos
+cadastros, do que já está no MongoDB e das próximas integrações está em
+[Banco da Clinora](../docs/banco-clinica-2026-11-05.md).
+
 | Comando | O que faz |
 | --- | --- |
 | `npm run start:dev` | Sobe a API com recarga automática (porta 3000) |
-| `npm run seed` | Apaga e recria os dados de exemplo |
+| `npm run seed` | Insere exemplos ausentes de Convênios, Especialidades e Profissionais, preservando os cadastros existentes |
+| `npm run seed:profissionais` | Confere os exemplos de Profissionais e suas Especialidades |
+| `npm run verificar:seed:clinica` | Confere o seed duas vezes em um banco temporário, sem alterar o banco da clínica |
 | `npm test` | Roda os testes unitários (Jest) |
 | `npm run test:cov` | Testes com relatório de cobertura |
 | `npm run lint` | Verifica e corrige o padrão do código |
