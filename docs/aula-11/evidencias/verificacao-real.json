@@ -1,0 +1,16 @@
+{
+  "banco": "clinora_test_aula11_83d1ae8a608c",
+  "injecaoNest": true,
+  "casosAprovados": 9,
+  "casos": [
+    "Cadastro ativo com ANS textual e modalidade padrão",
+    "RN10 bloqueia ANS duplicado sem gravar outro documento",
+    "Nome único respeita a collation do índice",
+    "Edição mantém o próprio ANS e preserva campos omitidos",
+    "RN10 bloqueia duplicidade na edição sem alterar o cadastro",
+    "RN11 preserva o documento e o histórico e filtra os inativos",
+    "Inativação repetida preserva o cadastro e o ANS continua reservado",
+    "Duas criações concorrentes resultam em um cadastro e um conflito 409",
+    "Busca literal e erros de ID inválido ou inexistente"
+  ]
+}

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Convenio, ConvenioSchema } from './schemas/convenio.schema';
+import { ConveniosService } from './convenios.service';
 
 @Module({
   imports: [
@@ -8,6 +9,7 @@ import { Convenio, ConvenioSchema } from './schemas/convenio.schema';
       { name: Convenio.name, schema: ConvenioSchema },
     ]),
   ],
-  exports: [MongooseModule],
+  providers: [ConveniosService],
+  exports: [MongooseModule, ConveniosService],
 })
 export class ConveniosModule {}
