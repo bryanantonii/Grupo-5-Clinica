@@ -15,7 +15,7 @@
 - [x] 31 verificações de integração aprovadas em banco temporário.
 - [x] Conferência do banco clinora e dos dados preservados concluída.
 - [x] Respostas e roteiro para apresentação preparados.
-- [ ] PR para develop publicado com as checagens do GitHub aprovadas.
+- [x] [PR 9 para develop publicado](https://github.com/bryanantonii/Grupo-5-Clinica/pull/9); as checagens automáticas podem ser acompanhadas no próprio PR.
 
 PerfisGuard, respostas 403 por permissão, login JWT no Angular e interceptor de
 token pertencem à aula 13; não são apresentados como concluídos nesta entrega.
