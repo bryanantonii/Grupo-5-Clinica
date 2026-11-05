@@ -2,6 +2,7 @@
 import 'dotenv/config';
 import mongoose from 'mongoose';
 import { popularClinica } from './popular-clinica';
+import { inserirAdministrador } from '../usuarios/seed-administrador';
 
 async function seed() {
   const uri = process.env.MONGODB_URI;
@@ -19,6 +20,10 @@ async function seed() {
     console.log('Convênios:', resultado.convenios);
     console.log('Especialidades:', resultado.especialidades);
     console.log('Profissionais:', resultado.profissionais);
+    console.log(
+      'Administrador:',
+      await inserirAdministrador(mongoose.connection, process.env),
+    );
     console.log('Cadastros existentes foram preservados.');
   } finally {
     await mongoose.disconnect();

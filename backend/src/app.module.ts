@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProfissionaisModule } from './profissionais/profissionais.module';
 import { ConveniosModule } from './convenios/convenios.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ConveniosModule } from './convenios/convenios.module';
     // Módulos disponíveis da Clinora.
     ProfissionaisModule,
     ConveniosModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
