@@ -1,0 +1,234 @@
+<section class="hero" aria-labelledby="hero-title">
+  <img
+    class="hero-photo"
+    src="/images/recepcao.jpg"
+    alt="Recepção clara e acolhedora da Clinora"
+    fetchpriority="high"
+    width="1200"
+    height="675"
+  />
+  <div class="hero-veil"></div>
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <p class="eyebrow">Sua saúde em boas mãos</p>
+      <h1 id="hero-title">Cuidar de você<br /><span>é o nosso propósito.</span></h1>
+      <p class="hero-description">
+        Tecnologia, acolhimento e profissionais preparados para cuidar de você e da sua família.
+      </p>
+      <div class="button-row">
+        <a routerLink="/agendar" class="btn"><app-icon name="calendar" /> Agendar consulta</a
+        ><a routerLink="/sobre" class="btn btn-outline">Conheça a Clinora</a>
+      </div>
+      <p class="hero-note"><app-icon name="shield" /> Sem complicação. Com atenção a você.</p>
+    </div>
+    <div class="hero-signature" aria-hidden="true">
+      <img src="/images/clinora-colorida.png" alt="" width="460" height="123" />
+    </div>
+    <div class="welcome-card">
+      <span class="icon-tile"><app-icon name="heart" /></span>
+      <div>
+        <h2>Cuidado que acolhe</h2>
+        <p>Atendimento para você,<br />no seu tempo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section
+  class="benefits"
+  aria-label="Vantagens do atendimento"
+  [attr.aria-roledescription]="noCelular() ? 'carrossel' : null"
+>
+  <div
+    class="container benefits-grid"
+    id="destaques-clinora"
+    #faixaDestaques
+    [attr.tabindex]="noCelular() ? 0 : null"
+    [attr.aria-label]="
+      noCelular() ? 'Deslize para ver os destaques ou use as setas do teclado' : null
+    "
+    (scroll)="atualizarDestaque()"
+    (focusin)="pausado.set(true)"
+    (pointerdown)="pausado.set(true)"
+    (keydown.arrowright)="navegarDestaque(1, $event)"
+    (keydown.arrowleft)="navegarDestaque(-1, $event)"
+  >
+    @for (item of destaques; track item.titulo) {
+      <div class="benefit-item">
+        <app-icon [name]="item.icone" />
+        <div>
+          <h2>{{ item.titulo }}</h2>
+          <p>{{ item.descricao }}</p>
+        </div>
+      </div>
+    }
+  </div>
+  <div class="container benefits-controls">
+    <span class="benefits-hint">Deslize para o lado <app-icon name="arrow" /></span>
+    <div
+      class="benefits-dots"
+      (focusin)="pausado.set(true)"
+      role="group"
+      aria-label="Escolher destaque"
+    >
+      @for (item of destaques; track item.titulo; let i = $index) {
+        <button
+          type="button"
+          [class.active]="destaqueAtivo() === i"
+          [attr.aria-label]="
+            'Mostrar destaque ' + (i + 1) + ' de ' + destaques.length + ': ' + item.titulo
+          "
+          [attr.aria-pressed]="destaqueAtivo() === i"
+          aria-controls="destaques-clinora"
+          (click)="mostrarDestaque(i)"
+        >
+          <span></span>
+        </button>
+      }
+    </div>
+    @if (!reduzirMovimento()) {
+      <button
+        class="benefits-pause"
+        type="button"
+        [attr.aria-label]="
+          pausado()
+            ? 'Ativar passagem automática dos destaques'
+            : 'Pausar passagem automática dos destaques'
+        "
+        [attr.aria-pressed]="pausado()"
+        aria-controls="destaques-clinora"
+        (click)="pausado.set(!pausado())"
+      >
+        {{ pausado() ? 'Continuar' : 'Pausar' }}
+      </button>
+    }
+  </div>
+</section>
+<section class="section about-home">
+  <div class="container split-grid">
+    <div>
+      <p class="eyebrow">Quem somos</p>
+      <h2>
+        Mais que uma clínica,<br />
+        um cuidado integrado.
+      </h2>
+      <p class="lead">
+        Na Clinora, acreditamos que saúde também é bem-estar. Reunimos especialidades, escuta e
+        tecnologia em um só lugar.
+      </p>
+      <a routerLink="/sobre" class="text-link"
+        >Conheça a nossa história <app-icon name="arrow"
+      /></a>
+    </div>
+    <div class="values-stack">
+      <article>
+        <span class="icon-tile"><app-icon name="heart" /></span>
+        <div>
+          <h3>Escuta de verdade</h3>
+          <p>Seu cuidado começa com acolhimento.</p>
+        </div>
+      </article>
+      <article>
+        <span class="icon-tile"><app-icon name="message" /></span>
+        <div>
+          <h3>Informação clara</h3>
+          <p>Você entende cada próximo passo.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+<section class="section soft-section">
+  <div class="container">
+    <p class="eyebrow">Cuidado em cada fase</p>
+    <h2>Como podemos cuidar de você?</h2>
+    <div class="three-grid specialties-grid">
+      @for (item of dados.especialidades; track item._id) {
+        <article class="specialty-card">
+          <span class="icon-tile"><app-icon [name]="item.icone" /></span>
+          <h3>{{ item.nome }}</h3>
+          <p>{{ item.descricao }}</p>
+          <a routerLink="/agendar" [queryParams]="{ especialidade: item._id }" class="text-link"
+            >Agendar atendimento <app-icon name="arrow"
+          /></a>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Nosso time</p>
+    <div class="section-heading">
+      <h2>Gente que cuida de gente.</h2>
+      <a routerLink="/profissionais" class="text-link"
+        >Ver toda a equipe <app-icon name="arrow"
+      /></a>
+    </div>
+    <p class="section-description">Conheça os perfis demonstrativos da equipe Clinora.</p>
+    <div class="three-grid professionals-grid">
+      @for (p of dados.profissionais; track p._id) {
+        <app-profissional-card
+          [profissional]="p"
+          [nomeEspecialidade]="dados.especialidade(p.especialidade)"
+          (conhecer)="abrirPerfil($event)"
+        />
+      }
+    </div>
+  </div>
+</section>
+<section class="insurance-home">
+  <div class="container">
+    <div class="insurance-banner">
+      <div>
+        <p class="eyebrow">Convênios e particular</p>
+        <h2>Mais caminhos para o seu cuidado.</h2>
+        <p>
+          Consulte a cobertura do seu plano antes de agendar.<br />Também há atendimento particular.
+        </p>
+      </div>
+      <a routerLink="/convenios" class="btn btn-outline"
+        >Consultar convênio <app-icon name="arrow"
+      /></a>
+    </div>
+  </div>
+</section>
+<section class="section faq">
+  <div class="container">
+    <p class="eyebrow">Podemos ajudar?</p>
+    <h2>Dúvidas frequentes</h2>
+    <div class="three-grid">
+      <article>
+        <h3>Preciso ter uma conta?</h3>
+        <p>Você pode solicitar uma consulta sem criar uma conta.</p>
+        <a routerLink="/agendar" class="text-link">Agendar agora <app-icon name="arrow" /></a>
+      </article>
+      <article>
+        <h3>Como confirmar o convênio?</h3>
+        <p>Fale com a equipe para verificar a cobertura do seu plano.</p>
+        <a routerLink="/convenios" class="text-link"
+          >Consultar convênio <app-icon name="arrow"
+        /></a>
+      </article>
+      <article>
+        <h3>Como remarcar uma consulta?</h3>
+        <p>Acesse a área do paciente ou entre em contato com a clínica.</p>
+        <a routerLink="/minha-area" class="text-link"
+          >Acessar minha área <app-icon name="arrow"
+        /></a>
+      </article>
+    </div>
+  </div>
+</section>
+<section class="last-cta">
+  <div class="container">
+    <div class="cta-box">
+      <div>
+        <h2>Seu próximo passo<br />para cuidar de você.</h2>
+        <p>Escolha um horário e conte com a nossa equipe.</p>
+      </div>
+      <a routerLink="/agendar" class="btn btn-white"
+        ><app-icon name="calendar" /> Agendar consulta</a
+      >
+    </div>
+  </div>
+</section>

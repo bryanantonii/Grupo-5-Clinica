@@ -1,0 +1,51 @@
+<div class="container page-content">
+  <p class="eyebrow">Nosso time</p>
+  <h1>Encontre quem vai cuidar de você.</h1>
+  <p class="lead">Escolha uma especialidade e conheça os perfis da equipe.</p>
+  <form class="search-panel" [formGroup]="form" (ngSubmit)="buscar()">
+    <div class="field">
+      <label for="busca">Buscar profissional</label>
+      <div class="input-icon">
+        <app-icon name="search" /><input
+          id="busca"
+          type="search"
+          formControlName="busca"
+          placeholder="Nome ou especialidade"
+        />
+      </div>
+    </div>
+    <div class="field">
+      <label for="especialidade">Especialidade</label
+      ><select id="especialidade" formControlName="especialidade">
+        <option value="">Todas as especialidades</option>
+        @for (e of dados.especialidades; track e._id) {
+          <option [value]="e._id">{{ e.nome }}</option>
+        }
+      </select>
+    </div>
+    <button class="btn" type="submit">Buscar <app-icon name="arrow" /></button>
+  </form>
+  <p class="results-count" role="status">
+    {{ profissionais().length }}
+    {{ profissionais().length === 1 ? 'profissional encontrado' : 'profissionais encontrados' }}
+  </p>
+  <div class="three-grid professionals-grid">
+    @for (p of profissionais(); track p._id) {
+      <app-profissional-card
+        [profissional]="p"
+        [nomeEspecialidade]="dados.especialidade(p.especialidade)"
+        (conhecer)="abrirPerfil($event)"
+      />
+    } @empty {
+      <div class="empty-state">
+        <span class="icon-tile"><app-icon name="search" /></span>
+        <h2>Nenhum profissional encontrado.</h2>
+        <p>Tente outro nome ou escolha outra especialidade.</p>
+        <button type="button" class="btn btn-outline" (click)="limpar()">Limpar filtros</button>
+      </div>
+    }
+  </div>
+  <p class="notice">
+    <app-icon name="info" /> Os nomes e perfis são ilustrativos para este projeto acadêmico.
+  </p>
+</div>

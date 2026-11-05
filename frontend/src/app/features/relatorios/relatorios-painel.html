@@ -1,0 +1,110 @@
+<header class="c1-page-heading">
+  <div>
+    <p class="eyebrow">{{ inicio ? 'Bem-vindo à gestão' : 'Acompanhamento da clínica' }}</p>
+    <h1>{{ inicio ? 'Visão geral' : 'Relatórios' }}</h1>
+    <p>Consulte o resumo dos cadastros e dos atendimentos de exemplo.</p>
+  </div>
+  <button class="btn btn-outline" type="button" [disabled]="carregando()" (click)="carregar()">
+    Atualizar painel
+  </button>
+</header>
+@if (carregando()) {
+  <div class="c1-loading" role="status">
+    <span class="c1-spinner" aria-hidden="true"></span>Carregando relatórios...
+  </div>
+} @else if (erro()) {
+  <div class="c1-feedback c1-error" role="alert">
+    <div>
+      <h2>Não foi possível carregar o painel</h2>
+      <p>{{ erro() }}</p>
+      <button class="btn btn-outline" type="button" (click)="carregar()">Tentar novamente</button>
+    </div>
+  </div>
+} @else if (relatorio(); as r) {
+  <div class="c1-kpis">
+    <article>
+      <p>Pacientes ativos</p>
+      <strong>{{ r.resumo.pacientes }}</strong
+      ><a routerLink="/gestao/pacientes">Ver pacientes →</a>
+    </article>
+    <article>
+      <p>Consultas marcadas</p>
+      <strong>{{ r.resumo.consultasMarcadas }}</strong
+      ><a routerLink="/gestao/consultas">Ver agenda →</a>
+    </article>
+    <article>
+      <p>Faltas registradas</p>
+      <strong>{{ r.resumo.faltas }}</strong
+      ><a routerLink="/gestao/consultas">Acompanhar consultas →</a>
+    </article>
+  </div>
+
+  <div class="c1-report-grid">
+    <section class="c1-report-card">
+      <h2>Consultas por status</h2>
+      <table class="c1-table">
+        <caption class="sr-only">
+          Quantidade de consultas em cada status
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Status</th>
+            <th scope="col">Quantidade</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of r.porStatus; track item.nome) {
+            <tr>
+              <th scope="row">{{ item.nome }}</th>
+              <td>{{ item.quantidade }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      @if (
+        r.porStatus[0].quantidade +
+          r.porStatus[1].quantidade +
+          r.porStatus[2].quantidade +
+          r.porStatus[3].quantidade +
+          r.porStatus[4].quantidade ===
+        0
+      ) {
+        <p class="notice" role="status">
+          Ainda não há consultas. Cadastre o primeiro atendimento para acompanhar os números.
+        </p>
+      }
+    </section>
+    <section class="c1-report-card">
+      <h2>Realizadas por especialidade</h2>
+      @if (r.porEspecialidade.length) {
+        <table class="c1-table">
+          <caption class="sr-only">
+            Atendimentos realizados agrupados por especialidade
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Especialidade</th>
+              <th scope="col">Quantidade</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of r.porEspecialidade; track item.nome) {
+              <tr>
+                <th scope="row">{{ item.nome }}</th>
+                <td>{{ item.quantidade }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <p class="notice" role="status">
+          Nenhum atendimento realizado ainda. Os totais aparecerão após a conclusão das consultas.
+        </p>
+      }
+    </section>
+  </div>
+  <p class="c1-footnote">
+    Os relatórios usam os mesmos cadastros dos cinco módulos. Nenhuma informação é enviada a uma API
+    nesta etapa.
+  </p>
+}

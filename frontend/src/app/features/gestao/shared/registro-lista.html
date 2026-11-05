@@ -1,0 +1,216 @@
+<header class="c1-page-heading">
+  <div>
+    <p class="eyebrow">Cadastros da clínica</p>
+    <h1>{{ config.titulo }}</h1>
+    <p>{{ config.descricao }}</p>
+  </div>
+  <a class="btn" [routerLink]="['/gestao', config.modulo, 'cadastrar']"
+    >Cadastrar {{ config.singular }}</a
+  >
+</header>
+@if (sucesso()) {
+  <div class="c1-feedback c1-success" role="status">
+    {{ sucesso()
+    }}<button
+      type="button"
+      class="c1-dismiss"
+      aria-label="Fechar mensagem de sucesso"
+      (click)="sucesso.set('')"
+    >
+      ×
+    </button>
+  </div>
+}
+<div class="c1-filters">
+  <div class="field">
+    <label for="busca-cadastro">Buscar {{ config.titulo.toLowerCase() }}</label
+    ><input
+      id="busca-cadastro"
+      type="search"
+      [value]="busca()"
+      (input)="buscar($any($event.target).value)"
+      placeholder="Digite parte do nome"
+    />
+  </div>
+  @if (config.modulo === 'consultas') {
+    <div class="field">
+      <label for="status-consulta">Status da consulta</label
+      ><select
+        id="status-consulta"
+        [value]="statusFiltro()"
+        (change)="statusFiltro.set($any($event.target).value); carregar()"
+      >
+        <option value="">Todos os status</option>
+        <option value="marcada">Marcada</option>
+        <option value="confirmada">Confirmada</option>
+        <option value="realizada">Realizada</option>
+        <option value="falta">Falta</option>
+        <option value="cancelada">Cancelada</option>
+      </select>
+    </div>
+  } @else {
+    <label class="c1-checkbox"
+      ><input
+        type="checkbox"
+        [checked]="inativos()"
+        (change)="inativos.set($any($event.target).checked); carregar()"
+      />Mostrar inativos</label
+    >
+  }
+  <button class="btn btn-outline" type="button" (click)="limpar()">Limpar filtros</button>
+</div>
+<section [attr.aria-busy]="carregando()" aria-label="Resultado da listagem">
+  @if (carregando()) {
+    <div class="c1-loading" role="status">
+      <span class="c1-spinner" aria-hidden="true"></span>Carregando
+      {{ config.titulo.toLowerCase() }}...
+    </div>
+  } @else if (erro()) {
+    <div class="c1-feedback c1-error" role="alert">
+      <div>
+        <h2>Não foi possível carregar a lista</h2>
+        <p>{{ erro() }}</p>
+        <button type="button" class="btn btn-outline" (click)="carregar()">Tentar novamente</button>
+      </div>
+    </div>
+  } @else if (!itens().length) {
+    <div class="empty-state c1-empty">
+      <h2>Nenhum registro encontrado</h2>
+      <p>
+        Confira os filtros ou cadastre {{ config.artigo }} primeir{{ config.artigo }}
+        {{ config.singular }}.
+      </p>
+      <button class="btn btn-outline" type="button" (click)="limpar()">Limpar filtros</button
+      ><a class="btn" [routerLink]="['/gestao', config.modulo, 'cadastrar']"
+        >Cadastrar {{ config.singular }}</a
+      >
+    </div>
+  } @else {
+    <p class="c1-result-count" role="status">
+      {{ itens().length }}
+      {{ itens().length === 1 ? 'registro encontrado' : 'registros encontrados' }}
+    </p>
+    <p class="c1-scroll-hint">Em telas pequenas, deslize a tabela para ver todos os campos.</p>
+    <div
+      class="c1-table-scroll"
+      role="region"
+      [attr.aria-label]="'Tabela de ' + config.titulo.toLowerCase()"
+      tabindex="0"
+    >
+      <table class="c1-table">
+        <caption class="sr-only">
+          Lista de
+          {{
+            config.titulo.toLowerCase()
+          }}
+        </caption>
+        <thead>
+          <tr>
+            @for (col of config.colunas; track col.campo) {
+              <th scope="col">{{ col.rotulo }}</th>
+            }
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of itens(); track item._id) {
+            <tr>
+              @for (col of config.colunas; track col.campo) {
+                <td>
+                  @if (col.formato === 'status' || col.formato === 'situacao') {
+                    <span
+                      class="c1-status"
+                      [class.c1-inactive]="
+                        item['ativo'] === false || item['status'] === 'cancelada'
+                      "
+                      >{{ formatar(item, col) }}</span
+                    >
+                  } @else {
+                    {{ formatar(item, col) }}
+                  }
+                </td>
+              }
+              <td>
+                <div class="c1-row-actions">
+                  @if (editavel(item)) {
+                    <a
+                      [routerLink]="['/gestao', config.modulo, 'editar', item._id]"
+                      [attr.aria-label]="'Editar ' + nome(item)"
+                      >Editar</a
+                    >
+                  }
+                  @for (status of transicoes(item); track status) {
+                    <button
+                      type="button"
+                      [disabled]="processando()"
+                      [attr.aria-label]="
+                        'Alterar consulta de ' + nome(item) + ' para ' + rotulosStatus[status]
+                      "
+                      (click)="mudarStatus(item, status)"
+                    >
+                      {{ rotulosStatus[status] }}
+                    </button>
+                  }
+                  @if (excluivel(item)) {
+                    <button
+                      type="button"
+                      class="c1-danger-text"
+                      [disabled]="processando()"
+                      [attr.aria-label]="
+                        (config.modulo === 'consultas' ? 'Cancelar consulta de ' : 'Excluir ') +
+                        nome(item)
+                      "
+                      (click)="pedirExclusao(item)"
+                    >
+                      {{ config.modulo === 'consultas' ? 'Cancelar' : 'Excluir' }}
+                    </button>
+                  } @else if (config.modulo === 'consultas') {
+                    <span class="c1-muted">Encerrada</span>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+<dialog
+  #confirmacao
+  class="c1-dialog"
+  aria-labelledby="titulo-exclusao"
+  aria-describedby="texto-exclusao"
+  (cancel)="processando() ? $event.preventDefault() : selecionado.set(null)"
+>
+  <h2 id="titulo-exclusao">
+    {{ config.modulo === 'consultas' ? 'Cancelar consulta?' : 'Excluir cadastro?' }}
+  </h2>
+  <p id="texto-exclusao">{{ selecionado() ? nome(selecionado()!) : '' }}</p>
+  <p>
+    {{
+      config.modulo === 'consultas'
+        ? 'A consulta ficará cancelada e o horário será liberado. O registro permanece no histórico.'
+        : 'O cadastro será inativado e sairá da listagem padrão. Você poderá encontrá-lo em Mostrar inativos.'
+    }}
+  </p>
+  @if (erroExclusao()) {
+    <p class="c1-field-error" role="alert">{{ erroExclusao() }}</p>
+  }
+  <div class="c1-form-actions">
+    <button type="button" class="btn btn-outline" [disabled]="processando()" (click)="fechar()">
+      Manter {{ config.modulo === 'consultas' ? 'consulta' : 'cadastro' }}</button
+    ><button
+      type="button"
+      class="btn c1-btn-danger"
+      [disabled]="processando()"
+      (click)="confirmarExclusao()"
+    >
+      {{
+        processando()
+          ? 'Processando...'
+          : 'Confirmar ' + (config.modulo === 'consultas' ? 'cancelamento' : 'exclusão')
+      }}
+    </button>
+  </div>
+</dialog>
