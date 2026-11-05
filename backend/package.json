@@ -18,6 +18,7 @@
     "test:cov": "jest --coverage",
     "seed": "ts-node src/seed/seed.ts",
     "seed:profissionais": "ts-node src/profissionais/seed-profissionais.ts",
+    "verificar:seed:clinica": "ts-node src/seed/verificar-seed-clinica.ts",
     "verificar:convenios": "ts-node src/convenios/verificar-seed.ts",
     "verificar:regras:convenios": "ts-node src/convenios/verificar-regras.ts"
   },

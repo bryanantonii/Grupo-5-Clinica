@@ -1,17 +1,16 @@
-> [!IMPORTANT]
-> **Este é o repositório base do Projeto Integrador.** Antes de tudo, leia o [`COMECE-AQUI.md`](COMECE-AQUI.md).
-> Depois do fork, este README passa a ser **do grupo**: apague este aviso e preencha as seções marcadas com ✏️.
+# Clinora — Clínica Geral Integrada
 
-# [Nome do Sistema] — Projeto Integrador Sprint 5
+Projeto Integrador Sprint 5. As seções marcadas com ✏️ aguardam os dados e a revisão do grupo.
 
-> Substitua o título e preencha as seções marcadas com ✏️. Este README é parte da entrega (checkpoint C5).
-
-**Grupo:** ✏️ número do grupo · **Tema:** ✏️ tema sorteado
+**Grupo:** 5 · **Tema:** Clínica
 **Turma:** Programador Full-Stack · SENAI · 2026
 
-## ✏️ Sobre o sistema
+## Sobre o sistema
 
-Descreva em 3 a 5 linhas o problema que o sistema resolve, para quem e qual o valor entregue.
+A Clinora reúne o catálogo de profissionais, as especialidades, os convênios,
+o agendamento demonstrativo e a gestão da clínica. A gestão possui telas de
+Pacientes, Profissionais, Consultas, Especialidades, Convênios e Relatórios.
+Profissionais já utiliza a API; os demais fluxos de frontend ainda usam mocks.
 
 ## Integrantes, módulos e papéis
 
@@ -66,28 +65,31 @@ docs/                # documentos do grupo (visão, contrato, dicionário, teste
 backend/
   src/
     common/          # código compartilhado (padrão de resposta, filtros)
-    produtos/        # MÓDULO DE EXEMPLO — use como modelo
-      dto/           # contratos de entrada (validação)
-      schemas/       # estrutura do documento no MongoDB
-      produtos.controller.ts
-      produtos.service.ts        # regras de negócio
-      produtos.service.spec.ts   # testes unitários
-    seed/            # dados de exemplo
+    profissionais/  # API de Profissionais, schemas, DTOs e testes
+    convenios/      # schema, regras de negócio e testes de Convênios
+    seed/           # exemplos dos módulos disponíveis da clínica
   testes-obrigatorios/  # testes da autenticação (aulas 12 e 13)
 frontend/
   src/
-    environments/    # apiUrl e usarMock
+    environments/    # apiUrl e usarMockProfissionais
     estilos-do-grupo.css  # estilos do grupo (vencem o styles.css)
     app/
       core/          # código compartilhado (modelos de resposta e de referência)
       layout/        # cabeçalho e menu
       pages/         # telas gerais (início, 404)
       features/
-        produtos/    # MÓDULO DE EXEMPLO — use como modelo
-          services/  # contrato + mock + API
-          produtos-lista/
-          produto-form/
+        pacientes/       # cadastros da clínica
+        profissionais/
+        consultas/
+        especialidades/
+        convenios/
+        relatorios/
+        gestao/          # layout, rotas e componentes compartilhados
+        clinora/         # agendamento e páginas públicas
+referencias/produtos/    # exemplo original do professor, fora dos aplicativos
 ```
+
+As rotas do site, da gestão e da API estão em [Rotas da Clinora](docs/rotas-clinora.md).
 
 ## ✏️ Regras de negócio implementadas
 
