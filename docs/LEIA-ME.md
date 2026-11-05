@@ -1,5 +1,8 @@
 # Pasta de documentação do grupo
 
+- [Aula 12: autenticação, JWT, bcrypt, seed e roteiro do Swagger](aula-12/README.md).
+- [Respostas de Segurança da aula 12](respostas-bryanantonii.md).
+
 - [Banco da Clinora: coleções, diferença entre convênios e planos e correção de Produtos](banco-clinica-2026-11-05.md).
 - [Rotas da Clinora: páginas, cadastros, API e localização dos arquivos](rotas-clinora.md).
 

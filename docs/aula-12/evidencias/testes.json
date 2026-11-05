@@ -1,0 +1,23 @@
+{
+  "data": "2026-11-05",
+  "backend": {
+    "build": "aprovado",
+    "lint": "aprovado",
+    "aprovados": 109,
+    "suites": 10,
+    "arquivosObrigatoriosPreservados": true,
+    "obrigatorios": 8,
+    "typescript": "aprovado"
+  },
+  "frontend": {
+    "build": "aprovado",
+    "tipagem": "aprovada",
+    "aprovados": 53
+  },
+  "integracao": {
+    "limpeza": "concluida",
+    "resultado": "aprovado",
+    "casos": 31,
+    "bancoTeste": "clinora_test_aula12_069e506134e4fca5"
+  }
+}
