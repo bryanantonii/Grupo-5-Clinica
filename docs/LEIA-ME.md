@@ -9,3 +9,5 @@ Coloque aqui os documentos do projeto (a partir dos templates entregues pelo pro
 - `manual-do-usuario.docx` — aula 14 (C5)
 - `roteiro-da-apresentacao.docx` — aula 14 (C5)
 - `respostas-<nome>.md` — respostas às perguntas de verificação do manual
+
+> 📄 **Veja um exemplo preenchido de cada documento** em [`guia/exemplos/`](../guia/exemplos/) (sistema fictício, só para mostrar o nível de detalhe esperado).
