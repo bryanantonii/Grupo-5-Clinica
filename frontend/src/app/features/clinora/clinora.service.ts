@@ -1,4 +1,5 @@
 import { Observable, of } from 'rxjs';
+import { dataHoraFutura } from '../../shared/form-validadores';
 import { environment } from '../../../environments/environment';
 import { ProfissionaisCatalogoService } from '../profissionais/services/profissionais-catalogo.service';
 import { ClinicaMockStore } from '../gestao/services/clinica-mock.store';
@@ -67,6 +68,11 @@ export class ClinoraService {
       .map((c) => c.horario);
   }
   agendar(dados: Omit<Consulta, '_id' | 'status'>): Consulta {
+    const profissional = this.profissional(dados.profissional);
+    if (!profissional?.ativo || profissional.especialidade !== dados.especialidade)
+      throw new Error('Escolha um profissional disponível para esta especialidade.');
+    if (!dataHoraFutura(dados.data, dados.horario))
+      throw new Error('Escolha uma data e um horário futuros.');
     if (this.horariosOcupados(dados.profissional, dados.data).includes(dados.horario))
       throw new Error('Esse horário acabou de ser reservado. Escolha outro horário.');
     const consulta: Consulta = { ...dados, _id: crypto.randomUUID(), status: 'confirmada' };

@@ -85,7 +85,7 @@ export class Agendamento {
     const e = q.get('especialidade');
     const p = this.dados.profissional(q.get('profissional') ?? '');
     if (e && this.dados.especialidades.some((x) => x._id === e)) this.especialidade.set(e);
-    if (p) {
+    if (p?.ativo) {
       this.especialidade.set(p.especialidade);
       this.profissional.set(p._id);
       this.etapa.set(2);
@@ -122,6 +122,10 @@ export class Agendamento {
     });
   }
   protected continuar() {
+    if (!this.profissional()) {
+      this.erro.set('Não há profissionais disponíveis para esta especialidade.');
+      return;
+    }
     if (this.etapa() === 2 && !this.horario()) {
       this.erro.set('Escolha um horário para continuar.');
       return;

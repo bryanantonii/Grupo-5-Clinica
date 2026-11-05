@@ -64,3 +64,15 @@ A gestão em /gestao/profissionais permite listar, buscar, cadastrar, editar, mo
 Swagger: http://localhost:3000/api/docs. A documentação completa das rotas, validações, testes, limites e roteiro de apresentação fica em [docs/api-profissionais.md](../docs/api-profissionais.md). Os relatórios e os demais cadastros ainda usam mocks.
 
 Execute npm run test:c1 para os testes existentes e os novos testes da integração. npm run test:api roda apenas a conexão de Profissionais.
+
+## Integração dos PRs de frontend
+
+A gestão de Profissionais usa as telas do C1 e o serviço HTTP do PR #6. Os endereços
+da primeira versão (/profissionais/gerenciar, /profissionais/novo e
+/profissionais/:id/editar) redirecionam para /gestao/profissionais.
+O acesso demonstrativo mantém as validações e os recursos de acessibilidade do
+PR #2. O agendamento valida profissional ativo, especialidade e data futura.
+
+Execute npm test para conferir os testes do C1, do adaptador HTTP, dos formulários
+de acesso e da integração do agendamento com o catálogo. npm run build verifica
+os templates e gera o frontend de produção.

@@ -7,7 +7,8 @@
     "build": "ng build",
     "test:c1": "node --test testes-c1/*.test.mjs",
     "watch": "ng build --watch --configuration development",
-    "test:api": "node --test testes-c1/profissionais-api.test.mjs"
+    "test:api": "node --test testes-c1/profissionais-api.test.mjs",
+    "test": "npm run test:c1 && node scripts/testar-formularios.mjs"
   },
   "private": true,
   "dependencies": {

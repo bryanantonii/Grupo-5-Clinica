@@ -1,8 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ClinoraService } from './clinora.service';
 import { Icon } from './shared/icon';
+import { criarFormularioAcesso } from './acesso.formulario';
 @Component({
   selector: 'app-acesso',
   imports: [ReactiveFormsModule, RouterLink, Icon],
@@ -34,7 +35,7 @@ import { Icon } from './shared/icon';
                   autocomplete="name"
                   placeholder="Como podemos chamar você?"
                   [attr.aria-invalid]="invalido('nome')"
-                  aria-describedby="nome-erro"
+                  [attr.aria-describedby]="invalido('nome') ? 'nome-erro' : null"
                 />
                 @if (invalido('nome')) {
                   <span id="nome-erro" class="field-error"
@@ -50,10 +51,11 @@ import { Icon } from './shared/icon';
                   id="email"
                   type="email"
                   formControlName="email"
+                  (blur)="normalizarEmail()"
                   autocomplete="email"
                   placeholder="voce@exemplo.com"
                   [attr.aria-invalid]="invalido('email')"
-                  aria-describedby="email-erro"
+                  [attr.aria-describedby]="invalido('email') ? 'email-erro' : null"
                 />
                 @if (invalido('email')) {
                   <span id="email-erro" class="field-error">Informe um e-mail válido.</span>
@@ -71,7 +73,9 @@ import { Icon } from './shared/icon';
                     [autocomplete]="modo === 'entrar' ? 'current-password' : 'new-password'"
                     placeholder="Pelo menos 8 caracteres"
                     [attr.aria-invalid]="invalido('senha')"
-                    aria-describedby="senha-ajuda senha-erro"
+                    [attr.aria-describedby]="
+                      invalido('senha') ? 'senha-ajuda senha-erro' : 'senha-ajuda'
+                    "
                   /><button
                     type="button"
                     (click)="mostrar.set(!mostrar())"
@@ -101,14 +105,25 @@ import { Icon } from './shared/icon';
                   autocomplete="new-password"
                   placeholder="Digite a senha novamente"
                   [attr.aria-invalid]="
-                    form.controls.confirmar.touched && form.hasError('senhasDiferentes')
+                    form.controls.confirmar.touched &&
+                    (form.controls.confirmar.invalid || form.hasError('senhasDiferentes'))
                   "
-                  aria-describedby="confirmar-erro"
+                  [attr.aria-describedby]="
+                    form.controls.confirmar.touched &&
+                    (form.controls.confirmar.invalid || form.hasError('senhasDiferentes'))
+                      ? 'confirmar-erro'
+                      : null
+                  "
                 />
-                @if (form.controls.confirmar.touched && form.hasError('senhasDiferentes')) {
-                  <span id="confirmar-erro" class="field-error"
-                    >As senhas precisam ser iguais.</span
-                  >
+                @if (
+                  form.controls.confirmar.touched &&
+                  (form.controls.confirmar.invalid || form.hasError('senhasDiferentes'))
+                ) {
+                  <span id="confirmar-erro" class="field-error">{{
+                    form.controls.confirmar.hasError('required')
+                      ? 'Confirme a senha.'
+                      : 'As senhas precisam ser iguais.'
+                  }}</span>
                 }
               </div>
             }
@@ -118,13 +133,13 @@ import { Icon } from './shared/icon';
               </div>
             }
             @if (modo === 'cadastro') {
-              <label class="checkbox-label"
-                ><input type="checkbox" formControlName="ciente" /><span
+              <label class="checkbox-label" for="cadastro-ciente"
+                ><input id="cadastro-ciente" type="checkbox" formControlName="ciente" /><span
                   >Estou ciente de que este é um projeto acadêmico e usarei dados fictícios.</span
                 ></label
               >
               @if (invalido('ciente')) {
-                <p class="field-error">Confirme que usará dados fictícios.</p>
+                <p class="field-error" role="status">Confirme que usará dados fictícios.</p>
               }
             }
             <div class="demo-note">
@@ -138,7 +153,7 @@ import { Icon } from './shared/icon';
                 }}
               </p>
             </div>
-            <button type="submit" class="btn full-width">
+            <button type="submit" class="btn full-width" [disabled]="form.invalid || form.pending">
               {{ botao }} <app-icon name="arrow" />
             </button>
           </form>
@@ -167,13 +182,7 @@ export class Acesso {
   private readonly dados = inject(ClinoraService);
   protected readonly modo: string = this.route.snapshot.data['modo'] ?? 'entrar';
   protected readonly mostrar = signal(false);
-  protected readonly form = inject(FormBuilder).nonNullable.group({
-    nome: [''],
-    email: [''],
-    senha: [''],
-    confirmar: [''],
-    ciente: [false],
-  });
+  protected readonly form = criarFormularioAcesso(inject(FormBuilder), this.modo);
   protected readonly titulo =
     this.modo === 'cadastro'
       ? 'Seu cuidado começa aqui.'
@@ -198,25 +207,8 @@ export class Acesso {
         : this.modo === 'nova-senha'
           ? 'Salvar nova senha'
           : 'Entrar';
-  constructor() {
-    if (this.modo !== 'nova-senha')
-      this.form.controls.email.setValidators([Validators.required, Validators.email]);
-    if (this.modo !== 'recuperar')
-      this.form.controls.senha.setValidators([Validators.required, Validators.minLength(8)]);
-    if (this.modo === 'cadastro') {
-      this.form.controls.nome.setValidators([
-        Validators.required,
-        Validators.minLength(3),
-        Validators.maxLength(80),
-      ]);
-      this.form.controls.ciente.setValidators(Validators.requiredTrue);
-    }
-    if (this.modo === 'cadastro' || this.modo === 'nova-senha')
-      this.form.setValidators((g) =>
-        g.get('senha')?.value === g.get('confirmar')?.value ? null : { senhasDiferentes: true },
-      );
-    // Recalcula também os controles ainda vazios após configurar os validadores.
-    for (const control of Object.values(this.form.controls)) control.updateValueAndValidity();
+  protected normalizarEmail(): void {
+    this.form.controls.email.setValue(this.form.controls.email.value.trim().toLowerCase());
   }
   protected invalido(c: string) {
     const v = this.form.get(c);
