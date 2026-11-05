@@ -1,3 +1,4 @@
+import { ReferenciasCadastro } from './services/referencias-cadastro';
 import { ProviderToken } from '@angular/core';
 import { Modulo } from './gestao.models';
 import { GestaoService } from './services/gestao.service';
@@ -28,6 +29,7 @@ export interface ModuloConfig {
   artigo: 'o' | 'a';
   descricao: string;
   servico: ProviderToken<GestaoService>;
+  referencias?: ProviderToken<ReferenciasCadastro>;
   campos: CampoFormulario[];
   colunas: Coluna[];
 }

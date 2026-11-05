@@ -18,7 +18,14 @@
       }
     </ol>
   </nav>
-  @if (etapa() === 1) {
+  @if (dados.carregandoEquipe()) {
+    <p class="notice" role="status">Carregando equipe...</p>
+  } @else if (dados.erroEquipe()) {
+    <div class="notice" role="alert">
+      <p>{{ dados.erroEquipe() }}</p>
+      <a routerLink="/profissionais" class="text-link">Voltar à equipe e tentar novamente</a>
+    </div>
+  } @else if (etapa() === 1) {
     <h1 id="titulo-etapa" tabindex="-1">Qual cuidado você procura?</h1>
     <p class="lead">Escolha uma especialidade para começar.</p>
     <fieldset class="care-options">
@@ -39,7 +46,18 @@
         ></label>
       }
     </fieldset>
-    <button type="button" class="btn booking-continue" (click)="continuar()">
+    @if (!profissionais().length) {
+      <p class="notice" role="status">
+        Não há profissionais disponíveis para esta especialidade. Escolha outro cuidado ou fale com
+        a equipe.
+      </p>
+    }
+    <button
+      type="button"
+      class="btn booking-continue"
+      [disabled]="!profissional()"
+      (click)="continuar()"
+    >
       Continuar <app-icon name="arrow" />
     </button>
     <p class="help-line">
@@ -104,7 +122,7 @@
       @for (h of horarios; track h) {
         <button
           type="button"
-          [disabled]="ocupados().includes(h)"
+          [disabled]="!profissional() || ocupados().includes(h)"
           [class.selected]="horario() === h"
           [attr.aria-pressed]="horario() === h"
           (click)="horario.set(h); erro.set('')"
@@ -123,7 +141,12 @@
     <div class="form-actions spread">
       <button type="button" class="text-link" (click)="ir(1)">
         <app-icon name="back" /> Alterar especialidade</button
-      ><button type="button" class="btn booking-continue" (click)="continuar()">
+      ><button
+        type="button"
+        class="btn booking-continue"
+        [disabled]="!profissional() || !horario()"
+        (click)="continuar()"
+      >
         Continuar <app-icon name="arrow" />
       </button>
     </div>
@@ -199,7 +222,11 @@
       <div class="form-actions spread">
         <button type="button" class="text-link" (click)="ir(2)">
           <app-icon name="back" /> Voltar</button
-        ><button type="submit" class="btn booking-continue">
+        ><button
+          type="submit"
+          class="btn booking-continue"
+          [disabled]="form.invalid || form.pending"
+        >
           Revisar agendamento <app-icon name="arrow" />
         </button>
       </div>

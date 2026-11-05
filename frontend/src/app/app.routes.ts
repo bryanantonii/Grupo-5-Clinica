@@ -30,6 +30,21 @@ export const routes: Routes = [
         title: 'Profissionais · Clinora',
       },
       {
+        path: 'profissionais/gerenciar',
+        redirectTo: '/gestao/profissionais',
+        pathMatch: 'full',
+      },
+      {
+        path: 'profissionais/novo',
+        redirectTo: '/gestao/profissionais/cadastrar',
+        pathMatch: 'full',
+      },
+      {
+        path: 'profissionais/:id/editar',
+        redirectTo: '/gestao/profissionais/editar/:id',
+        pathMatch: 'full',
+      },
+      {
         path: 'profissionais/:id',
         loadComponent: () =>
           import('./features/profissionais/perfil-profissional/perfil-profissional').then(

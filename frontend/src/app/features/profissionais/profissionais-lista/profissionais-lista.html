@@ -25,26 +25,35 @@
     </div>
     <button class="btn" type="submit">Buscar <app-icon name="arrow" /></button>
   </form>
-  <p class="results-count" role="status">
-    {{ profissionais().length }}
-    {{ profissionais().length === 1 ? 'profissional encontrado' : 'profissionais encontrados' }}
-  </p>
-  <div class="three-grid professionals-grid">
-    @for (p of profissionais(); track p._id) {
-      <app-profissional-card
-        [profissional]="p"
-        [nomeEspecialidade]="dados.especialidade(p.especialidade)"
-        (conhecer)="abrirPerfil($event)"
-      />
-    } @empty {
-      <div class="empty-state">
-        <span class="icon-tile"><app-icon name="search" /></span>
-        <h2>Nenhum profissional encontrado.</h2>
-        <p>Tente outro nome ou escolha outra especialidade.</p>
-        <button type="button" class="btn btn-outline" (click)="limpar()">Limpar filtros</button>
-      </div>
-    }
-  </div>
+  @if (dados.carregandoEquipe()) {
+    <p class="notice" role="status">Carregando equipe...</p>
+  } @else if (dados.erroEquipe()) {
+    <div class="notice" role="alert">
+      <p>{{ dados.erroEquipe() }}</p>
+      <button type="button" class="btn btn-outline" (click)="recarregar()">Tentar novamente</button>
+    </div>
+  } @else {
+    <p class="results-count" role="status">
+      {{ profissionais().length }}
+      {{ profissionais().length === 1 ? 'profissional encontrado' : 'profissionais encontrados' }}
+    </p>
+    <div class="three-grid professionals-grid">
+      @for (p of profissionais(); track p._id) {
+        <app-profissional-card
+          [profissional]="p"
+          [nomeEspecialidade]="dados.especialidade(p.especialidade)"
+          (conhecer)="abrirPerfil($event)"
+        />
+      } @empty {
+        <div class="empty-state">
+          <span class="icon-tile"><app-icon name="search" /></span>
+          <h2>Nenhum profissional encontrado.</h2>
+          <p>Tente outro nome ou escolha outra especialidade.</p>
+          <button type="button" class="btn btn-outline" (click)="limpar()">Limpar filtros</button>
+        </div>
+      }
+    </div>
+  }
   <p class="notice">
     <app-icon name="info" /> Os nomes e perfis são ilustrativos para este projeto acadêmico.
   </p>

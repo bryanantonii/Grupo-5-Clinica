@@ -1,0 +1,135 @@
+[
+  {
+    "method": "GET",
+    "path": "",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/opcoes/especialidades",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "",
+    "status": 201
+  },
+  {
+    "method": "GET",
+    "path": "/6aea6ce9d9d2a9c4bfef5ab0",
+    "status": 200
+  },
+  {
+    "method": "PATCH",
+    "path": "/6aea6ce9d9d2a9c4bfef5ab0",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "?busca=atualizada",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "?busca=.*",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "",
+    "status": 409
+  },
+  {
+    "method": "POST",
+    "path": "",
+    "status": 409
+  },
+  {
+    "method": "POST",
+    "path": "",
+    "status": 400
+  },
+  {
+    "method": "POST",
+    "path": "",
+    "status": 400
+  },
+  {
+    "method": "POST",
+    "path": "",
+    "status": 400
+  },
+  {
+    "method": "POST",
+    "path": "",
+    "status": 404
+  },
+  {
+    "method": "POST",
+    "path": "",
+    "status": 400
+  },
+  {
+    "method": "PATCH",
+    "path": "/6aea6ce9d9d2a9c4bfef5ab0",
+    "status": 400
+  },
+  {
+    "method": "PATCH",
+    "path": "/6aea6ce9d9d2a9c4bfef5ab0",
+    "status": 400
+  },
+  {
+    "method": "GET",
+    "path": "/abc",
+    "status": 400
+  },
+  {
+    "method": "GET",
+    "path": "/665f1c2b9a1e4b0012345679",
+    "status": 404
+  },
+  {
+    "method": "GET",
+    "path": "?todos=sim",
+    "status": 400
+  },
+  {
+    "method": "GET",
+    "path": "?especialidade=invalido",
+    "status": 400
+  },
+  {
+    "method": "DELETE",
+    "path": "/6aea6ce9d9d2a9c4bfef5ab0",
+    "status": 204
+  },
+  {
+    "method": "GET",
+    "path": "?busca=atualizada",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "?todos=true&busca=atualizada",
+    "status": 200
+  },
+  {
+    "method": "PATCH",
+    "path": "/6aea6ce9d9d2a9c4bfef5ab0",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "?busca=atualizada",
+    "status": 200
+  },
+  {
+    "method": "DELETE",
+    "path": "/6aea6ce9d9d2a9c4bfef5ab0",
+    "status": 204
+  },
+  {
+    "swagger": "5 rotas CRUD, DTOs e respostas documentados"
+  }
+]

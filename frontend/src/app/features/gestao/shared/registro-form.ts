@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, CanDeactivateFn, Router, RouterLink } from '@angular/router';
-import { finalize, Subscription } from 'rxjs';
+import { finalize, of, Subscription, switchMap } from 'rxjs';
 import { CampoFormulario, ModuloConfig } from '../modulo-config';
 import { ClinicaMockStore } from '../services/clinica-mock.store';
 
@@ -44,7 +44,8 @@ export class RegistroForm implements OnInit, OnDestroy {
   readonly id = this.route.snapshot.paramMap.get('id');
   private readonly servico = inject(this.config.servico);
   readonly store = inject(ClinicaMockStore);
-  readonly carregando = signal(!!this.id);
+  private readonly referencias = this.config.referencias ? inject(this.config.referencias) : null;
+  readonly carregando = signal(!!this.id || !!this.referencias);
   readonly salvando = signal(false);
   readonly erro = signal('');
   readonly encontrado = signal(!this.id);
@@ -74,17 +75,23 @@ export class RegistroForm implements OnInit, OnDestroy {
     );
   }
   ngOnInit() {
-    if (this.id) this.carregar();
+    this.carregar();
   }
   carregar() {
-    if (!this.id) return;
+    this.leitura?.unsubscribe();
     this.carregando.set(true);
     this.erro.set('');
-    this.leitura = this.servico
-      .buscarPorId(this.id)
-      .pipe(finalize(() => this.carregando.set(false)))
+    this.leitura = (this.referencias?.carregar() ?? of(undefined))
+      .pipe(
+        switchMap(() => (this.id ? this.servico.buscarPorId(this.id) : of(null))),
+        finalize(() => this.carregando.set(false)),
+      )
       .subscribe({
         next: (item) => {
+          if (!item) {
+            this.encontrado.set(true);
+            return;
+          }
           if (
             this.config.modulo === 'consultas' &&
             !['marcada', 'confirmada'].includes(String(item['status']))
@@ -93,6 +100,7 @@ export class RegistroForm implements OnInit, OnDestroy {
             this.encontrado.set(false);
             return;
           }
+          this.referencias?.registrarAtual(item);
           for (const campo of this.config.campos) {
             let valor = item[campo.nome];
             if (campo.tipo === 'datetime-local' && typeof valor === 'string') {
@@ -134,7 +142,8 @@ export class RegistroForm implements OnInit, OnDestroy {
   }
   opcoes(campo: CampoFormulario) {
     return campo.referencia
-      ? this.store.referencias(campo.referencia, String(this.form.controls[campo.nome].value))
+      ? (this.referencias?.opcoes(campo.referencia, String(this.form.controls[campo.nome].value)) ??
+          this.store.referencias(campo.referencia, String(this.form.controls[campo.nome].value)))
       : [];
   }
   salvar() {
