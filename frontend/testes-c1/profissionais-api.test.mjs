@@ -124,12 +124,27 @@ test('API indisponível informa erro de conexão e permite repetir', async () =>
   injector.destroy();
 });
 test('Catálogo carrega especialidades reais e usa os IDs no formulário e no site', async () => {
-  const { injector } = criar({ get: () => of({ sucesso: true, dados: [item.especialidade] }) }, [
-    {
-      provide: ProfissionaisService,
-      useValue: { listar: () => of([{ ...item, especialidade: item.especialidade._id }]) },
+  const chamadas = [];
+  const { injector } = criar({
+    get: (url) => {
+      chamadas.push(url);
+      assert.ok(url.includes('/catalogo/'));
+      return of({
+        sucesso: true,
+        dados: url.endsWith('/especialidades')
+          ? [item.especialidade]
+          : [
+              {
+                _id: item._id,
+                nome: item.nome,
+                registro: item.registro,
+                especialidade: item.especialidade._id,
+                ativo: true,
+              },
+            ],
+      });
     },
-  ]);
+  });
   const catalogo = runInInjectionContext(injector, () => new ProfissionaisCatalogoService());
   await firstValueFrom(catalogo.carregarEquipe());
   assert.deepEqual(catalogo.opcoes('especialidades'), [
@@ -139,6 +154,9 @@ test('Catálogo carrega especialidades reais e usa os IDs no formulário e no si
   assert.equal(catalogo.nome('especialidades', item.especialidade._id), 'Cardiologia');
   assert.equal(catalogo.carregando(), false);
   assert.equal(catalogo.erro(), '');
+  assert.equal(chamadas.length, 2);
+  assert.equal(catalogo.profissionais()[0].email, '');
+  assert.equal(catalogo.profissionais()[0].telefone, '');
   catalogo.registrarAtual({
     _id: item._id,
     especialidade: '665f1c2b9a1e4b0012345799',

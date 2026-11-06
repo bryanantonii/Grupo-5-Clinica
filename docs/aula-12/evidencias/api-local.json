@@ -1,0 +1,31 @@
+{
+  "data": "2026-11-05",
+  "ambiente": "API local conectada ao banco clinora",
+  "total": 6,
+  "resultados": [
+    {
+      "caso": "Gestão sem token",
+      "status": 401
+    },
+    {
+      "caso": "Catálogo sem token",
+      "status": 200
+    },
+    {
+      "caso": "Login com administrador do seed local",
+      "status": 200
+    },
+    {
+      "caso": "Identidade com JWT",
+      "status": 200
+    },
+    {
+      "caso": "Gestão com JWT",
+      "status": 200
+    },
+    {
+      "caso": "Swagger disponível",
+      "status": 200
+    }
+  ]
+}

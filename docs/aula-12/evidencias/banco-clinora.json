@@ -1,0 +1,26 @@
+{
+  "banco": "clinora",
+  "cadastrosPreservados": {
+    "convenios": {
+      "registros": 5,
+      "sha256": "1ef3aed25ea4631db0704ea2cf29cb7306453b6697956fbf500886d481e10e6e"
+    },
+    "especialidades": {
+      "registros": 3,
+      "sha256": "25ef2d7e4ac227009666eadc9f7a18a50b8db2ca021bbc0eff84f5b5ad93b36e"
+    },
+    "profissionais": {
+      "registros": 3,
+      "sha256": "c566e16c0512642341ac5fcfec60bd55d3092aeafe10976a6b6c010985c480ed"
+    }
+  },
+  "usuarios": 1,
+  "administrador": {
+    "perfil": "admin",
+    "ativo": true,
+    "senhaEmHash": true,
+    "senhaConfereComEnv": true,
+    "hashOmitidoNaConsulta": true
+  },
+  "produtosAusente": true
+}

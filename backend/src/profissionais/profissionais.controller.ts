@@ -11,6 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiBadRequestResponse,
   ApiConflictResponse,
   ApiCreatedResponse,
@@ -32,6 +33,7 @@ import {
 import { ProfissionaisService } from './profissionais.service';
 
 @ApiTags('Profissionais')
+@ApiBearerAuth()
 @ApiBadRequestResponse({
   description:
     'ID, filtros ou dados inválidos; campos desconhecidos são rejeitados',

@@ -13,7 +13,10 @@ Organização conferida em 5 de novembro de 2026.
   Relatórios.
 - `frontend/src/app/layout/layout.html`: navegação pública; “Área da equipe”
   aponta diretamente para `/gestao`.
-- `backend/src/profissionais/profissionais.controller.ts`: rotas HTTP disponíveis.
+- `backend/src/profissionais/profissionais.controller.ts`: rotas de gestão protegidas.
+- `backend/src/profissionais/catalogo.controller.ts`: catálogo público de leitura.
+- `backend/src/auth/auth.controller.ts`: login e identidade JWT.
+- `backend/src/usuarios/usuarios.controller.ts`: cadastro e consulta do próprio usuário.
 - `backend/src/app.module.ts`: módulos registrados no NestJS.
 
 Os arquivos `produtos.routes.ts`, `produtos.controller.ts` e os demais arquivos
@@ -61,7 +64,9 @@ Os endereços antigos `/profissionais/gerenciar`, `/profissionais/novo` e
 ## API: o que já está disponível
 
 As rotas do Angular abrem telas. As rotas HTTP do NestJS são outra camada,
-com o prefixo `/api/v1`.
+com o prefixo `/api/v1`. Na aula 12, um guard global passa a exigir JWT
+nas rotas sem `@Publico()`. Todos os endpoints de Profissionais abaixo
+são protegidos, incluindo as opções de Especialidades.
 
 | Método | Endereço | Função |
 | --- | --- | --- |
@@ -72,7 +77,21 @@ com o prefixo `/api/v1`.
 | PATCH | `/api/v1/profissionais/:id` | Atualizar. |
 | DELETE | `/api/v1/profissionais/:id` | Inativar. |
 
-Swagger: `/api/docs`. A API não registra `/api/v1/produtos`.
+| Método | Endereço | Acesso e função |
+| --- | --- | --- |
+| POST | `/api/v1/auth/login` | Público; valida e-mail e senha e emite JWT. |
+| GET | `/api/v1/auth/me` | Protegido; retorna a identidade do token. |
+| POST | `/api/v1/usuarios` | Protegido; cadastra atendentes. |
+| GET | `/api/v1/usuarios/me` | Protegido; consulta o próprio cadastro sem hash. |
+| GET | `/api/v1/catalogo/profissionais` | Público; apresenta a equipe ativa sem contato privado. |
+| GET | `/api/v1/catalogo/especialidades` | Público; referências do catálogo do site. |
+
+Swagger: `/api/docs`. Faça login e coloque `dados.accessToken` em Authorize.
+Sem token, a rota protegida retorna 401. A API não registra `/api/v1/produtos`.
+
+O login demonstrativo do Angular ainda não envia JWT. Assim, a gestão que
+chama a API recebe 401 até a integração da aula 13. O site público usa as
+rotas de catálogo e continua acessível. Veja [o roteiro da aula 12](aula-12/README.md).
 
 Convênios possui schema e service; seu controller HTTP ainda precisa ser
 entregue. Pacientes, Consultas e o módulo completo de Especialidades também

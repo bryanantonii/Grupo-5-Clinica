@@ -7,7 +7,6 @@ import { Especialidade } from '../../clinora/clinora.models';
 import { Modulo, normalizar, Registro } from '../../gestao/gestao.models';
 import { ReferenciasCadastro } from '../../gestao/services/referencias-cadastro';
 import { ProfissionalCardDados } from '../profissional.model';
-import { ProfissionaisService } from './profissionais.service';
 
 interface Opcao {
   _id: string;
@@ -18,7 +17,6 @@ interface Opcao {
 @Injectable({ providedIn: 'root' })
 export class ProfissionaisCatalogoService extends ReferenciasCadastro {
   private readonly http = inject(HttpClient);
-  private readonly service = inject(ProfissionaisService);
   private readonly registros = signal<Registro[]>([]);
   readonly especialidades = signal<Especialidade[]>([]);
   readonly carregando = signal(false);
@@ -33,8 +31,8 @@ export class ProfissionaisCatalogoService extends ReferenciasCadastro {
           nome,
           registro: String(p['registro']),
           especialidade: String(p['especialidade']),
-          email: String(p['email']),
-          telefone: String(p['telefone']),
+          email: '',
+          telefone: '',
           ativo: p['ativo'] === true,
           iniciais: nome
             .replace(/^(Dr\.?|Dra\.?)\s+/i, '')
@@ -50,7 +48,7 @@ export class ProfissionaisCatalogoService extends ReferenciasCadastro {
 
   carregar(): Observable<void> {
     return this.http
-      .get<RespostaApi<Opcao[]>>(environment.apiUrl + '/profissionais/opcoes/especialidades')
+      .get<RespostaApi<Opcao[]>>(environment.apiUrl + '/catalogo/especialidades')
       .pipe(
         tap((r) =>
           this.especialidades.set(
@@ -76,7 +74,12 @@ export class ProfissionaisCatalogoService extends ReferenciasCadastro {
   carregarEquipe(): Observable<void> {
     this.carregando.set(true);
     this.erro.set('');
-    return forkJoin({ lista: this.service.listar(), opcoes: this.carregar() }).pipe(
+    return forkJoin({
+      lista: this.http
+        .get<RespostaApi<Registro[]>>(environment.apiUrl + '/catalogo/profissionais')
+        .pipe(map((r) => r.dados)),
+      opcoes: this.carregar(),
+    }).pipe(
       tap(({ lista }) => this.registros.set(lista)),
       map(() => undefined),
       catchError((e: Error) => {

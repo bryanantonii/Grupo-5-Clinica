@@ -38,7 +38,7 @@ Abra http://localhost:4200/gestao para usar os cadastros de Pacientes, Profissio
 
 Os providers dos cinco serviços e de Relatórios estão em app.config.ts. Profissionais usa ProfissionaisApiService por padrão. ClinicaMockStore guarda os exemplos dos demais módulos em sessionStorage na chave clinora.c1.cadastros.v1. Recarregar mantém os cadastros da mesma aba. Para reiniciar os exemplos, feche a aba e abra uma nova ou remova essa chave nas ferramentas do navegador. Use apenas dados fictícios.
 
-O catálogo público de profissionais e suas especialidades agora vêm da API. Os mocks dos outros módulos continuam separados. As consultas do agendamento público anterior e as consultas da Gestão ainda usam fluxos demonstrativos separados; a unificação depende da integração da API. A área de Gestão não implementa autenticação real nesta etapa.
+O catálogo público de profissionais e suas especialidades vem das rotas de leitura `/api/v1/catalogo/profissionais` e `/api/v1/catalogo/especialidades`, sem exigir token ou expor contato privado. Os mocks dos outros módulos continuam separados. As consultas do agendamento público anterior e as consultas da Gestão ainda usam fluxos demonstrativos separados; a unificação depende da integração da API. Na aula 12, a API passa a exigir JWT nas rotas de gestão. O login demonstrativo do Angular ainda não envia esse token; essa integração pertence à aula 13. Portanto, a gestão de Profissionais recebe 401 até o envio do JWT, enquanto o catálogo público continua disponível. Para demonstrar a autenticação nesta aula, use o Swagger conforme [o roteiro da aula 12](../docs/aula-12/README.md).
 
 ```powershell
 npm run test:c1
@@ -57,9 +57,9 @@ Compilação de produção concluída e fluxos de agendamento, bloqueio de horá
 
 Em src/environments/environment.ts, usarMockProfissionais=false ativa a API; true volta ao mock C1. A opção antiga usarMock foi removida porque era usada somente pelo exemplo didático.
 
-Inicie o MongoDB e, em backend, configure o .env conforme .env.example, execute npm ci, npm run seed:profissionais e npm run start:dev. Depois inicie o Angular em http://localhost:4200. O seed insere exemplos ausentes sem limpar o banco.
+Inicie o MongoDB e, em backend, configure o .env conforme .env.example, execute npm ci, npm run configurar:auth, npm run seed e npm run start:dev. Depois inicie o Angular em http://localhost:4200. O seed insere exemplos ausentes sem limpar o banco.
 
-A gestão em /gestao/profissionais permite listar, buscar, cadastrar, editar, mostrar inativos e excluir com confirmação. A exclusão inativa o documento. As especialidades do select usam IDs do MongoDB; editar o mock de Especialidades não altera essa lista.
+As telas em /gestao/profissionais oferecem listar, buscar, cadastrar, editar, mostrar inativos e excluir com confirmação. Desde a aula 12, os endpoints dessas operações exigem JWT; a ligação com o login Angular será entregue na aula 13. A exclusão inativa o documento. As especialidades do select usam IDs do MongoDB; editar o mock de Especialidades não altera essa lista.
 
 Swagger: http://localhost:3000/api/docs. A documentação completa das rotas, validações, testes, limites e roteiro de apresentação fica em [docs/api-profissionais.md](../docs/api-profissionais.md). Os relatórios e os demais cadastros ainda usam mocks.
 
