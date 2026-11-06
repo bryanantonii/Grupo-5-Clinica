@@ -1,6 +1,6 @@
 # Rotas da Clinora
 
-Organização conferida em 5 de novembro de 2026.
+Organização atualizada em 6 de novembro de 2026, na aula 13.
 
 ## Onde encontrar no VS Code
 
@@ -44,7 +44,10 @@ O projeto não possui uma funcionalidade ativa de Produtos.
 
 ## Gestão da clínica
 
-`/gestao` abre a visão geral. O menu acessa os cinco módulos e `/gestao/relatorios`.
+`/gestao` exige login real da equipe em `/login`. A visão geral apresenta o
+painel para admin e atalhos da agenda para atendente. O menu acessa os cinco
+módulos; Relatórios exige admin também quando o endereço é digitado.
+`/sem-permissao` explica o bloqueio de perfil sem encerrar a sessão.
 
 | Módulo | Listar | Cadastrar | Editar |
 | --- | --- | --- | --- |
@@ -89,21 +92,27 @@ são protegidos, incluindo as opções de Especialidades.
 Swagger: `/api/docs`. Faça login e coloque `dados.accessToken` em Authorize.
 Sem token, a rota protegida retorna 401. A API não registra `/api/v1/produtos`.
 
-O login demonstrativo do Angular ainda não envia JWT. Assim, a gestão que
-chama a API recebe 401 até a integração da aula 13. O site público usa as
-rotas de catálogo e continua acessível. Veja [o roteiro da aula 12](aula-12/README.md).
+A equipe usa JWT enviado pelo interceptor do Angular. A gestão dos cinco
+módulos e os Relatórios consomem a API; o catálogo público continua acessível.
 
-Convênios possui schema e service; seu controller HTTP ainda precisa ser
-entregue. Pacientes, Consultas e o módulo completo de Especialidades também
-aguardam a API. As telas desses módulos continuam em mock; mudar os nomes de
-rotas do exemplo não implementaria suas regras de negócio.
+Pacientes, Especialidades e Convênios expõem GET de listagem e por ID, POST,
+PATCH por ID e DELETE com exclusão lógica. Todos usam o prefixo `/api/v1`.
+Consultas também expõe PATCH `/consultas/:id/status`. Atendentes podem mudar
+o status, incluindo cancelamento, de acordo com o fluxo permitido.
+
+Relatórios expõe GET `/relatorios/resumo`, `/relatorios/consultas-por-status`
+e `/relatorios/consultas-por-especialidade`. Essas rotas, todos os DELETE e
+POST `/usuarios` exigem admin. O catálogo é público; o restante exige JWT.
+Consulte [o contrato detalhado da aula 13](aula-13/contrato-e-dicionario.md).
 
 ## Como foi conferido
 
-`npm run test:rotas`, na pasta `frontend`, executa 23 testes com o Router do
+`npm run test:rotas`, na pasta `frontend`, executa 27 testes com o Router do
 Angular e as configurações reais de rotas, sem abrir um navegador. Eles verificam
 as 15 telas de cadastro, os IDs, os três redirecionamentos antigos, a visão geral,
-Relatórios e a página não encontrada para quatro URLs antigas de Produtos.
+Relatórios e a página não encontrada para quatro URLs antigas de Produtos. A aula 13
+acrescenta sessão ausente, perfil de atendente, expiração entre rotas e acesso
+público ao login e catálogo.
 
 Os testes não renderizam as páginas nem substituem a conferência visual no
 navegador. `npm run build` também confere os templates usados pela aplicação.
