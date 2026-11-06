@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { AuthService } from '../core/auth/auth.service';
 import { ClinoraService } from '../features/clinora/clinora.service';
 import { Icon } from '../features/clinora/shared/icon';
 @Component({
@@ -11,6 +12,7 @@ import { Icon } from '../features/clinora/shared/icon';
 })
 export class Layout {
   private readonly router = inject(Router);
+  protected readonly auth = inject(AuthService);
   protected readonly dados = inject(ClinoraService);
   protected readonly menuAberto = signal(false);
   private readonly url = signal(this.router.url);
@@ -19,7 +21,7 @@ export class Layout {
       this.url(),
     ),
   );
-  protected readonly gestao = computed(() => this.url().startsWith('/gestao'));
+  protected readonly gestao = computed(() => this.url().startsWith('/gestao') || (this.url().startsWith('/sem-permissao') && !!this.auth.usuario()));
   protected readonly area = computed(() =>
     /^\/(minha-area|meus-dados|consultas|dados-atualizados|consulta-cancelada)/.test(this.url()),
   );

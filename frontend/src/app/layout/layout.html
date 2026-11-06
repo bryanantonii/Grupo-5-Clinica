@@ -36,9 +36,17 @@
             [routerLinkActiveOptions]="{ exact: true }"
             ariaCurrentWhenActive="page"
             >Gestão</a
-          ><a routerLink="/gestao/relatorios" routerLinkActive="active" ariaCurrentWhenActive="page"
-            >Relatórios</a
           >
+          @if (auth.administrador()) {
+            <a
+              routerLink="/gestao/relatorios"
+              routerLinkActive="active"
+              ariaCurrentWhenActive="page"
+              >Relatórios</a
+            >
+          }
+          <span>{{ auth.usuario()?.nome }} · {{ auth.usuario()?.perfil }}</span
+          ><button class="nav-logout" type="button" (click)="auth.logout()">Sair da gestão</button>
         } @else if (area()) {
           <a routerLink="/minha-area" routerLinkActive="active" ariaCurrentWhenActive="page"
             >Minhas consultas</a

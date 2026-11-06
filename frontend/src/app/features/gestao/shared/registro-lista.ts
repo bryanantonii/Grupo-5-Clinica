@@ -1,8 +1,10 @@
 import { Component, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { finalize, forkJoin, map, of, Subscription } from 'rxjs';
+import { AuthService } from '../../../core/auth/auth.service';
 import { Coluna, ModuloConfig } from '../modulo-config';
 import { Registro, ROTULOS_STATUS, StatusConsulta, TRANSICOES } from '../gestao.models';
+import { environment } from '../../../../environments/environment';
 import { ClinicaMockStore } from '../services/clinica-mock.store';
 
 @Component({
@@ -12,9 +14,10 @@ import { ClinicaMockStore } from '../services/clinica-mock.store';
 })
 export class RegistroLista implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
+  readonly auth = inject(AuthService);
   readonly config = this.route.snapshot.data['config'] as ModuloConfig;
   private readonly servico = inject(this.config.servico);
-  readonly store = inject(ClinicaMockStore);
+  readonly store = environment.usarMock ? inject(ClinicaMockStore) : null;
   private readonly referencias = this.config.referencias ? inject(this.config.referencias) : null;
   readonly itens = signal<Registro[]>([]);
   readonly carregando = signal(true);
@@ -70,7 +73,8 @@ export class RegistroLista implements OnInit, OnDestroy {
     if (coluna.referencia)
       return (
         this.referencias?.nome(coluna.referencia, String(valor ?? '')) ??
-        this.store.nomeReferencia(coluna.referencia, String(valor ?? ''))
+        this.store?.nomeReferencia(coluna.referencia, String(valor ?? '')) ??
+        'Cadastro indisponível'
       );
     if (coluna.formato === 'data') {
       const d = new Date(`${valor}T12:00:00`);
@@ -100,15 +104,18 @@ export class RegistroLista implements OnInit, OnDestroy {
     );
   }
   excluivel(item: Registro) {
-    return this.config.modulo === 'consultas' ? this.editavel(item) : item['ativo'] !== false;
+    return this.config.modulo === 'consultas'
+      ? this.editavel(item)
+      : this.auth.administrador() && item['ativo'] !== false;
   }
   nome(item: Registro) {
     return String(
       item['nome'] ??
-        `${this.store.nomeReferencia('pacientes', String(item['paciente']))} em ${new Date(String(item['dataHora'])).toLocaleString('pt-BR')}`,
+        `${this.referencias?.nome('pacientes', String(item['paciente'])) ?? this.store?.nomeReferencia('pacientes', String(item['paciente'])) ?? 'Paciente'} em ${new Date(String(item['dataHora'])).toLocaleString('pt-BR')}`,
     );
   }
   pedirExclusao(item: Registro) {
+    if (!this.excluivel(item)) return;
     this.selecionado.set(item);
     this.erroExclusao.set('');
     this.dialogo.nativeElement.showModal();
@@ -120,7 +127,7 @@ export class RegistroLista implements OnInit, OnDestroy {
   }
   confirmarExclusao() {
     const item = this.selecionado();
-    if (!item || this.processando()) return;
+    if (!item || this.processando() || !this.excluivel(item)) return;
     this.processando.set(true);
     this.erroExclusao.set('');
     this.operacao = this.servico

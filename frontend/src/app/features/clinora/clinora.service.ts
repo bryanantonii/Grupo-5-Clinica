@@ -14,15 +14,15 @@ export class ClinoraService {
   readonly carregandoEquipe = this.catalogo.carregando;
   readonly erroEquipe = this.catalogo.erro;
   carregarEquipe(): Observable<void> {
-    return environment.usarMockProfissionais ? of(undefined) : this.catalogo.carregarEquipe();
+    return environment.usarMock ? of(undefined) : this.catalogo.carregarEquipe();
   }
   get especialidades(): Especialidade[] {
-    return environment.usarMockProfissionais
+    return environment.usarMock
       ? this.cadastros.especialidades().filter((e) => e.ativo)
       : this.catalogo.especialidades();
   }
   get profissionais(): Profissional[] {
-    return environment.usarMockProfissionais
+    return environment.usarMock
       ? this.cadastros.profissionais().filter((p) => p.ativo)
       : this.catalogo.profissionais();
   }

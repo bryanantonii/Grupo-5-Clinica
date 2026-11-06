@@ -1,3 +1,4 @@
+import { authGuard } from './core/auth/auth.guard';
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, Routes } from '@angular/router';
 import { Layout } from './layout/layout';
@@ -18,6 +19,8 @@ export const routes: Routes = [
     children: [
       {
         path: 'gestao',
+        canActivate: [authGuard],
+        canActivateChild: [authGuard],
         loadChildren: () => import('./features/gestao/gestao.routes').then((m) => m.GESTAO_ROUTES),
       },
       { path: '', component: Inicio, title: 'Clinora · Cuidar de você é o nosso propósito' },
@@ -73,7 +76,24 @@ export const routes: Routes = [
         data: { modo: 'entrar' },
         title: 'Entrar · Clinora',
       },
-      { path: 'login', redirectTo: 'entrar', pathMatch: 'full' },
+      {
+        path: 'login',
+        loadComponent: () => import('./pages/login/login').then((m) => m.Login),
+        title: 'Área da equipe · Clinora',
+      },
+      {
+        path: 'sem-permissao',
+        loadComponent: resultado,
+        title: 'Acesso restrito · Clinora',
+        data: {
+          icone: 'lock',
+          etiqueta: 'Área da equipe',
+          titulo: 'Acesso restrito',
+          descricao: 'Seu perfil não tem permissão para acessar esta área.',
+          destino: '/gestao',
+          botao: 'Voltar para a gestão',
+        },
+      },
       {
         path: 'criar-conta',
         loadComponent: acesso,
