@@ -17,6 +17,7 @@
 - [x] Seed e preservação dos cadastros existentes conferidos no MongoDB.
 - [x] Respostas, contrato e roteiro de apresentação preparados.
 - [x] Word renderizado e cinco páginas revisadas visualmente.
-- [ ] PR da aula 13 publicado para develop e checagens automáticas aprovadas.
+- [x] [PR 10 da aula 13](https://github.com/bryanantonii/Grupo-5-Clinica/pull/10) publicado para develop.
+- [x] [Checagens automáticas do código](https://github.com/bryanantonii/Grupo-5-Clinica/actions/runs/42306924662) aprovadas no GitHub: lint, testes e build do backend; build do frontend.
 
 O C4 desta entrega corresponde à gestão da equipe. O portal demonstrativo do paciente e o agendamento público continuam identificados como demonstrações.

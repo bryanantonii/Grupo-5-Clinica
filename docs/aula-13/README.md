@@ -6,6 +6,7 @@ Registro de 6 de novembro de 2026. Gestão integrada com API e MongoDB, login da
 - [Material de apoio em Word](aula-13-integracao-2026-11-06.docx).
 - [Contrato da API e dicionário de dados](contrato-e-dicionario.md).
 - [Checklist da entrega](checklist.md).
+- [Conferência no Compass e conexão sem senha](conferencia-compass.md).
 - [Respostas das aulas 11 a 13](../respostas-bryanantonii.md).
 - [Evidências de integração](evidencias/integracao.json), [seed](evidencias/seed-banco.json) e [navegador](evidencias/navegador.json).
 
