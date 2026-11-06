@@ -1,5 +1,7 @@
 import {
   Body,
+  ForbiddenException,
+  Req,
   Controller,
   Delete,
   Get,
@@ -22,6 +24,8 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
+import { Perfis } from '../auth/decorators/perfis.decorator';
+import type { RequisicaoAutenticada } from '../auth/usuario-logado';
 import { CreateProfissionalDto } from './dto/create-profissional.dto';
 import { UpdateProfissionalDto } from './dto/update-profissional.dto';
 import { ListarProfissionaisDto } from './dto/listar-profissionais.dto';
@@ -89,11 +93,20 @@ export class ProfissionaisController {
     description: 'Profissional ou especialidade não encontrado',
   })
   @ApiConflictResponse({ description: 'Registro ou e-mail já cadastrado' })
-  atualizar(@Param('id') id: string, @Body() dto: UpdateProfissionalDto) {
+  atualizar(
+    @Param('id') id: string,
+    @Body() dto: UpdateProfissionalDto,
+    @Req() request: RequisicaoAutenticada,
+  ) {
+    if (dto.ativo !== undefined && request.usuario.perfil !== 'admin')
+      throw new ForbiddenException(
+        'Somente o administrador altera a situação do profissional.',
+      );
     return this.service.atualizar(id, dto);
   }
 
   @Delete(':id')
+  @Perfis('admin')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Inativa um profissional sem apagar o registro' })
   @ApiParam({ name: 'id', example: '665f1c2b9a1e4b0012345680' })

@@ -3,6 +3,8 @@ import 'dotenv/config';
 import mongoose from 'mongoose';
 import { popularClinica } from './popular-clinica';
 import { inserirAdministrador } from '../usuarios/seed-administrador';
+import { inserirAtendente } from './seed-atendente';
+import { completarEspecialidades } from './completar-especialidades';
 
 async function seed() {
   const uri = process.env.MONGODB_URI;
@@ -25,6 +27,14 @@ async function seed() {
       await inserirAdministrador(mongoose.connection, process.env),
     );
     console.log('Cadastros existentes foram preservados.');
+    console.log(
+      'Atendente:',
+      await inserirAtendente(mongoose.connection, process.env),
+    );
+    console.log(
+      'Campos ausentes de Especialidades:',
+      await completarEspecialidades(mongoose.connection),
+    );
   } finally {
     await mongoose.disconnect();
   }

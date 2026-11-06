@@ -13,6 +13,9 @@ function configurar() {
     SEED_ADMIN_NOME: 'Administrador Clinora',
     SEED_ADMIN_EMAIL: 'admin@clinora.example',
     SEED_ADMIN_SENHA: randomBytes(24).toString('base64url'),
+    SEED_ATENDENTE_NOME: 'Atendente Clinora',
+    SEED_ATENDENTE_EMAIL: 'atendente@clinora.example',
+    SEED_ATENDENTE_SENHA: randomBytes(24).toString('base64url'),
   };
   let adicionados = 0;
   for (const [nome, valor] of Object.entries(valores)) {
