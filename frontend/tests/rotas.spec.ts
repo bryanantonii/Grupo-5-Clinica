@@ -10,12 +10,19 @@ import { BrowserTestingModule, platformBrowserTesting } from '@angular/platform-
 import { ActivatedRouteSnapshot, provideRouter, Router } from '@angular/router';
 import { routes } from '../src/app/app.routes';
 import { AuthService } from '../src/app/core/auth/auth.service';
+import { PacienteAuthService } from '../src/app/core/auth/paciente-auth.service';
+import { ClinoraService } from '../src/app/features/clinora/clinora.service';
+import { of, throwError } from 'rxjs';
 
 TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 let router: Router;
 let logado = true;
 let perfil = 'admin';
+let pacienteLogado = false;
+let contaDisponivel = true;
 beforeEach(() => {
+  pacienteLogado = false;
+  contaDisponivel = true;
   logado = true;
   perfil = 'admin';
   TestBed.configureTestingModule({
@@ -24,6 +31,8 @@ beforeEach(() => {
       provideRouter(routes),
       provideLocationMocks(),
       { provide: AuthService, useValue: { estaAutenticado: () => logado, usuario: () => ({perfil}), administrador: () => perfil === 'admin' } },
+      { provide: PacienteAuthService, useValue: { token: () => pacienteLogado ? 'jwt-paciente' : null, carregar: () => contaDisponivel ? of({nome:'Paciente Teste',email:'paciente@example.com',telefone:''}) : throwError(() => new Error('Conta indisponível')) } },
+      { provide: ClinoraService, useValue: { entrar: () => {} } },
       { provide: DOCUMENT, useValue: {} },
       { provide: Title, useValue: { getTitle: () => '', setTitle: () => {} } },
     ],
@@ -106,4 +115,22 @@ test('login da equipe e catálogo público não exigem sessão', async () => {
   assert.equal(destino().routeConfig?.path, 'login');
   await router.navigateByUrl('/profissionais');
   assert.equal(destino().routeConfig?.path, 'profissionais');
+});
+
+for (const url of ['/minha-area', '/meus-dados', '/confirmar-email']) {
+  test(`conta sem sessão não abre ${url}`, async () => {
+    await router.navigateByUrl(url);
+    assert.equal(destino().routeConfig?.path, 'entrar');
+  });
+}
+test('paciente autenticado acessa Meus dados após confirmação no servidor', async () => {
+  pacienteLogado = true;
+  await router.navigateByUrl('/meus-dados');
+  assert.equal(destino().routeConfig?.path, 'meus-dados');
+});
+test('token em cache não libera a área quando a conta é recusada pelo servidor', async () => {
+  pacienteLogado = true;
+  contaDisponivel = false;
+  await router.navigateByUrl('/minha-area');
+  assert.equal(destino().routeConfig?.path, 'entrar');
 });

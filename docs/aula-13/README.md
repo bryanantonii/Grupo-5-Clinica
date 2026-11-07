@@ -14,7 +14,7 @@ Entrada da equipe: http://localhost:4200/login. As credenciais ficam somente no 
 
 As rotas privadas usam JWT. Administradores também podem excluir cadastros, criar atendentes e consultar Relatórios. Cancelar consulta é uma transição de status permitida à equipe. O catálogo do site continua público.
 
-A gestão usa API por padrão (`usarMock: false`). Os fluxos públicos demonstrativos de agendamento e área do paciente permanecem separados.
+A gestão usa API por padrão (`usarMock: false`). Cadastro, login e Meus dados do paciente também estão conectados ao MongoDB, com sessão e permissões separadas da equipe. O agendamento público permanece demonstrativo. Veja a [correção do cadastro público](cadastro-publico.md).
 
 Referências técnicas:
 

@@ -4,6 +4,9 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ClinoraService } from './clinora.service';
 import { Icon } from './shared/icon';
 import { criarFormularioAcesso } from './acesso.formulario';
+import { HttpErrorResponse } from '@angular/common/http';
+import { finalize } from 'rxjs';
+import { PacienteAuthService, retornoPacienteSeguro } from '../../core/auth/paciente-auth.service';
 @Component({
   selector: 'app-acesso',
   imports: [ReactiveFormsModule, RouterLink, Icon],
@@ -85,11 +88,11 @@ import { criarFormularioAcesso } from './acesso.formulario';
                   </button>
                 </div>
                 <span id="senha-ajuda" class="form-hint"
-                  >Use uma senha fictícia com pelo menos 8 caracteres.</span
+                  >Use uma senha de teste com pelo menos 8 caracteres e até 72 bytes.</span
                 >
                 @if (invalido('senha')) {
                   <span id="senha-erro" class="field-error"
-                    >A senha deve ter pelo menos 8 caracteres.</span
+                    >A senha deve ter pelo menos 8 caracteres e até 72 bytes.</span
                   >
                 }
               </div>
@@ -142,19 +145,20 @@ import { criarFormularioAcesso } from './acesso.formulario';
                 <p class="field-error" role="status">Confirme que usará dados fictícios.</p>
               }
             }
-            <div class="demo-note">
+            <div class="demo-note" role="status">
               <app-icon name="info" />
               <p>
-                Modo demonstração.
                 {{
-                  modo === 'entrar'
-                    ? 'Use seu e-mail e uma senha fictícia para explorar as telas.'
-                    : 'Nenhuma senha é armazenada e nenhum e-mail é enviado.'
+                  modo === 'entrar' || modo === 'cadastro'
+                    ? 'Sua conta será validada pela clínica. Projeto acadêmico: use dados e senha de teste.'
+                    : 'A recuperação automática de senha ainda não está disponível. Entre em contato com a clínica.'
                 }}
               </p>
             </div>
-            <button type="submit" class="btn full-width" [disabled]="form.invalid || form.pending">
-              {{ botao }} <app-icon name="arrow" />
+            @if (erro()) { <p class="field-error" role="alert">{{ erro() }}</p> }
+            @if (auth.aviso()) { <p class="notice" role="status">{{ auth.aviso() }}</p> }
+            <button type="submit" class="btn full-width" [attr.aria-busy]="salvando()" [disabled]="form.invalid || form.pending || salvando() || modo === 'recuperar' || modo === 'nova-senha'">
+              {{ salvando() ? 'Aguarde…' : botao }} <app-icon name="arrow" />
             </button>
           </form>
           @if (modo === 'entrar') {
@@ -180,6 +184,9 @@ export class Acesso {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly dados = inject(ClinoraService);
+  protected readonly auth = inject(PacienteAuthService);
+  protected readonly salvando = signal(false);
+  protected readonly erro = signal(this.route.snapshot.queryParamMap.has('expirada') ? 'Sua sessão expirou. Entre novamente.' : '');
   protected readonly modo: string = this.route.snapshot.data['modo'] ?? 'entrar';
   protected readonly mostrar = signal(false);
   protected readonly form = criarFormularioAcesso(inject(FormBuilder), this.modo);
@@ -215,42 +222,33 @@ export class Acesso {
     return !!v && v.invalid && v.touched;
   }
   protected enviar() {
+    if (this.salvando()) return;
     this.form.markAllAsTouched();
     this.form.updateValueAndValidity();
     if (this.form.invalid) return;
     const v = this.form.getRawValue();
-    if (this.modo === 'recuperar') {
-      void this.router.navigate(['/link-enviado']);
+    if (this.modo === 'recuperar' || this.modo === 'nova-senha') {
+      this.erro.set('A recuperação automática de senha ainda não está disponível. Entre em contato com a clínica.');
       return;
     }
-    if (this.modo === 'nova-senha') {
-      this.form.reset();
-      void this.router.navigate(['/senha-atualizada']);
-      return;
-    }
-    const anterior = this.dados.perfil();
-    const nome =
-      v.nome.trim() ||
-      (anterior?.email.toLowerCase() === v.email.trim().toLowerCase()
-        ? anterior.nome
-        : v.email
-            .split('@')[0]
-            .replace(/[._-]/g, ' ')
-            .replace(/^./, (c) => c.toUpperCase()));
-    this.dados.entrar({
-      nome,
-      email: v.email.trim().toLowerCase(),
-      telefone:
-        anterior?.email.toLowerCase() === v.email.trim().toLowerCase() ? anterior.telefone : '',
+    this.erro.set('');
+    this.salvando.set(true);
+    const operacao = this.modo === 'cadastro'
+      ? this.auth.cadastrar(v.nome, v.email, v.senha)
+      : this.auth.entrar(v.email, v.senha);
+    operacao.pipe(finalize(() => this.salvando.set(false))).subscribe({
+      next: ({ dados }) => {
+        this.dados.entrar(dados.usuario);
+        this.form.reset();
+        void this.router.navigateByUrl(this.modo === 'cadastro' ? '/confirmar-email' : retornoPacienteSeguro(this.route.snapshot.queryParamMap.get('retorno')));
+      },
+      error: (e: unknown) => this.erro.set(e instanceof HttpErrorResponse && e.status === 409
+        ? 'Já existe uma conta com este e-mail. Entre com sua senha.'
+        : e instanceof HttpErrorResponse && e.status === 401
+          ? 'E-mail ou senha inválidos para a área do paciente.'
+          : e instanceof HttpErrorResponse && e.status === 400
+            ? 'Confira o nome, o e-mail e a senha informados.'
+            : 'Não foi possível concluir. Confira a conexão com a clínica e tente novamente.'),
     });
-    this.form.reset();
-    const destino = this.route.snapshot.queryParamMap.get('retorno');
-    void this.router.navigateByUrl(
-      this.modo === 'cadastro'
-        ? '/confirmar-email'
-        : destino?.startsWith('/') && !destino.startsWith('//')
-          ? destino
-          : '/minha-area',
-    );
   }
 }

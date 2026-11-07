@@ -17,8 +17,11 @@ export function requisicaoDaApi(url: string): boolean {
 }
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (!requisicaoDaApi(req.url)) return next(req);
+  const caminho = new URL(req.url, environment.apiUrl).pathname;
+  const conta = new URL(environment.apiUrl).pathname + '/conta';
+  if (caminho === conta || caminho.startsWith(conta + '/')) return next(req);
   const auth = inject(AuthService);
-  const login = new URL(req.url, environment.apiUrl).pathname.endsWith('/auth/login');
+  const login = /\/auth\/(login|login-paciente|cadastro-paciente)$/.test(caminho);
   const publico = new URL(req.url, environment.apiUrl).pathname.includes('/catalogo/');
   const token = login || publico ? null : auth.token();
   const autenticada = token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;

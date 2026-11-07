@@ -21,7 +21,7 @@ O configurador gera valores ausentes no `.env`, sem imprimir segredos. O seed ma
 
 O login público é POST `/api/v1/auth/login`. O token fica em `dados.accessToken`, expira em uma hora e deve ser enviado em Authorization Bearer. O guard JWT é global; depois dele, PerfisGuard decide as permissões.
 
-O perfil admin é obrigatório para DELETE, Relatórios e POST `/usuarios`. O cadastro HTTP de usuários cria atendentes. Cancelar consulta pela rota de status é permitido à equipe e conserva o histórico. Alterar `ativo` por PATCH de Profissionais também exige admin; os outros DTOs não aceitam esse campo.
+O perfil admin é obrigatório para DELETE, Relatórios e POST `/usuarios`. O cadastro administrativo em POST `/usuarios` cria atendentes. O cadastro público POST `/auth/cadastro-paciente` cria somente pacientes; `/auth/login-paciente` autentica esse perfil. GET e PATCH `/conta` leem e atualizam a própria conta do paciente. IDs de terceiros e campos de permissão não são aceitos. Rotas privadas sem perfil explícito continuam restritas à equipe. Cancelar consulta pela rota de status é permitido à equipe e conserva o histórico. Alterar `ativo` por PATCH de Profissionais também exige admin; os outros DTOs não aceitam esse campo.
 
 O catálogo tem apenas duas exceções públicas de leitura: GET `/catalogo/profissionais` e GET `/catalogo/especialidades`. Produtos continua fora da aplicação, em `referencias/produtos`.
 
@@ -33,6 +33,7 @@ O catálogo tem apenas duas exceções públicas de leitura: GET `/catalogo/prof
 | `npm run test:compat` | Mesmos testes CJS com resolução pelo Node, para o bloqueio de extensão nativa existente neste laboratório. |
 | `npm run build` | Build do NestJS. |
 | `npx eslint "src/**/*.ts"` | Verificação de padrão sem reescrever o código. |
+| `npm run verificar:conta -- --registrar` | 56 verificações HTTP/MongoDB da conta pública e isolamento da gestão. |
 | `npm run verificar:auth` | 31 verificações de autenticação em banco temporário. |
 | `npm run verificar:integracao` | 81 verificações HTTP/MongoDB dos módulos, perfis e regras. |
 | `npm run verificar:integracao -- --registrar` | Também grava a evidência em docs/aula-13/evidencias. |

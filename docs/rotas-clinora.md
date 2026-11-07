@@ -37,8 +37,8 @@ O projeto não possui uma funcionalidade ativa de Produtos.
 | `/agendar` | Agendamento demonstrativo. |
 | `/contato` | Contato demonstrativo. |
 | `/sobre` | Apresentação da clínica. |
-| `/entrar` e `/criar-conta` | Acesso e cadastro demonstrativos. |
-| `/minha-area` e `/meus-dados` | Área do paciente; exigem sessão demonstrativa. |
+| `/entrar` e `/criar-conta` | Login e cadastro reais de pacientes no MongoDB. |
+| `/minha-area` e `/meus-dados` | Conta do paciente; exigem JWT e conferência da conta na API. Agendamentos seguem demonstrativos. |
 | `/consultas/:id` | Detalhe da consulta demonstrativa do paciente. |
 | `/consultas/:id/cancelar` | Confirmação de cancelamento demonstrativo. |
 
@@ -82,8 +82,12 @@ são protegidos, incluindo as opções de Especialidades.
 
 | Método | Endereço | Acesso e função |
 | --- | --- | --- |
-| POST | `/api/v1/auth/login` | Público; valida e-mail e senha e emite JWT. |
-| GET | `/api/v1/auth/me` | Protegido; retorna a identidade do token. |
+| POST | `/api/v1/auth/login` | Público; valida a conta da equipe e emite JWT. |
+| POST | `/api/v1/auth/cadastro-paciente` | Público; cria uma conta com perfil fixo de paciente. |
+| POST | `/api/v1/auth/login-paciente` | Público; autentica a conta do paciente. |
+| GET | `/api/v1/conta` | JWT de paciente; lê a própria conta no banco. |
+| PATCH | `/api/v1/conta` | JWT de paciente; edita somente os dados do titular. |
+| GET | `/api/v1/auth/me` | JWT da equipe; retorna a identidade do token. |
 | POST | `/api/v1/usuarios` | Protegido; cadastra atendentes. |
 | GET | `/api/v1/usuarios/me` | Protegido; consulta o próprio cadastro sem hash. |
 | GET | `/api/v1/catalogo/profissionais` | Público; apresenta a equipe ativa sem contato privado. |
@@ -107,7 +111,7 @@ Consulte [o contrato detalhado da aula 13](aula-13/contrato-e-dicionario.md).
 
 ## Como foi conferido
 
-`npm run test:rotas`, na pasta `frontend`, executa 27 testes com o Router do
+`npm run test:rotas`, na pasta `frontend`, executa 32 testes com o Router do
 Angular e as configurações reais de rotas, sem abrir um navegador. Eles verificam
 as 15 telas de cadastro, os IDs, os três redirecionamentos antigos, a visão geral,
 Relatórios e a página não encontrada para quatro URLs antigas de Produtos. A aula 13

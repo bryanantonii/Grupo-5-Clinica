@@ -13,8 +13,10 @@ Pacientes, Profissionais, Consultas, Especialidades, Convênios e Relatórios.
 A gestão dos cinco módulos e os Relatórios já usam a API e o MongoDB.
 A equipe faz login real em `/login`; o Angular envia JWT nas requisições
 privadas e o backend aplica as permissões de administrador e atendente.
-O catálogo público continua acessível sem login. O agendamento público e
-a área demonstrativa do paciente permanecem separados da gestão.
+O catálogo público continua acessível sem login. O paciente cria sua conta em
+`/criar-conta`, entra em `/entrar` e atualiza seus dados com persistência no MongoDB.
+A conta recebe perfil `paciente` e não acessa a gestão. O agendamento público
+continua demonstrativo.
 
 ## Integrantes, módulos e papéis
 
@@ -123,8 +125,8 @@ Registre as decisões importantes: o que foi decidido, por quê e qual alternati
 
 ## Limitações conhecidas e próximos passos
 
-- A gestão da equipe está integrada. O portal do paciente e o agendamento
-  público continuam demonstrativos; não utilizam a sessão JWT da equipe.
+- A gestão e as contas dos pacientes estão integradas. Os agendamentos do portal
+  continuam demonstrativos. A recuperação automática de senha ainda não está disponível.
 - O JWT expira em uma hora, sem refresh token ou revogação individual nesta
   entrega. Use somente dados fictícios no ambiente acadêmico.
 

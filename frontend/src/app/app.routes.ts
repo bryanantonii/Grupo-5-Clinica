@@ -1,14 +1,8 @@
 import { authGuard } from './core/auth/auth.guard';
-import { inject } from '@angular/core';
-import { CanActivateFn, Router, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { Layout } from './layout/layout';
 import { Inicio } from './pages/inicio/inicio';
-import { ClinoraService } from './features/clinora/clinora.service';
-// Guarda de navegação para a demonstração. A autorização real deve existir na API.
-const sessaoDemo: CanActivateFn = (_, state) =>
-  inject(ClinoraService).perfil()
-    ? true
-    : inject(Router).createUrlTree(['/entrar'], { queryParams: { retorno: state.url } });
+import { pacienteAuthGuard } from './core/auth/paciente-auth.guard';
 const resultado = () => import('./features/clinora/resultado').then((m) => m.Resultado);
 const acesso = () => import('./features/clinora/acesso').then((m) => m.Acesso);
 const area = () => import('./features/clinora/area-paciente').then((m) => m.AreaPaciente);
@@ -126,28 +120,28 @@ export const routes: Routes = [
       {
         path: 'minha-area',
         loadComponent: area,
-        canActivate: [sessaoDemo],
+        canActivate: [pacienteAuthGuard],
         data: { modo: 'area' },
         title: 'Minha área · Clinora',
       },
       {
         path: 'meus-dados',
         loadComponent: area,
-        canActivate: [sessaoDemo],
+        canActivate: [pacienteAuthGuard],
         data: { modo: 'dados' },
         title: 'Meus dados · Clinora',
       },
       {
         path: 'consultas/:id/cancelar',
         loadComponent: area,
-        canActivate: [sessaoDemo],
+        canActivate: [pacienteAuthGuard],
         data: { modo: 'cancelar' },
         title: 'Confirmar cancelamento · Clinora',
       },
       {
         path: 'consultas/:id',
         loadComponent: area,
-        canActivate: [sessaoDemo],
+        canActivate: [pacienteAuthGuard],
         data: { modo: 'detalhes' },
         title: 'Detalhes da consulta · Clinora',
       },
@@ -169,14 +163,15 @@ export const routes: Routes = [
       },
       {
         path: 'confirmar-email',
+        canActivate: [pacienteAuthGuard],
         loadComponent: resultado,
-        title: 'Conta de demonstração criada · Clinora',
+        title: 'Conta criada · Clinora',
         data: {
           icone: 'mail',
           etiqueta: 'Seu cuidado começa aqui',
-          titulo: 'Sua conta de demonstração está pronta.',
-          descricao: 'Em um serviço real, você receberia um link para confirmar seu e-mail.',
-          aviso: 'Nenhum e-mail foi enviado. Você já pode acessar a demonstração.',
+          titulo: 'Sua conta está pronta.',
+          descricao: 'Seu cadastro foi salvo na clínica. Você já pode acessar sua área com e-mail e senha.',
+          aviso: 'Não é necessário confirmar o e-mail nesta versão. Nenhuma mensagem foi enviada.',
           destino: '/minha-area',
           botao: 'Acessar minha área',
         },
@@ -212,11 +207,11 @@ export const routes: Routes = [
       {
         path: 'dados-atualizados',
         loadComponent: resultado,
-        canActivate: [sessaoDemo],
+        canActivate: [pacienteAuthGuard],
         title: 'Dados atualizados · Clinora',
         data: {
           titulo: 'Seus dados foram atualizados.',
-          descricao: 'Suas informações de contato estão atualizadas nesta demonstração.',
+          descricao: 'Suas informações de contato foram salvas na sua conta da clínica.',
           destino: '/minha-area',
           botao: 'Voltar para minha área',
         },
@@ -224,7 +219,7 @@ export const routes: Routes = [
       {
         path: 'consulta-cancelada',
         loadComponent: resultado,
-        canActivate: [sessaoDemo],
+        canActivate: [pacienteAuthGuard],
         title: 'Consulta cancelada · Clinora',
         data: {
           titulo: 'Consulta cancelada.',

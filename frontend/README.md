@@ -23,9 +23,11 @@ As referências dos formulários são obtidas da API e usam IDs do MongoDB. O ca
 
 O catálogo de profissionais continua público, usando `/api/v1/catalogo`, sem contato privado.
 
-## Fluxos públicos demonstrativos
+## Conta do paciente
 
-O agendamento público, o cadastro e a área do paciente permanecem demonstrações em sessão de aba, identificadas na interface. `/entrar` é o acesso demonstrativo do paciente; `/login` é o acesso real da equipe. Nenhuma mensagem ou e-mail é enviado por esses fluxos públicos. Use somente dados fictícios no projeto acadêmico.
+`/criar-conta` grava uma conta com perfil paciente em `clinora.usuarios`, e `/entrar` valida e-mail e senha na API. `/meus-dados` consulta e atualiza a própria conta no MongoDB. A sessão do paciente é separada da equipe e não permite acessar os cadastros da gestão. O perfil antigo de demonstração no cache não libera a área.
+
+O agendamento público e as consultas demonstrativas permanecem identificados na interface. A recuperação automática de senha ainda não está disponível; a interface não simula uma alteração de senha real. Não há envio de e-mail. Use somente dados fictícios no projeto acadêmico.
 
 ## Verificar
 
@@ -34,6 +36,6 @@ npm test
 npm run build
 ```
 
-São 72 testes, incluindo autenticação, adaptadores HTTP, formulários e 27 casos com o Router real. `npm run test:tipos` confere a tipagem; `npm run test:rotas` executa somente a navegação. O build verifica os templates e gera `dist/frontend/browser`.
+São 90 testes, incluindo autenticação, adaptadores HTTP, formulários e 32 casos com o Router real. `npm run test:tipos` confere a tipagem; `npm run test:rotas` executa somente a navegação. O build verifica os templates e gera `dist/frontend/browser`.
 
 O registro, as evidências e o roteiro de apresentação ficam em [docs/aula-13](../docs/aula-13/README.md). Os registros anteriores permanecem em [docs/c1](../docs/c1) e [API de Profissionais](../docs/api-profissionais.md).

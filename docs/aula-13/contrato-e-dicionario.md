@@ -36,7 +36,7 @@ Todos os endpoints exigem `admin`:
 
 ## Autenticação e perfis
 
-POST `/auth/login` é público. O JWT fica em `dados.accessToken` e vale uma hora. GET `/auth/me` e GET `/usuarios/me` exigem identidade válida. POST `/usuarios` exige `admin` e cadastra somente atendentes. As regras de senha, hash e variáveis locais da aula 12 continuam válidas.
+POST `/auth/login` é público. O JWT fica em `dados.accessToken` e vale uma hora. GET `/auth/me` e GET `/usuarios/me` exigem identidade válida da equipe. POST `/usuarios` exige `admin` e cadastra somente atendentes. As regras de senha, hash e variáveis locais da aula 12 continuam válidas.
 
 GET `/catalogo/profissionais` e GET `/catalogo/especialidades` continuam públicos e somente de leitura. A equipe pública não expõe contato privado. Nenhuma rota de Produtos foi acrescentada.
 
@@ -47,3 +47,16 @@ Erros: 400 para dados, IDs e transições inválidos; 401 para autenticação; 4
 `npm run configurar:auth` prepara também `SEED_ATENDENTE_NOME`, `SEED_ATENDENTE_EMAIL` e `SEED_ATENDENTE_SENHA`, preservando variáveis existentes. `npm run seed` mantém o administrador e os cadastros, insere o atendente ausente e completa somente campos ausentes das três especialidades conhecidas, com os valores fictícios do C1. Repetir não troca senha nem sobrescreve esses valores.
 
 Credenciais e JWT_SECRET ficam no `.env` ignorado pelo Git. O frontend usa sessionStorage, nunca localStorage, e envia o JWT somente às rotas privadas da API configurada. O backend decide as permissões, independentemente dos menus ou de alterações na sessão do navegador.
+
+## Conta pública do paciente
+
+| Método | Rota sob /api/v1 | Acesso e resultado |
+| --- | --- | --- |
+| POST | /auth/cadastro-paciente | Público. Nome, email e senha; cria perfil fixo paciente e retorna sessão com 201. |
+| POST | /auth/login-paciente | Público. Valida a conta de paciente; retorna sessão com 200 ou 401. |
+| GET | /conta | JWT de paciente. Lê a própria conta ativa no MongoDB. |
+| PATCH | /conta | JWT de paciente. Atualiza nome, email e telefone da própria conta. |
+
+A coleção usuarios aceita admin, atendente e paciente. O telefone opcional pertence à conta de acesso. Email é único entre todos os perfis e a senha fica somente em senhaHash com bcrypt. O visitante não envia perfil, ativo, _id, senhaHash ou vínculo de prontuário. Duplicidade retorna 409; campos inválidos ou inesperados, 400. Rotas privadas sem perfil explícito são da equipe e retornam 403 para pacientes.
+
+Uma conta de acesso não cria automaticamente uma ficha clínica em pacientes. Registros clínicos anteriores não são vinculados somente pelo e-mail, que ainda não é verificado nesta versão.

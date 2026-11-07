@@ -6,7 +6,7 @@ import { ClinicaMockStore } from '../gestao/services/clinica-mock.store';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Consulta, Especialidade, PerfilPaciente, Profissional } from './clinora.models';
 
-/** Profissionais usa a API; acesso e agendamento continuam em demonstração na sessão. */
+/** Catálogo usa a API. Este serviço conserva o agendamento demonstrativo; a autenticação fica em PacienteAuthService. */
 @Injectable({ providedIn: 'root' })
 export class ClinoraService {
   private readonly cadastros = inject(ClinicaMockStore);

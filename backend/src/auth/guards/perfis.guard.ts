@@ -16,11 +16,13 @@ export class PerfisGuard implements CanActivate {
       contexto.getHandler(),
       contexto.getClass(),
     ]);
-    if (!exigidos?.length) return true;
     const { usuario } = contexto
       .switchToHttp()
       .getRequest<RequisicaoAutenticada>();
-    if (!usuario || !exigidos.includes(usuario.perfil))
+    // Sem perfil explícito, a operação é da equipe. Pacientes usam apenas
+    // rotas marcadas para eles, mesmo conhecendo as URLs dos cadastros.
+    if (!exigidos?.length && usuario?.perfil !== 'paciente') return true;
+    if (!usuario || !exigidos?.includes(usuario.perfil))
       throw new ForbiddenException(
         'Seu perfil não tem permissão para esta ação',
       );
