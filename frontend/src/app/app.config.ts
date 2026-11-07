@@ -20,7 +20,14 @@ import {
 } from './features/convenios/services/convenios.service';
 import { RelatoriosService, RelatoriosMockService } from './features/relatorios/relatorios.service';
 import { ProfissionaisApiService } from './features/profissionais/services/profissionais-api.service';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './core/auth/auth.interceptor';
+import { pacienteAuthInterceptor } from './core/auth/paciente-auth.interceptor';
+import { PacientesApiService } from './features/pacientes/services/pacientes-api.service';
+import { ConsultasApiService } from './features/consultas/services/consultas-api.service';
+import { EspecialidadesApiService } from './features/especialidades/services/especialidades-api.service';
+import { ConveniosApiService } from './features/convenios/services/convenios-api.service';
+import { RelatoriosApiService } from './features/relatorios/relatorios-api.service';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
@@ -33,24 +40,37 @@ registerLocaleData(localePt);
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    { provide: PacientesService, useClass: PacientesMockService },
+    {
+      provide: PacientesService,
+      useClass: environment.usarMock ? PacientesMockService : PacientesApiService,
+    },
     {
       provide: ProfissionaisService,
-      useClass: environment.usarMockProfissionais
-        ? ProfissionaisMockService
-        : ProfissionaisApiService,
+      useClass: environment.usarMock ? ProfissionaisMockService : ProfissionaisApiService,
     },
-    { provide: ConsultasService, useClass: ConsultasMockService },
-    { provide: EspecialidadesService, useClass: EspecialidadesMockService },
-    { provide: ConveniosService, useClass: ConveniosMockService },
-    { provide: RelatoriosService, useClass: RelatoriosMockService },
+    {
+      provide: ConsultasService,
+      useClass: environment.usarMock ? ConsultasMockService : ConsultasApiService,
+    },
+    {
+      provide: EspecialidadesService,
+      useClass: environment.usarMock ? EspecialidadesMockService : EspecialidadesApiService,
+    },
+    {
+      provide: ConveniosService,
+      useClass: environment.usarMock ? ConveniosMockService : ConveniosApiService,
+    },
+    {
+      provide: RelatoriosService,
+      useClass: environment.usarMock ? RelatoriosMockService : RelatoriosApiService,
+    },
     provideBrowserGlobalErrorListeners(),
     provideRouter(
       routes,
       withComponentInputBinding(),
       withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' }),
     ),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor, pacienteAuthInterceptor])),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
   ],
 };

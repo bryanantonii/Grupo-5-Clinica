@@ -1,0 +1,77 @@
+.equipe-login {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: center;
+  min-height: 75vh;
+  padding-block: 4rem;
+}
+.equipe-apresentacao h1 {
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  line-height: 1.15;
+  max-width: 17ch;
+  color: #163d35;
+}
+.equipe-apresentacao p {
+  max-width: 43ch;
+  line-height: 1.7;
+}
+.equipe-apresentacao a {
+  display: inline-block;
+  margin-top: 1.5rem;
+  color: #176c57;
+  font-weight: 600;
+}
+.equipe-formulario {
+  background: #fff;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border: 1px solid #d9e6df;
+  border-radius: 1.25rem;
+  box-shadow: 0 12px 40px #183d3510;
+}
+.equipe-formulario h2 {
+  margin-top: 0;
+  font-size: 1.75rem;
+}
+.equipe-formulario form {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+.equipe-ver-senha {
+  justify-self: start;
+  border: 0;
+  background: transparent;
+  color: #176c57;
+  text-decoration: underline;
+  padding: 0.6rem 0;
+  cursor: pointer;
+}
+.equipe-enviar {
+  width: 100%;
+  justify-content: center;
+}
+.equipe-ajuda {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 0;
+  margin-top: 1.5rem;
+}
+.equipe-formulario .c1-field-error:empty {
+  display: none;
+}
+@media (max-width: 760px) {
+  .equipe-login {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding-block: 2rem;
+    min-height: auto;
+  }
+  .equipe-apresentacao h1 {
+    max-width: 25ch;
+    font-size: 2rem;
+  }
+  .equipe-apresentacao p {
+    max-width: none;
+  }
+}

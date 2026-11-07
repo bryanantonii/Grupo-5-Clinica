@@ -7,6 +7,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import type { RequisicaoAutenticada } from '../auth/usuario-logado';
+import { Perfis } from '../auth/decorators/perfis.decorator';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UsuariosService } from './usuarios.service';
 
@@ -18,6 +19,7 @@ export class UsuariosController {
   constructor(private readonly usuarios: UsuariosService) {}
 
   @Post()
+  @Perfis('admin')
   @ApiOperation({ summary: 'Cadastra um atendente mediante autenticação' })
   @ApiConflictResponse({ description: 'E-mail já cadastrado' })
   criar(@Body() dto: CreateUsuarioDto) {

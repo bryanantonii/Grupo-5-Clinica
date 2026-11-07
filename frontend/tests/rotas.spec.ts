@@ -9,15 +9,30 @@ import { Title } from '@angular/platform-browser';
 import { BrowserTestingModule, platformBrowserTesting } from '@angular/platform-browser/testing';
 import { ActivatedRouteSnapshot, provideRouter, Router } from '@angular/router';
 import { routes } from '../src/app/app.routes';
+import { AuthService } from '../src/app/core/auth/auth.service';
+import { PacienteAuthService } from '../src/app/core/auth/paciente-auth.service';
+import { ClinoraService } from '../src/app/features/clinora/clinora.service';
+import { of, throwError } from 'rxjs';
 
 TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 let router: Router;
+let logado = true;
+let perfil = 'admin';
+let pacienteLogado = false;
+let contaDisponivel = true;
 beforeEach(() => {
+  pacienteLogado = false;
+  contaDisponivel = true;
+  logado = true;
+  perfil = 'admin';
   TestBed.configureTestingModule({
     providers: [
       provideZonelessChangeDetection(),
       provideRouter(routes),
       provideLocationMocks(),
+      { provide: AuthService, useValue: { estaAutenticado: () => logado, usuario: () => ({perfil}), administrador: () => perfil === 'admin' } },
+      { provide: PacienteAuthService, useValue: { token: () => pacienteLogado ? 'jwt-paciente' : null, carregar: () => contaDisponivel ? of({nome:'Paciente Teste',email:'paciente@example.com',telefone:''}) : throwError(() => new Error('Conta indisponível')) } },
+      { provide: ClinoraService, useValue: { entrar: () => {} } },
       { provide: DOCUMENT, useValue: {} },
       { provide: Title, useValue: { getTitle: () => '', setTitle: () => {} } },
     ],
@@ -70,4 +85,52 @@ test('acesso da equipe e relatórios usam o layout de gestão', async () => {
   assert.equal(destino().data['inicio'], true);
   await router.navigateByUrl('/gestao/relatorios');
   assert.equal(destino().title, 'Relatórios | Clinora');
+});
+
+test('gestão sem sessão leva ao login e conserva o endereço solicitado', async () => {
+  logado = false;
+  await router.navigateByUrl('/gestao/pacientes');
+  assert.equal(destino().routeConfig?.path, 'login');
+  assert.equal(destino().queryParams['retorno'], '/gestao/pacientes');
+});
+
+test('atendente navega nos cadastros e não acessa relatórios pelo endereço', async () => {
+  perfil = 'atendente';
+  await router.navigateByUrl('/gestao/convenios');
+  assert.equal(destino().data['config'].modulo, 'convenios');
+  await router.navigateByUrl('/gestao/relatorios');
+  assert.equal(destino().routeConfig?.path, 'sem-permissao');
+});
+
+test('sessão perdida é conferida também ao navegar entre filhos da gestão', async () => {
+  await router.navigateByUrl('/gestao/pacientes');
+  logado = false;
+  await router.navigateByUrl('/gestao/profissionais');
+  assert.equal(destino().routeConfig?.path, 'login');
+});
+
+test('login da equipe e catálogo público não exigem sessão', async () => {
+  logado = false;
+  await router.navigateByUrl('/login');
+  assert.equal(destino().routeConfig?.path, 'login');
+  await router.navigateByUrl('/profissionais');
+  assert.equal(destino().routeConfig?.path, 'profissionais');
+});
+
+for (const url of ['/minha-area', '/meus-dados', '/confirmar-email']) {
+  test(`conta sem sessão não abre ${url}`, async () => {
+    await router.navigateByUrl(url);
+    assert.equal(destino().routeConfig?.path, 'entrar');
+  });
+}
+test('paciente autenticado acessa Meus dados após confirmação no servidor', async () => {
+  pacienteLogado = true;
+  await router.navigateByUrl('/meus-dados');
+  assert.equal(destino().routeConfig?.path, 'meus-dados');
+});
+test('token em cache não libera a área quando a conta é recusada pelo servidor', async () => {
+  pacienteLogado = true;
+  contaDisponivel = false;
+  await router.navigateByUrl('/minha-area');
+  assert.equal(destino().routeConfig?.path, 'entrar');
 });

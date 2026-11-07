@@ -1,5 +1,7 @@
 # Pasta de documentação do grupo
 
+- [Aula 13: perfis, login Angular, módulos na API e roteiro de apresentação](aula-13/README.md).
+
 - [Aula 12: autenticação, JWT, bcrypt, seed e roteiro do Swagger](aula-12/README.md).
 - [Respostas de Segurança da aula 12](respostas-bryanantonii.md).
 

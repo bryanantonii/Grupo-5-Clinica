@@ -1,3 +1,4 @@
+import { perfilGuard } from '../../core/auth/auth.guard';
 import { Routes } from '@angular/router';
 import { GestaoLayout } from './gestao-layout';
 export const GESTAO_ROUTES: Routes = [
@@ -7,8 +8,7 @@ export const GESTAO_ROUTES: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () =>
-          import('../relatorios/relatorios-painel').then((m) => m.RelatoriosPainel),
+        loadComponent: () => import('./gestao-inicio').then((m) => m.GestaoInicio),
         data: { inicio: true },
         title: 'Visão geral | Gestão Clinora',
       },
@@ -36,6 +36,8 @@ export const GESTAO_ROUTES: Routes = [
       },
       {
         path: 'relatorios',
+        canActivate: [perfilGuard],
+        data: { perfis: ['admin'] },
         loadComponent: () =>
           import('../relatorios/relatorios-painel').then((m) => m.RelatoriosPainel),
         title: 'Relatórios | Clinora',

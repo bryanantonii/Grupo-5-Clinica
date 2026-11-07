@@ -2,7 +2,7 @@
   <div>
     <p class="eyebrow">{{ inicio ? 'Bem-vindo à gestão' : 'Acompanhamento da clínica' }}</p>
     <h1>{{ inicio ? 'Visão geral' : 'Relatórios' }}</h1>
-    <p>Consulte o resumo dos cadastros e dos atendimentos de exemplo.</p>
+    <p>Consulte os cadastros e atendimentos registrados na clínica.</p>
   </div>
   <button class="btn btn-outline" type="button" [disabled]="carregando()" (click)="carregar()">
     Atualizar painel
@@ -104,7 +104,6 @@
     </section>
   </div>
   <p class="c1-footnote">
-    Os relatórios usam os mesmos cadastros dos cinco módulos. Nenhuma informação é enviada a uma API
-    nesta etapa.
+    Os relatórios são calculados pela API a partir dos registros salvos no MongoDB.
   </p>
 }

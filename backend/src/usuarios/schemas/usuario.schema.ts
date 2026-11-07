@@ -1,12 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-export const PERFIS_USUARIO = ['admin', 'atendente'] as const;
+export const PERFIS_USUARIO = ['admin', 'atendente', 'paciente'] as const;
 export type PerfilUsuario = (typeof PERFIS_USUARIO)[number];
 export type UsuarioDocument = HydratedDocument<Usuario>;
 
 @Schema({ collection: 'usuarios', timestamps: true, strict: 'throw' })
 export class Usuario {
+  createdAt: Date;
+  updatedAt: Date;
+
   @Prop({ required: true, trim: true, minlength: 3, maxlength: 80 })
   nome: string;
 
@@ -15,6 +18,9 @@ export class Usuario {
 
   @Prop({ required: true, select: false })
   senhaHash: string;
+
+  @Prop({ type: String, trim: true, maxlength: 20, default: '' })
+  telefone?: string;
 
   @Prop({
     type: String,

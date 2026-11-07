@@ -16,13 +16,21 @@ export class AuthService {
     private readonly jwt: JwtService,
   ) {}
 
-  async login(email: string, senha: string) {
+  async login(
+    email: string,
+    senha: string,
+    acesso: 'equipe' | 'paciente' = 'equipe',
+  ) {
     const usuario = await this.usuarios.buscarPorEmailComSenha(email);
     const confere = await bcrypt.compare(
       senha,
       usuario?.senhaHash ?? this.hashAusente,
     );
-    if (!usuario || !confere || usuario.ativo === false)
+    const perfilPermitido =
+      acesso === 'paciente'
+        ? usuario?.perfil === 'paciente'
+        : usuario?.perfil === 'admin' || usuario?.perfil === 'atendente';
+    if (!usuario || !confere || usuario.ativo === false || !perfilPermitido)
       throw new UnauthorizedException('Credenciais inválidas');
     const payload = {
       sub: String(usuario._id),
@@ -37,6 +45,9 @@ export class AuthService {
         nome: usuario.nome,
         email: usuario.email,
         perfil: usuario.perfil,
+        ...(usuario.perfil === 'paciente'
+          ? { telefone: usuario.telefone ?? '' }
+          : {}),
       },
     };
   }

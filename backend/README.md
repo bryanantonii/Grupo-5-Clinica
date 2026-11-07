@@ -1,60 +1,46 @@
-# Back-end — API NestJS
+# Backend da Clinora
 
-Instruções completas no [README principal](../README.md).
+API NestJS 11 com Mongoose. Pacientes, Profissionais, Consultas, Especialidades, Convênios, Relatórios, Usuários e Auth estão registrados no AppModule.
 
-A aplicação registra apenas módulos da clínica. O exemplo Produtos está em
-`referencias/produtos/backend`, fora deste aplicativo, e não expõe rotas nem
-participa do seed. A análise dos
-cadastros, do que já está no MongoDB e das próximas integrações está em
-[Banco da Clinora](../docs/banco-clinica-2026-11-05.md).
+## Executar
 
-| Comando | O que faz |
-| --- | --- |
-| `npm run start:dev` | Sobe a API com recarga automática (porta 3000) |
-| `npm run configurar:auth` | Gera as variáveis locais de autenticação sem imprimir segredos |
-| `npm run seed` | Insere exemplos ausentes e o administrador inicial, preservando cadastros e senhas existentes |
-| `npm run verificar:auth` | Executa 31 verificações de autenticação com HTTP e MongoDB em banco temporário separado |
-| `npm run seed:profissionais` | Confere os exemplos de Profissionais e suas Especialidades |
-| `npm run verificar:seed:clinica` | Confere o seed duas vezes em um banco temporário, sem alterar o banco da clínica |
-| `npm test` | Roda os testes unitários (Jest) |
-| `npm run test:cov` | Testes com relatório de cobertura |
-| `npm run lint` | Verifica e corrige o padrão do código |
-
-## Convênios com Mongoose
-
-O módulo E está em src/convenios. O schema registra os campos do guia, o enum modalidade (individual ou coletivo), valores padrão, índices e timestamps. A inclusão de modalidade foi confirmada na atividade e está documentada para revisão do grupo.
-
-Com MONGODB_URI configurada no .env local, execute npm run seed e npm run verificar:convenios. O seed insere exemplos ausentes sem apagar ou sobrescrever os existentes. O verificador obtém o model pelo Nest, confere os cinco exemplos e os timestamps e tenta uma duplicidade que deve ser rejeitada com E11000.
-
-A documentação, o dicionário e o roteiro de apresentação estão em ../docs/aula-07-mongoose. A etapa de Convênios não implementa seu controller HTTP ou a integração desse módulo com o Angular. A autenticação comum da API foi acrescentada na aula 12, descrita abaixo.
-
-## Autenticação da aula 12
-
-Com a conexão do MongoDB configurada no `.env`, execute:
+Prepare o `.env` local com `MONGODB_URI`, usando MongoDB local ou Atlas. Na pasta backend:
 
 ```powershell
+npm ci
 npm run configurar:auth
 npm run seed
 npm run start:dev
 ```
 
-O configurador prepara `JWT_SECRET`, `SEED_ADMIN_NOME`, `SEED_ADMIN_EMAIL` e
-`SEED_ADMIN_SENHA` no `.env` ignorado pelo Git. O arquivo `.env.auth.example`
-lista as variáveis, sem valores secretos. Consulte as credenciais somente no
-arquivo local para testar o login da aplicação. Não são credenciais do Atlas.
+A API fica em http://localhost:3000/api/v1 e o Swagger em http://localhost:3000/api/docs.
 
-`POST /api/v1/auth/login` é público. O JWT fica em `dados.accessToken` na
-resposta e vale uma hora. As rotas de gestão exigem `Authorization: Bearer`
-com esse token. `GET /api/v1/auth/me` e `GET /api/v1/usuarios/me` conferem a
-identidade; `POST /api/v1/usuarios` cadastra atendentes autenticadamente.
-O seed é o responsável pelo administrador inicial.
+O configurador gera valores ausentes no `.env`, sem imprimir segredos. O seed mantém o administrador e os cadastros existentes, insere o atendente ausente e completa somente duração e valor ausentes nas três especialidades conhecidas, com os valores fictícios do C1. O `.env.auth.example` lista as variáveis sem senhas.
 
-O catálogo de apresentação tem duas exceções públicas de leitura:
-`GET /api/v1/catalogo/profissionais` e `GET /api/v1/catalogo/especialidades`.
-A equipe pública não expõe e-mail, telefone privado ou hash. Todos os
-endpoints de `/api/v1/profissionais` continuam protegidos.
+## Segurança
 
-As permissões por perfil e o login JWT do Angular pertencem à aula 13.
-O guard valida o token sem consultar o usuário a cada requisição; desativar
-um usuário impede novos logins, mas um token já emitido vale até expirar.
-O roteiro do Swagger e os testes estão em [docs/aula-12](../docs/aula-12/README.md).
+O login público é POST `/api/v1/auth/login`. O token fica em `dados.accessToken`, expira em uma hora e deve ser enviado em Authorization Bearer. O guard JWT é global; depois dele, PerfisGuard decide as permissões.
+
+O perfil admin é obrigatório para DELETE, Relatórios e POST `/usuarios`. O cadastro administrativo em POST `/usuarios` cria atendentes. O cadastro público POST `/auth/cadastro-paciente` cria somente pacientes; `/auth/login-paciente` autentica esse perfil. GET e PATCH `/conta` leem e atualizam a própria conta do paciente. IDs de terceiros e campos de permissão não são aceitos. Rotas privadas sem perfil explícito continuam restritas à equipe. Cancelar consulta pela rota de status é permitido à equipe e conserva o histórico. Alterar `ativo` por PATCH de Profissionais também exige admin; os outros DTOs não aceitam esse campo.
+
+O catálogo tem apenas duas exceções públicas de leitura: GET `/catalogo/profissionais` e GET `/catalogo/especialidades`. Produtos continua fora da aplicação, em `referencias/produtos`.
+
+## Testes e verificadores
+
+| Comando | Resultado esperado |
+| --- | --- |
+| `npm test` | Testes unitários com a configuração padrão do Jest, usada no GitHub. |
+| `npm run test:compat` | Mesmos testes CJS com resolução pelo Node, para o bloqueio de extensão nativa existente neste laboratório. |
+| `npm run build` | Build do NestJS. |
+| `npx eslint "src/**/*.ts"` | Verificação de padrão sem reescrever o código. |
+| `npm run verificar:conta -- --registrar` | 56 verificações HTTP/MongoDB da conta pública e isolamento da gestão. |
+| `npm run verificar:auth` | 31 verificações de autenticação em banco temporário. |
+| `npm run verificar:integracao` | 81 verificações HTTP/MongoDB dos módulos, perfis e regras. |
+| `npm run verificar:integracao -- --registrar` | Também grava a evidência em docs/aula-13/evidencias. |
+| `npm run verificar:seed:clinica` | Verifica a preservação dos exemplos em um banco temporário. |
+
+Os verificadores de integração criam bancos com prefixos próprios e removem somente os bancos temporários criados por eles. Não apagam o banco clinora. Não exibem senhas, hashes ou tokens.
+
+Os testes obrigatórios originais continuam em `testes-obrigatorios`. Suas cópias executáveis em `src` foram mantidas sem alterações. O modo de compatibilidade não altera os testes nem a configuração original do CI e não requer alterar as proteções do Windows.
+
+O contrato, o dicionário de dados e o roteiro do Swagger estão em [docs/aula-13](../docs/aula-13/README.md). O registro de Convênios com Mongoose permanece em [docs/aula-07-mongoose](../docs/aula-07-mongoose).

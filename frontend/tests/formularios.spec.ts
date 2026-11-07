@@ -52,7 +52,15 @@ test('login exige e-mail válido e senha com oito caracteres', () => {
   form.patchValue({ email: 'teste@example.com', senha: 'senha123' });
   assert.equal(form.valid, true);
 });
-test('cadastro exige confirmação de senha e ciência da demonstração', () => {
+
+test('senha respeita o limite de 72 bytes inclusive com caracteres acentuados', () => {
+  const form = criarFormularioAcesso(new FormBuilder(), 'cadastro');
+  form.controls.senha.setValue('á'.repeat(37));
+  assert.equal(form.controls.senha.hasError('limiteBcrypt'), true);
+  form.controls.senha.setValue('á'.repeat(36));
+  assert.equal(form.controls.senha.valid, true);
+});
+test('cadastro exige confirmação de senha e ciência do uso de dados fictícios', () => {
   const form = criarFormularioAcesso(new FormBuilder(), 'cadastro');
   form.patchValue({ nome: 'Ana Lima', email: 'ana@example.com', senha: 'senha123', ciente: true });
   assert.equal(form.controls.confirmar.hasError('required'), true);

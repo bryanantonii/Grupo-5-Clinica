@@ -6,7 +6,7 @@ import { ClinicaMockStore } from '../gestao/services/clinica-mock.store';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Consulta, Especialidade, PerfilPaciente, Profissional } from './clinora.models';
 
-/** Profissionais usa a API; acesso e agendamento continuam em demonstração na sessão. */
+/** Catálogo usa a API. Este serviço conserva o agendamento demonstrativo; a autenticação fica em PacienteAuthService. */
 @Injectable({ providedIn: 'root' })
 export class ClinoraService {
   private readonly cadastros = inject(ClinicaMockStore);
@@ -14,15 +14,15 @@ export class ClinoraService {
   readonly carregandoEquipe = this.catalogo.carregando;
   readonly erroEquipe = this.catalogo.erro;
   carregarEquipe(): Observable<void> {
-    return environment.usarMockProfissionais ? of(undefined) : this.catalogo.carregarEquipe();
+    return environment.usarMock ? of(undefined) : this.catalogo.carregarEquipe();
   }
   get especialidades(): Especialidade[] {
-    return environment.usarMockProfissionais
+    return environment.usarMock
       ? this.cadastros.especialidades().filter((e) => e.ativo)
       : this.catalogo.especialidades();
   }
   get profissionais(): Profissional[] {
-    return environment.usarMockProfissionais
+    return environment.usarMock
       ? this.cadastros.profissionais().filter((p) => p.ativo)
       : this.catalogo.profissionais();
   }

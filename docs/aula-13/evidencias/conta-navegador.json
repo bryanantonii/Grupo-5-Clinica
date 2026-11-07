@@ -1,0 +1,27 @@
+{
+  "data": "2026-11-06",
+  "total": 9,
+  "casos": [
+    "Cadastro feito pelo formulário público e confirmação após gravação.",
+    "Área do paciente aberta com sessão real.",
+    "Nome e telefone editados em Meus dados.",
+    "Saída encerra a sessão do paciente.",
+    "Senha incorreta é recusada na tela.",
+    "Novo login lê o nome atualizado.",
+    "E-mail repetido mostra conflito sem criar outra conta.",
+    "Recarregar Meus dados preserva as alterações.",
+    "Leitura direta no MongoDB confirma conta, hash e edição da interface."
+  ],
+  "banco": "clinora",
+  "colecao": "usuarios",
+  "emailFicticio": "paciente.portal.20261106@example.com",
+  "nome": "Paciente Portal Atualizado",
+  "telefone": "(51) 99999-2026",
+  "perfil": "paciente",
+  "ativo": true,
+  "senhaEmFormatoBcrypt": true,
+  "senhaEmTextoAusente": true,
+  "createdAt": "2026-11-07T00:08:44.814Z",
+  "updatedAt": "2026-11-07T00:09:04.717Z",
+  "resultado": "aprovado"
+}

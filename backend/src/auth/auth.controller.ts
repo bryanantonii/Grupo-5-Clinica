@@ -18,11 +18,35 @@ import { AuthService } from './auth.service';
 import { Publico } from './decorators/publico.decorator';
 import { LoginDto } from './dto/login.dto';
 import type { RequisicaoAutenticada } from './usuario-logado';
+import { UsuariosService } from '../usuarios/usuarios.service';
+import { CadastroPacienteDto } from '../usuarios/dto/conta-paciente.dto';
 
 @ApiTags('Autenticação')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly auth: AuthService) {}
+  constructor(
+    private readonly auth: AuthService,
+    private readonly usuarios: UsuariosService,
+  ) {}
+
+  @Publico()
+  @Post('cadastro-paciente')
+  @ApiOperation({
+    summary:
+      'Cria uma conta pública com perfil fixo de paciente e inicia a sessão',
+  })
+  async cadastrarPaciente(@Body() dto: CadastroPacienteDto) {
+    await this.usuarios.criarPaciente(dto);
+    return this.auth.login(dto.email, dto.senha, 'paciente');
+  }
+
+  @Publico()
+  @Post('login-paciente')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Autentica uma conta de paciente' })
+  loginPaciente(@Body() dto: LoginDto) {
+    return this.auth.login(dto.email, dto.senha, 'paciente');
+  }
 
   @Publico()
   @Post('login')

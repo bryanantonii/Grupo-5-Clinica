@@ -190,3 +190,12 @@ O arquivo .vscode/settings.json aponta o SDK para backend/node_modules/typescrip
 A seleção alinha a análise do editor à versão usada pelo terminal e pelo CI. As validações do TypeScript permanecem ativas e os testes continuam sendo verificados. A conferência local incluiu os 45 testes Jest e a análise completa do backend com node node_modules/typescript/bin/tsc --noEmit -p tsconfig.json.
 
 Após selecionar o SDK 5.9.3 do projeto, o painel Problems do VS Code passou de 33 erros para **No problems have been detected in the workspace**.
+
+
+## Atualização da aula 13
+
+A configuração atual utiliza `environment.usarMock`, com padrão false para
+toda a gestão. Login da equipe e JWT estão integrados ao Angular. DELETE de
+Profissionais e alteração de ativo por PATCH exigem admin. A referência de
+Especialidade no schema foi corrigida para ObjectId; o relatório também aceita
+referências antigas em texto. Veja [docs/aula-13](aula-13/README.md).

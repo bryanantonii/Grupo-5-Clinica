@@ -4,6 +4,10 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ClinoraService } from './clinora.service';
 import { Icon } from './shared/icon';
+import { signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { finalize } from 'rxjs';
+import { PacienteAuthService } from '../../core/auth/paciente-auth.service';
 @Component({
   selector: 'app-area-paciente',
   imports: [RouterLink, Icon, ReactiveFormsModule, DatePipe],
@@ -20,7 +24,7 @@ import { Icon } from './shared/icon';
         </div>
         <div class="patient-grid">
           <section>
-            <h2 class="medium-heading">Suas consultas</h2>
+            <h2 class="medium-heading">Seus agendamentos demonstrativos</h2>
             @for (c of dados.consultas(); track c._id) {
               <article class="appointment-card" [class.cancelled]="c.status === 'cancelada'">
                 <div class="appointment-top">
@@ -57,12 +61,11 @@ import { Icon } from './shared/icon';
             ><a routerLink="/contato" class="btn btn-outline"
               ><app-icon name="message" /> Falar com a clínica</a
             >
-            <p class="small-text">Dados fictícios para demonstração.</p>
+            <p class="small-text">Sua conta está conectada à clínica.</p>
           </aside>
         </div>
         <p class="notice">
-          <app-icon name="info" /> O histórico de consultas aparecerá aqui depois dos seus
-          atendimentos.
+          <app-icon name="info" /> Os agendamentos desta área ainda são demonstrativos. Sua conta e seus dados de contato são salvos no banco da clínica.
         </p>
       } @else if (modo === 'dados') {
         <a routerLink="/minha-area" class="text-link back-link"
@@ -117,12 +120,13 @@ import { Icon } from './shared/icon';
             }
           </div>
           <p class="privacy-note">
-            <app-icon name="shield" /> Suas informações ficam somente nesta demonstração.
+            <app-icon name="shield" /> Estas informações são salvas na sua conta da clínica.
           </p>
           <div class="form-actions">
             <a routerLink="/minha-area" class="btn btn-outline">Voltar</a
-            ><button type="submit" class="btn">Salvar alterações <app-icon name="check" /></button>
+            ><button type="submit" class="btn" [disabled]="salvando()" [attr.aria-busy]="salvando()">{{ salvando() ? 'Salvando…' : 'Salvar alterações' }} <app-icon name="check" /></button>
           </div>
+          @if (erro()) { <p class="field-error" role="alert">{{ erro() }}</p> }
         </form>
       } @else {
         <a routerLink="/minha-area" class="text-link back-link"
@@ -220,6 +224,9 @@ import { Icon } from './shared/icon';
 })
 export class AreaPaciente {
   protected readonly dados = inject(ClinoraService);
+  private readonly auth = inject(PacienteAuthService);
+  protected readonly salvando = signal(false);
+  protected readonly erro = signal('');
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   protected readonly modo: string = this.route.snapshot.data['modo'] ?? 'area';
@@ -243,15 +250,24 @@ export class AreaPaciente {
     return !!v && v.invalid && v.touched;
   }
   protected salvar() {
+    if (this.salvando()) return;
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
     const v = this.form.getRawValue();
-    this.dados.atualizarPerfil({
+    this.salvando.set(true);
+    this.erro.set('');
+    this.auth.atualizar({
       nome: v.nome.trim(),
       email: v.email.trim().toLowerCase(),
       telefone: v.telefone.trim(),
+    }).pipe(finalize(() => this.salvando.set(false))).subscribe({
+      next: usuario => {
+        this.dados.atualizarPerfil(usuario);
+        void this.router.navigate(['/dados-atualizados']);
+      },
+      error: (e: unknown) => this.erro.set(e instanceof HttpErrorResponse && e.status === 409
+        ? 'Este e-mail já está em uso por outra conta.' : 'Não foi possível salvar seus dados. Tente novamente.'),
     });
-    void this.router.navigate(['/dados-atualizados']);
   }
   protected cancelar(id: string) {
     this.dados.cancelar(id);
