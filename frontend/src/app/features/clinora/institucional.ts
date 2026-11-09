@@ -1,7 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ClinoraService } from './clinora.service';
+import { finalize } from 'rxjs';
+import { mensagemDaApi } from '../../shared/erros-api';
 import { Icon } from './shared/icon';
 @Component({
   selector: 'app-sobre',
@@ -63,6 +65,25 @@ export class Sobre {}
       <p class="lead">
         A cobertura depende do seu plano e da especialidade. Confirme com a equipe antes de agendar.
       </p>
+      @if (dados.carregandoEquipe()) {
+        <p class="notice" role="status">Carregando convênios...</p>
+      } @else if (dados.erroEquipe()) {
+        <p class="error-notice" role="alert">{{ dados.erroEquipe() }}</p>
+      } @else {
+        <div class="three-grid">
+          @for (c of dados.convenios; track c._id) {
+            <article class="panel">
+              <h2>{{ c.nome }}</h2>
+              <p>Registro ANS: {{ c.codigoAns }}</p>
+              <p>Cobertura cadastrada: {{ c.percentualCobertura }}%.</p>
+            </article>
+          } @empty {
+            <p class="notice">
+              Não há convênios ativos cadastrados. Consulte o atendimento particular.
+            </p>
+          }
+        </div>
+      }
       <div class="insurance-grid">
         <form class="panel insurance-form" [formGroup]="form" (ngSubmit)="solicitar()" novalidate>
           <span class="icon-tile"><app-icon name="shield" /></span>
@@ -120,6 +141,9 @@ export class Convenios {
     plano: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(80)]],
     especialidade: ['Clínica geral'],
   });
+  constructor() {
+    this.dados.carregarEquipe().subscribe();
+  }
   protected invalido(c: string) {
     const v = this.form.get(c);
     return !!v && v.invalid && v.touched;
@@ -238,9 +262,19 @@ export class Convenios {
           <p class="privacy-note">
             <app-icon name="shield" /> Usaremos seus dados apenas para responder ao seu contato.
           </p>
-          <p class="form-hint">Demonstração acadêmica: nenhuma mensagem será enviada.</p>
+          <p class="form-hint">Sua mensagem será recebida pela equipe da clínica.</p>
           <div class="form-actions">
-            <button type="submit" class="btn">Enviar mensagem <app-icon name="arrow" /></button>
+            <button
+              type="submit"
+              class="btn"
+              [disabled]="form.invalid || salvando()"
+              [attr.aria-busy]="salvando()"
+            >
+              {{ salvando() ? 'Enviando…' : 'Enviar mensagem' }} <app-icon name="arrow" />
+            </button>
+            @if (erro()) {
+              <p class="error-notice" role="alert">{{ erro() }}</p>
+            }
           </div>
         </form>
       </div>
@@ -248,6 +282,9 @@ export class Convenios {
   `,
 })
 export class Contato {
+  private readonly dados = inject(ClinoraService);
+  protected readonly salvando = signal(false);
+  protected readonly erro = signal('');
   private readonly router = inject(Router);
   private readonly query = inject(ActivatedRoute).snapshot.queryParamMap;
   protected readonly form = inject(FormBuilder).nonNullable.group({
@@ -265,6 +302,24 @@ export class Contato {
   }
   protected enviar() {
     this.form.markAllAsTouched();
-    if (this.form.valid) void this.router.navigate(['/mensagem-enviada']);
+    if (this.form.invalid || this.salvando()) return;
+    this.salvando.set(true);
+    this.erro.set('');
+    const v = this.form.getRawValue();
+    this.dados
+      .enviarContato({
+        nome: v.nome.trim(),
+        email: v.email.trim().toLowerCase(),
+        assunto: v.assunto,
+        mensagem: v.mensagem.trim(),
+      })
+      .pipe(finalize(() => this.salvando.set(false)))
+      .subscribe({
+        next: () => {
+          this.form.reset();
+          void this.router.navigate(['/mensagem-enviada']);
+        },
+        error: (e: unknown) => this.erro.set(mensagemDaApi(e)),
+      });
   }
 }

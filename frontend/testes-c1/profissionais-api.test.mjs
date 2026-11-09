@@ -131,17 +131,26 @@ test('Catálogo carrega especialidades reais e usa os IDs no formulário e no si
       assert.ok(url.includes('/catalogo/'));
       return of({
         sucesso: true,
-        dados: url.endsWith('/especialidades')
-          ? [item.especialidade]
-          : [
+        dados: url.endsWith('/convenios')
+          ? [
               {
-                _id: item._id,
-                nome: item.nome,
-                registro: item.registro,
-                especialidade: item.especialidade._id,
-                ativo: true,
+                _id: '665f1c2b9a1e4b0012345777',
+                nome: 'Saúde Teste',
+                codigoAns: '000123',
+                percentualCobertura: 80,
               },
-            ],
+            ]
+          : url.endsWith('/especialidades')
+            ? [item.especialidade]
+            : [
+                {
+                  _id: item._id,
+                  nome: item.nome,
+                  registro: item.registro,
+                  especialidade: item.especialidade._id,
+                  ativo: true,
+                },
+              ],
       });
     },
   });
@@ -154,7 +163,8 @@ test('Catálogo carrega especialidades reais e usa os IDs no formulário e no si
   assert.equal(catalogo.nome('especialidades', item.especialidade._id), 'Cardiologia');
   assert.equal(catalogo.carregando(), false);
   assert.equal(catalogo.erro(), '');
-  assert.equal(chamadas.length, 2);
+  assert.equal(chamadas.length, 3);
+  assert.equal(catalogo.convenios()[0].nome, 'Saúde Teste');
   assert.equal(catalogo.profissionais()[0].email, '');
   assert.equal(catalogo.profissionais()[0].telefone, '');
   catalogo.registrarAtual({

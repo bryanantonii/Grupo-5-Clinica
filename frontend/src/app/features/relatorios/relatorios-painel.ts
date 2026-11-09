@@ -16,7 +16,6 @@ export class RelatoriosPainel implements OnInit, OnDestroy {
   readonly erro = signal('');
   private operacao?: Subscription;
   ngOnInit() {
-    if (this.route.snapshot.queryParamMap.get('simularErro') === '1') this.servico.simularFalha();
     this.carregar();
   }
   carregar() {
@@ -24,7 +23,7 @@ export class RelatoriosPainel implements OnInit, OnDestroy {
     this.carregando.set(true);
     this.erro.set('');
     this.operacao = this.servico
-      .carregar(this.route.snapshot.queryParamMap.get('cenario') === 'vazio')
+      .carregar()
       .pipe(finalize(() => this.carregando.set(false)))
       .subscribe({
         next: (d) => this.relatorio.set(d),

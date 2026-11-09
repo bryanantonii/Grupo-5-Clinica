@@ -35,6 +35,18 @@ export const GESTAO_ROUTES: Routes = [
         loadChildren: () => import('../convenios/convenios.routes').then((m) => m.CONVENIOS_ROUTES),
       },
       {
+        path: 'mensagens',
+        loadComponent: () => import('../contatos/mensagens').then((m) => m.Mensagens),
+        title: 'Mensagens | Gestão Clinora',
+      },
+      {
+        path: 'usuarios',
+        canActivate: [perfilGuard],
+        data: { perfis: ['admin'] },
+        loadComponent: () => import('../usuarios/usuarios').then((m) => m.Usuarios),
+        title: 'Usuários | Gestão Clinora',
+      },
+      {
         path: 'relatorios',
         canActivate: [perfilGuard],
         data: { perfis: ['admin'] },

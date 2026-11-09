@@ -4,8 +4,6 @@ import { finalize, forkJoin, map, of, Subscription } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
 import { Coluna, ModuloConfig } from '../modulo-config';
 import { Registro, ROTULOS_STATUS, StatusConsulta, TRANSICOES } from '../gestao.models';
-import { environment } from '../../../../environments/environment';
-import { ClinicaMockStore } from '../services/clinica-mock.store';
 
 @Component({
   selector: 'app-registro-lista',
@@ -17,7 +15,6 @@ export class RegistroLista implements OnInit, OnDestroy {
   readonly auth = inject(AuthService);
   readonly config = this.route.snapshot.data['config'] as ModuloConfig;
   private readonly servico = inject(this.config.servico);
-  readonly store = environment.usarMock ? inject(ClinicaMockStore) : null;
   private readonly referencias = this.config.referencias ? inject(this.config.referencias) : null;
   readonly itens = signal<Registro[]>([]);
   readonly carregando = signal(true);
@@ -34,7 +31,6 @@ export class RegistroLista implements OnInit, OnDestroy {
   private leitura?: Subscription;
   private operacao?: Subscription;
   ngOnInit() {
-    if (this.route.snapshot.queryParamMap.get('simularErro') === '1') this.servico.simularFalha();
     this.carregar();
   }
   carregar() {
@@ -72,9 +68,7 @@ export class RegistroLista implements OnInit, OnDestroy {
     const valor = item[coluna.campo];
     if (coluna.referencia)
       return (
-        this.referencias?.nome(coluna.referencia, String(valor ?? '')) ??
-        this.store?.nomeReferencia(coluna.referencia, String(valor ?? '')) ??
-        'Cadastro indisponível'
+        this.referencias?.nome(coluna.referencia, String(valor ?? '')) ?? 'Cadastro indisponível'
       );
     if (coluna.formato === 'data') {
       const d = new Date(`${valor}T12:00:00`);
@@ -111,7 +105,7 @@ export class RegistroLista implements OnInit, OnDestroy {
   nome(item: Registro) {
     return String(
       item['nome'] ??
-        `${this.referencias?.nome('pacientes', String(item['paciente'])) ?? this.store?.nomeReferencia('pacientes', String(item['paciente'])) ?? 'Paciente'} em ${new Date(String(item['dataHora'])).toLocaleString('pt-BR')}`,
+        `${this.referencias?.nome('pacientes', String(item['paciente'])) ?? 'Paciente'} em ${new Date(String(item['dataHora'])).toLocaleString('pt-BR')}`,
     );
   }
   pedirExclusao(item: Registro) {

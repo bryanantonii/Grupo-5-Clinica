@@ -24,7 +24,7 @@ import { Icon } from '../../clinora/shared/icon';
           <div>
             <p class="eyebrow">{{ dados.especialidade(p.especialidade) }}</p>
             <h1>{{ p.nome }}</h1>
-            <p>Perfil demonstrativo · {{ p.registro }}</p>
+            <p>Registro profissional · {{ p.registro }}</p>
           </div>
         </div>
         <div class="profile-grid">

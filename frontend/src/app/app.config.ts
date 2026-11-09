@@ -1,24 +1,9 @@
-import {
-  PacientesService,
-  PacientesMockService,
-} from './features/pacientes/services/pacientes.service';
-import {
-  ProfissionaisService,
-  ProfissionaisMockService,
-} from './features/profissionais/services/profissionais.service';
-import {
-  ConsultasService,
-  ConsultasMockService,
-} from './features/consultas/services/consultas.service';
-import {
-  EspecialidadesService,
-  EspecialidadesMockService,
-} from './features/especialidades/services/especialidades.service';
-import {
-  ConveniosService,
-  ConveniosMockService,
-} from './features/convenios/services/convenios.service';
-import { RelatoriosService, RelatoriosMockService } from './features/relatorios/relatorios.service';
+import { PacientesService } from './features/pacientes/services/pacientes.service';
+import { ProfissionaisService } from './features/profissionais/services/profissionais.service';
+import { ConsultasService } from './features/consultas/services/consultas.service';
+import { EspecialidadesService } from './features/especialidades/services/especialidades.service';
+import { ConveniosService } from './features/convenios/services/convenios.service';
+import { RelatoriosService } from './features/relatorios/relatorios.service';
 import { ProfissionaisApiService } from './features/profissionais/services/profissionais-api.service';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/auth/auth.interceptor';
@@ -32,7 +17,6 @@ import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
-import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 
 // Formatos brasileiros para moeda, datas e números (R$ 8,90)
@@ -42,27 +26,27 @@ export const appConfig: ApplicationConfig = {
   providers: [
     {
       provide: PacientesService,
-      useClass: environment.usarMock ? PacientesMockService : PacientesApiService,
+      useClass: PacientesApiService,
     },
     {
       provide: ProfissionaisService,
-      useClass: environment.usarMock ? ProfissionaisMockService : ProfissionaisApiService,
+      useClass: ProfissionaisApiService,
     },
     {
       provide: ConsultasService,
-      useClass: environment.usarMock ? ConsultasMockService : ConsultasApiService,
+      useClass: ConsultasApiService,
     },
     {
       provide: EspecialidadesService,
-      useClass: environment.usarMock ? EspecialidadesMockService : EspecialidadesApiService,
+      useClass: EspecialidadesApiService,
     },
     {
       provide: ConveniosService,
-      useClass: environment.usarMock ? ConveniosMockService : ConveniosApiService,
+      useClass: ConveniosApiService,
     },
     {
       provide: RelatoriosService,
-      useClass: environment.usarMock ? RelatoriosMockService : RelatoriosApiService,
+      useClass: RelatoriosApiService,
     },
     provideBrowserGlobalErrorListeners(),
     provideRouter(

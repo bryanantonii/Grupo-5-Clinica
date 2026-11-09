@@ -1,113 +1,162 @@
-import { Observable, of } from 'rxjs';
-import { dataHoraFutura } from '../../shared/form-validadores';
-import { environment } from '../../../environments/environment';
-import { ProfissionaisCatalogoService } from '../profissionais/services/profissionais-catalogo.service';
-import { ClinicaMockStore } from '../gestao/services/clinica-mock.store';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { Consulta, Especialidade, PerfilPaciente, Profissional } from './clinora.models';
+import { catchError, finalize, map, of, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { PacienteAuthService } from '../../core/auth/paciente-auth.service';
+import { RespostaApi } from '../../core/models/resposta-api';
+import { mensagemDaApi } from '../../shared/erros-api';
+import { ProfissionaisCatalogoService } from '../profissionais/services/profissionais-catalogo.service';
+import { AgendamentoEntrada, Consulta } from './clinora.models';
 
-/** Catálogo usa a API. Este serviço conserva o agendamento demonstrativo; a autenticação fica em PacienteAuthService. */
+/** Dados operacionais vêm da API; os sinais conservam somente o estado da tela. */
 @Injectable({ providedIn: 'root' })
 export class ClinoraService {
-  private readonly cadastros = inject(ClinicaMockStore);
+  private readonly http = inject(HttpClient);
+  private readonly auth = inject(PacienteAuthService);
   private readonly catalogo = inject(ProfissionaisCatalogoService);
+  private readonly url = environment.apiUrl + '/conta/consultas';
+  readonly perfil = this.auth.usuario;
   readonly carregandoEquipe = this.catalogo.carregando;
   readonly erroEquipe = this.catalogo.erro;
-  carregarEquipe(): Observable<void> {
-    return environment.usarMock ? of(undefined) : this.catalogo.carregarEquipe();
-  }
-  get especialidades(): Especialidade[] {
-    return environment.usarMock
-      ? this.cadastros.especialidades().filter((e) => e.ativo)
-      : this.catalogo.especialidades();
-  }
-  get profissionais(): Profissional[] {
-    return environment.usarMock
-      ? this.cadastros.profissionais().filter((p) => p.ativo)
-      : this.catalogo.profissionais();
-  }
-  private readonly perfilState = signal<PerfilPaciente | null>(this.ler('clinora.perfil', null));
-  private readonly consultasState = signal<Consulta[]>(this.ler('clinora.consultas', []));
-  readonly perfil = this.perfilState.asReadonly();
+  readonly carregandoConsultas = signal(false);
+  readonly erroConsultas = signal('');
+  private readonly registros = signal<Consulta[]>([]);
+  private readonly dono = signal('');
+  private leitura = 0;
   readonly consultas = computed(() =>
-    this.consultasState()
-      .filter((c) => c.paciente.email.toLowerCase() === this.perfil()?.email.toLowerCase())
-      .sort((a, b) => (a.data + a.horario).localeCompare(b.data + b.horario)),
+    this.dono() === this.auth.usuario()?._id ? this.registros() : [],
   );
+  readonly ultimaConsulta = signal<Consulta | null>(null);
   readonly aviso = signal('');
-  readonly ultimaConsulta = signal<Consulta | null>(this.ler('clinora.ultima-consulta', null));
+  get especialidades() {
+    return this.catalogo.especialidades();
+  }
+  get profissionais() {
+    return this.catalogo.profissionais();
+  }
+  get convenios() {
+    return this.catalogo.convenios();
+  }
+  carregarEquipe() {
+    return this.catalogo.carregarEquipe();
+  }
   especialidade(id: string) {
-    return this.especialidades.find((e) => e._id === id)?.nome ?? id;
+    return this.especialidades.find((e) => e._id === id)?.nome ?? 'Especialidade indisponível';
   }
   profissional(id: string) {
     return this.profissionais.find((p) => p._id === id);
   }
-  entrar(perfil: PerfilPaciente) {
-    this.perfilState.set(perfil);
-    this.gravar('clinora.perfil', perfil);
-  }
-  atualizarPerfil(perfil: PerfilPaciente) {
-    const anterior = this.perfil()?.email;
-    this.consultasState.update((l) =>
-      l.map((c) => (c.paciente.email === anterior ? { ...c, paciente: { ...perfil } } : c)),
-    );
-    this.gravar('clinora.consultas', this.consultasState());
-    this.entrar(perfil);
-  }
-  sair() {
-    this.perfilState.set(null);
-    try {
-      sessionStorage.removeItem('clinora.perfil');
-    } catch {}
-  }
-  horariosOcupados(profissional: string, data: string) {
-    return this.consultasState()
-      .filter(
-        (c) => c.profissional === profissional && c.data === data && c.status === 'confirmada',
-      )
-      .map((c) => c.horario);
-  }
-  agendar(dados: Omit<Consulta, '_id' | 'status'>): Consulta {
-    const profissional = this.profissional(dados.profissional);
-    if (!profissional?.ativo || profissional.especialidade !== dados.especialidade)
-      throw new Error('Escolha um profissional disponível para esta especialidade.');
-    if (!dataHoraFutura(dados.data, dados.horario))
-      throw new Error('Escolha uma data e um horário futuros.');
-    if (this.horariosOcupados(dados.profissional, dados.data).includes(dados.horario))
-      throw new Error('Esse horário acabou de ser reservado. Escolha outro horário.');
-    const consulta: Consulta = { ...dados, _id: crypto.randomUUID(), status: 'confirmada' };
-    this.ultimaConsulta.set(consulta);
-    this.gravar('clinora.ultima-consulta', consulta);
-    this.consultasState.update((l) => [...l, consulta]);
-    this.gravar('clinora.consultas', this.consultasState());
-    return consulta;
+  nomeConvenio(id: string | null) {
+    return this.convenios.find((c) => c._id === id)?.nome ?? 'Particular';
   }
   consulta(id: string) {
-    return this.consultasState().find(
-      (c) => c._id === id && c.paciente.email.toLowerCase() === this.perfil()?.email.toLowerCase(),
+    return this.consultas().find((c) => c._id === id);
+  }
+  sair() {
+    this.auth.sair();
+    this.registros.set([]);
+    this.dono.set('');
+    this.ultimaConsulta.set(null);
+  }
+  horarios(profissional: string, data: string) {
+    return this.http
+      .get<RespostaApi<{ horarios: string[] }>>(environment.apiUrl + '/catalogo/horarios', {
+        params: new HttpParams().set('profissional', profissional).set('data', data),
+      })
+      .pipe(map((r) => r.dados.horarios));
+  }
+  carregarCadastro() {
+    return this.http
+      .get<RespostaApi<{ dataNascimento: string; convenio: string | null; telefone: string }>>(
+        this.url + '/cadastro',
+      )
+      .pipe(map((r) => r.dados));
+  }
+  carregarConsultas() {
+    const id = this.auth.usuario()?._id ?? '';
+    const leitura = ++this.leitura;
+    this.carregandoConsultas.set(true);
+    this.erroConsultas.set('');
+    return this.http.get<RespostaApi<Consulta[]>>(this.url).pipe(
+      tap((r) => {
+        if (leitura === this.leitura && id === this.auth.usuario()?._id) {
+          this.dono.set(id);
+          this.registros.set(r.dados);
+        }
+      }),
+      map(() => undefined),
+      catchError((e: unknown) => {
+        if (leitura === this.leitura) this.erroConsultas.set(mensagemDaApi(e));
+        return of(undefined);
+      }),
+      finalize(() => {
+        if (leitura === this.leitura) this.carregandoConsultas.set(false);
+      }),
     );
+  }
+  carregarConsulta(id: string) {
+    const usuario = this.auth.usuario()?._id;
+    const leitura = ++this.leitura;
+    this.carregandoConsultas.set(true);
+    this.erroConsultas.set('');
+    return this.http.get<RespostaApi<Consulta>>(this.url + '/' + encodeURIComponent(id)).pipe(
+      tap((r) => {
+        if (leitura === this.leitura && usuario === this.auth.usuario()?._id) this.guardar(r.dados);
+      }),
+      map((r) => r.dados),
+      catchError((e: unknown) => {
+        if (leitura === this.leitura) this.erroConsultas.set(mensagemDaApi(e));
+        return of(null);
+      }),
+      finalize(() => {
+        if (leitura === this.leitura) this.carregandoConsultas.set(false);
+      }),
+    );
+  }
+  agendar(dados: AgendamentoEntrada) {
+    const usuario = this.auth.usuario()?._id;
+    return this.http
+      .post<RespostaApi<Consulta>>(this.url, {
+        profissional: dados.profissional,
+        especialidade: dados.especialidade,
+        dataHora: dados.data + 'T' + dados.horario + ':00-03:00',
+        dataNascimento: dados.dataNascimento,
+        telefone: dados.telefone.trim(),
+        convenio: dados.convenio || null,
+        ciente: dados.ciente,
+      })
+      .pipe(
+        map((r) => r.dados),
+        tap((c) => {
+          if (usuario === this.auth.usuario()?._id) {
+            this.guardar(c);
+            this.ultimaConsulta.set(c);
+          }
+        }),
+      );
   }
   cancelar(id: string) {
-    if (!this.consulta(id)) return;
-    this.consultasState.update((l) =>
-      l.map((c) => (c._id === id ? { ...c, status: 'cancelada' as const } : c)),
-    );
-    this.gravar('clinora.consultas', this.consultasState());
-  }
-  private ler<T>(chave: string, padrao: T): T {
-    try {
-      return JSON.parse(sessionStorage.getItem(chave) ?? 'null') ?? padrao;
-    } catch {
-      return padrao;
-    }
-  }
-  private gravar(chave: string, valor: unknown) {
-    try {
-      sessionStorage.setItem(chave, JSON.stringify(valor));
-    } catch {
-      this.aviso.set(
-        'O navegador não permitiu salvar esta demonstração. Os dados serão mantidos enquanto a página estiver aberta.',
+    const usuario = this.auth.usuario()?._id;
+    return this.http
+      .patch<RespostaApi<Consulta>>(this.url + '/' + encodeURIComponent(id) + '/cancelar', {})
+      .pipe(
+        map((r) => r.dados),
+        tap((c) => {
+          if (usuario === this.auth.usuario()?._id) this.guardar(c);
+        }),
       );
-    }
+  }
+  enviarContato(dados: { nome: string; email: string; assunto: string; mensagem: string }) {
+    return this.http.post<RespostaApi<{ _id: string }>>(environment.apiUrl + '/contatos', dados);
+  }
+  private guardar(c: Consulta) {
+    const dono = this.auth.usuario()?._id ?? '';
+    const lista = this.dono() === dono ? this.registros() : [];
+    this.dono.set(dono);
+    this.registros.set(
+      [...lista.filter((item) => item._id !== c._id), c].sort((a, b) =>
+        b.dataHora.localeCompare(a.dataHora),
+      ),
+    );
   }
 }

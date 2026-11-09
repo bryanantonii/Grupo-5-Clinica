@@ -3,7 +3,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { catchError, finalize, forkJoin, map, Observable, of, tap, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { RespostaApi } from '../../../core/models/resposta-api';
-import { Especialidade } from '../../clinora/clinora.models';
+import { ConvenioPublico, Especialidade } from '../../clinora/clinora.models';
 import { Modulo, normalizar, Registro } from '../../gestao/gestao.models';
 import { ReferenciasCadastro } from '../../gestao/services/referencias-cadastro';
 import { ProfissionalCardDados } from '../profissional.model';
@@ -13,12 +13,13 @@ interface Opcao {
   nome: string;
 }
 
-/** Catálogo da API separado dos outros módulos, que continuam em demonstração. */
+/** Catálogo público do MongoDB, compartilhado pelo site e pelo portal. */
 @Injectable({ providedIn: 'root' })
 export class ProfissionaisCatalogoService extends ReferenciasCadastro {
   private readonly http = inject(HttpClient);
   private readonly registros = signal<Registro[]>([]);
   readonly especialidades = signal<Especialidade[]>([]);
+  readonly convenios = signal<ConvenioPublico[]>([]);
   readonly carregando = signal(false);
   readonly erro = signal('');
   readonly profissionais = computed<ProfissionalCardDados[]>(() =>
@@ -79,6 +80,9 @@ export class ProfissionaisCatalogoService extends ReferenciasCadastro {
         .get<RespostaApi<Registro[]>>(environment.apiUrl + '/catalogo/profissionais')
         .pipe(map((r) => r.dados)),
       opcoes: this.carregar(),
+      convenios: this.http
+        .get<RespostaApi<ConvenioPublico[]>>(environment.apiUrl + '/catalogo/convenios')
+        .pipe(tap((r) => this.convenios.set(r.dados))),
     }).pipe(
       tap(({ lista }) => this.registros.set(lista)),
       map(() => undefined),

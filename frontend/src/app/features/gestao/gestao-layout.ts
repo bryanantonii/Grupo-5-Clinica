@@ -40,7 +40,9 @@ import { AuthService } from '../../core/auth/auth.service';
 export class GestaoLayout {
   readonly auth = inject(AuthService);
   modulosVisiveis() {
-    return this.modulos.filter((m) => m.rota !== 'relatorios' || this.auth.administrador());
+    return this.modulos.filter(
+      (m) => !['relatorios', 'usuarios'].includes(m.rota) || this.auth.administrador(),
+    );
   }
   readonly modulos = [
     { rota: 'pacientes', nome: 'Pacientes' },
@@ -49,5 +51,7 @@ export class GestaoLayout {
     { rota: 'especialidades', nome: 'Especialidades' },
     { rota: 'convenios', nome: 'Convênios' },
     { rota: 'relatorios', nome: 'Relatórios' },
+    { rota: 'mensagens', nome: 'Mensagens' },
+    { rota: 'usuarios', nome: 'Usuários e acessos' },
   ];
 }

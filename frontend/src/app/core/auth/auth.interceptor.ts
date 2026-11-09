@@ -21,13 +21,19 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const conta = new URL(environment.apiUrl).pathname + '/conta';
   if (caminho === conta || caminho.startsWith(conta + '/')) return next(req);
   const auth = inject(AuthService);
-  const login = /\/auth\/(login|login-paciente|cadastro-paciente)$/.test(caminho);
-  const publico = new URL(req.url, environment.apiUrl).pathname.includes('/catalogo/');
+  const login =
+    /\/auth\/(login|login-paciente|cadastro-paciente|recuperar-acesso|redefinir-senha)$/.test(
+      caminho,
+    );
+  const publico =
+    new URL(req.url, environment.apiUrl).pathname.includes('/catalogo/') ||
+    (req.method === 'POST' && /\/contatos$/.test(caminho));
   const token = login || publico ? null : auth.token();
   const autenticada = token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;
   return next(autenticada).pipe(
     catchError((erro: HttpErrorResponse) => {
-      if (erro.status === 401 && !login && !publico && auth.pertenceASessao(token)) auth.logout(true);
+      if (erro.status === 401 && !login && !publico && auth.pertenceASessao(token))
+        auth.logout(true);
       return throwError(() => erro);
     }),
   );

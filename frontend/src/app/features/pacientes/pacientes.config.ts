@@ -1,4 +1,3 @@
-import { environment } from '../../../environments/environment';
 import { ReferenciasApiService } from '../gestao/services/referencias-api.service';
 import { ModuloConfig } from '../gestao/modulo-config';
 import { PacientesService } from './services/pacientes.service';
@@ -76,5 +75,5 @@ export const PACIENTES_CONFIG: ModuloConfig = {
     ],
   },
   servico: PacientesService,
-  referencias: environment.usarMock ? undefined : ReferenciasApiService,
+  referencias: ReferenciasApiService,
 };
