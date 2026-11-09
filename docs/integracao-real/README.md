@@ -50,7 +50,7 @@ PORT=3000
 
 Foi executado `npm run seed` para inserir os exemplos ausentes de especialidades, profissionais e convênios e as contas iniciais da equipe. São registros reais no banco usados pela API; não são respostas mock no navegador. O seed preserva registros existentes. O banco antigo `test` foi preservado.
 
-No Compass, escolha **Add new connection**, informe `mongodb://127.0.0.1:27017/clinora`, dê o nome **Clinora local** e conecte. Abra o banco **clinora** e atualize a lista após usar o site. A abertura e o salvamento desta conexão na interface do Compass não foram realizados nesta etapa porque o controle da interface foi interrompido no computador.
+No Compass, escolha **Add new connection**, informe `mongodb://127.0.0.1:27017/clinora`, dê o nome **Clinora local** e conecte. Abra o banco **clinora** e atualize a lista após usar o site. A conexão foi salva e conectada no Compass em 09/11/2026 com o nome **Clinora local - API**. O aplicativo ficou aberto no banco `clinora`, com as coleções visíveis.
 
 O cadastro do site aparece em `clinora.usuarios`. Depois do primeiro agendamento, aparecem também a ficha em `clinora.pacientes` e a consulta em `clinora.consultas`. Mensagens ficam em `clinora.contatos`. `recuperacoes` guarda somente hashes de tokens temporários.
 
@@ -105,7 +105,6 @@ A evidência sem senhas ou tokens está em [portal-http.json](evidencias/portal-
 ## O que ainda exige providência do grupo
 
 - Configurar o provedor SMTP e verificar a entrega externa do link.
-- Salvar a conexão no Compass, conforme o endereço acima.
 - Se o objetivo for compartilhar registros entre salas, definir o MongoDB compartilhado ou providenciar a migração dos registros; um clone do Git não resolve isso.
 - Revisar os dados institucionais ainda em branco no site: endereço, telefone e horários de atendimento.
 - Para a ficha antiga das aulas 01 a 06, conferir com o integrante de Relatórios o filtro de período e sua validação: o painel atual consulta os indicadores reais gerais, mas ainda não tem filtro inicial/final. As respostas individuais, integrantes e commits de cada aluno precisam ser conferidos pelo próprio grupo. Esta integração não comprova esses itens acadêmicos.
@@ -120,3 +119,18 @@ A configuração de CORS em `backend/src/main.ts` agora usa `src/config/origens-
 Após reiniciar a API, o login feito pelo navegador na porta 57246 abriu a gestão e carregou os indicadores do banco. A evidência está em [login-porta-local.png](evidencias/login-porta-local.png). Os testes adicionam 17 casos unitários e a verificação HTTP de preflight confirma as origens permitidas e recusadas em [cors-local.json](evidencias/cors-local.json). Nenhum registro do banco foi alterado por essa correção.
 
 Para executar no laboratório, mantenha a API e o frontend em terminais separados: `cd backend; npm run start:dev` e `cd frontend; npm start`. O MongoDB deve continuar em execução. Iniciar apenas o frontend não inicia a API. Ao aplicar uma alteração no backend, reinicie-o; depois atualize a página do site. O endereço padrão continua `http://localhost:4200`.
+
+## Conferência da gravação no banco deste computador — 09/11/2026
+
+O Compass estava sem uma conexão da Clinora salva. Foi adicionada **Clinora local - API**, com `mongodb://127.0.0.1:27017/clinora`, o mesmo endereço utilizado pela API. A conexão é local a este computador. A documentação antiga do Atlas descreve outra configuração; ela não transfere os registros nem configura a conexão deste computador.
+
+A conferência inicial encontrou três contas em `usuarios`, sendo uma de paciente. Todas possuíam `senhaHash` no formato bcrypt, com custo de pelo menos 10, sem campos de senha em texto. O código usa `bcryptjs`: `bcrypt.hash(senha, 10)` para guardar e `bcrypt.compare` para autenticar. Não foi necessário alterar o armazenamento de senhas. Hash é uma transformação de mão única, não uma senha que o sistema descriptografa.
+
+Para conferir a gravação na instância usada pelo site, foi criado um usuário fictício pela rota pública e feito o login e um agendamento pela API real. A leitura direta do MongoDB e o GET da consulta confirmaram o mesmo registro. O teste também comparou a senha fictícia com o hash salvo usando bcrypt. A consulta foi visualizada no Compass. Depois foram removidos exclusivamente o usuário, a ficha e a consulta desse teste, com filtros pelos respectivos IDs e vínculos. As três contas anteriores e as demais coleções foram preservadas; não foi apagado nenhum banco.
+
+- **Criar conta no site:** confira `clinora.usuarios`; a senha fica em `senhaHash`.
+- **Primeiro agendamento:** confira a ficha em `clinora.pacientes` e o atendimento em `clinora.consultas`, com referências ObjectId.
+- **Cadastrar paciente pela gestão:** grava a ficha em `pacientes`; essa ficha não cria automaticamente uma conta com senha.
+- **Ver novas gravações no Compass:** abra Documents na coleção correta e clique no ícone de atualizar; limpe um filtro antigo se ele ocultar o novo registro.
+
+Evidências: [conexão salva e coleções](evidencias/compass-conexao-local.jpg), [consulta fictícia durante a verificação](evidencias/compass-consulta-verificacao.jpg) e [resultado sem senhas, hashes ou tokens](evidencias/compass-persistencia-local.json). A consulta do print foi removida ao encerrar o teste. O banco ficou com os mesmos registros anteriores à verificação.

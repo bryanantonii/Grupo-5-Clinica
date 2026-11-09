@@ -1,0 +1,16 @@
+{
+  "data": "2026-11-09T22:52:18.093Z",
+  "banco": "clinora local",
+  "cadastroGravouUsuario": true,
+  "senhaBcryptConfirmada": true,
+  "senhaEmTextoSalva": false,
+  "loginPacienteConfirmado": true,
+  "agendamentoGravouPacienteEConsulta": true,
+  "recarregamentoPelaApiConfirmado": true,
+  "usuarioTeste": "6af24ea1e4f9f68e8864c88e",
+  "pacienteTeste": "6af24ea2f76d68917ecbed5a",
+  "consultaTeste": "6af24ea2e4f9f68e8864c88f",
+  "dadosFicticiosRemovidos": true,
+  "usuariosExistentesPreservados": 3,
+  "limpeza": "Removidos exclusivamente os três documentos do teste, pelos respectivos IDs e vínculos. Nenhum banco ou coleção foi apagado."
+}
