@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsMongoId } from 'class-validator';
+import { Body, Controller, Get, Post, Req, Param, Patch } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiConflictResponse,
@@ -10,6 +12,10 @@ import type { RequisicaoAutenticada } from '../auth/usuario-logado';
 import { Perfis } from '../auth/decorators/perfis.decorator';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UsuariosService } from './usuarios.service';
+
+export class VincularPacienteDto {
+  @ApiProperty() @IsMongoId() paciente: string;
+}
 
 @ApiTags('Usuários')
 @ApiBearerAuth()
@@ -24,6 +30,23 @@ export class UsuariosController {
   @ApiConflictResponse({ description: 'E-mail já cadastrado' })
   criar(@Body() dto: CreateUsuarioDto) {
     return this.usuarios.criar(dto);
+  }
+
+  @Get()
+  @Perfis('admin')
+  @ApiOperation({ summary: 'Lista as contas sem senhas, hashes ou tokens' })
+  listar() {
+    return this.usuarios.listar();
+  }
+
+  @Patch(':id/paciente')
+  @Perfis('admin')
+  @ApiOperation({
+    summary:
+      'Vincula um cadastro clínico após conferência de identidade pela administração',
+  })
+  vincular(@Param('id') id: string, @Body() dto: VincularPacienteDto) {
+    return this.usuarios.vincularPaciente(id, dto.paciente);
   }
 
   @Get('me')

@@ -11,5 +11,6 @@ import { ConsultasController } from './consultas.controller';
   ],
   controllers: [ConsultasController],
   providers: [ConsultasService],
+  exports: [ConsultasService],
 })
 export class ConsultasModule {}

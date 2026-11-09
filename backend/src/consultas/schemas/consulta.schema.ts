@@ -17,6 +17,10 @@ export const TRANSICOES: Record<Status, readonly Status[]> = {
 };
 @Schema({ collection: 'consultas', timestamps: true, strict: 'throw' })
 export class Consulta {
+  @Prop({ type: MongoSchema.Types.ObjectId, ref: 'Especialidade' })
+  especialidade?: Types.ObjectId;
+  @Prop({ type: MongoSchema.Types.ObjectId, ref: 'Convenio' })
+  convenio?: Types.ObjectId | null;
   @Prop({ type: MongoSchema.Types.ObjectId, ref: 'Paciente', required: true })
   paciente: Types.ObjectId;
   @Prop({

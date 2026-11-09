@@ -2,8 +2,10 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  Optional,
   UnauthorizedException,
 } from '@nestjs/common';
+import { UsuariosService } from '../../usuarios/usuarios.service';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { PERFIS_USUARIO } from '../../usuarios/schemas/usuario.schema';
@@ -15,6 +17,7 @@ export class JwtAuthGuard implements CanActivate {
   constructor(
     private readonly jwt: JwtService,
     private readonly reflector: Reflector,
+    @Optional() private readonly usuarios?: UsuariosService,
   ) {}
 
   async canActivate(contexto: ExecutionContext): Promise<boolean> {
@@ -48,6 +51,17 @@ export class JwtAuthGuard implements CanActivate {
         payload.exp <= Date.now() / 1000
       )
         throw new Error('Payload inválido.');
+      if (this.usuarios) {
+        const atual = await this.usuarios.buscarEstadoSessao(payload.sub);
+        const jti = (payload as UsuarioLogado & { jti?: string }).jti;
+        if (
+          !atual ||
+          !atual.ativo ||
+          atual.perfil !== payload.perfil ||
+          (atual.versaoSessao ?? '') !== (jti ?? '')
+        )
+          throw new Error('Sessão revogada.');
+      }
       request.usuario = {
         sub: payload.sub,
         nome: payload.nome,

@@ -72,18 +72,36 @@ export class ConsultasService {
   private async validarReferencias(paciente: string, profissional: string) {
     validarId(paciente);
     validarId(profissional);
-    for (const [colecao, id, rotulo] of [
-      ['pacientes', paciente, 'paciente'],
-      ['profissionais', profissional, 'profissional'],
-    ]) {
-      if (
-        !(await this.conexao
-          .collection(colecao)
-          .findOne({ _id: new Types.ObjectId(id), ativo: { $ne: false } }))
-      )
-        throw new BadRequestException(`Escolha um ${rotulo} ativo existente.`);
-    }
+    const pessoa = await this.conexao
+      .collection('pacientes')
+      .findOne({ _id: new Types.ObjectId(paciente), ativo: { $ne: false } });
+    if (!pessoa)
+      throw new BadRequestException('Escolha um paciente ativo existente.');
+    const equipe = await this.conexao.collection('profissionais').findOne({
+      _id: new Types.ObjectId(profissional),
+      ativo: { $ne: false },
+    });
+    if (!equipe)
+      throw new BadRequestException('Escolha um profissional ativo existente.');
+    return { pessoa, equipe };
   }
+  private async validarComplementos(
+    dto: AtualizarConsultaDto,
+    especialidade: unknown,
+  ) {
+    if (dto.especialidade && dto.especialidade !== String(especialidade))
+      throw new BadRequestException(
+        'A especialidade deve corresponder ao profissional escolhido.',
+      );
+    if (
+      dto.convenio &&
+      !(await this.conexao
+        .collection('convenios')
+        .findOne({ _id: new Types.ObjectId(dto.convenio), ativo: true }))
+    )
+      throw new BadRequestException('Escolha um convênio ativo existente.');
+  }
+
   private async validarConflito(
     profissional: string,
     dataHora: string,
@@ -106,11 +124,21 @@ export class ConsultasService {
   }
   async criar(dto: CriarConsultaDto) {
     validarHorario(dto.dataHora);
-    await this.validarReferencias(dto.paciente, dto.profissional);
+    const referencias = await this.validarReferencias(
+      dto.paciente,
+      dto.profissional,
+    );
+    await this.validarComplementos(dto, referencias.equipe['especialidade']);
     await this.validarConflito(dto.profissional, dto.dataHora);
     try {
       return (
-        await this.model.create({ ...dto, status: 'marcada' })
+        await this.model.create({
+          ...dto,
+          especialidade: new Types.ObjectId(
+            String(referencias.equipe['especialidade']),
+          ),
+          status: 'marcada',
+        })
       ).toObject();
     } catch (e: unknown) {
       traduzirDuplicidade(
@@ -129,13 +157,24 @@ export class ConsultasService {
     const paciente = dto.paciente ?? String(atual.paciente);
     const dataHora = dto.dataHora ?? atual.dataHora.toISOString();
     validarHorario(dataHora);
-    await this.validarReferencias(paciente, profissional);
+    const referencias = await this.validarReferencias(paciente, profissional);
+    await this.validarComplementos(dto, referencias.equipe['especialidade']);
     await this.validarConflito(profissional, dataHora, id);
     try {
       const alterada = await this.model
         .findOneAndUpdate(
           { _id: id, status: atual.status },
-          { $set: dto },
+          {
+            $set: {
+              ...dto,
+              especialidade: new Types.ObjectId(
+                String(referencias.equipe['especialidade']),
+              ),
+              ...(dto.paciente && dto.convenio === undefined
+                ? { convenio: referencias.pessoa['convenio'] ?? null }
+                : {}),
+            },
+          },
           { returnDocument: 'after', runValidators: true },
         )
         .lean()

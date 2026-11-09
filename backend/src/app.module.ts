@@ -1,3 +1,6 @@
+import { PortalModule } from './portal/portal.module';
+import { ContatosModule } from './contatos/contatos.module';
+import { RecuperacaoModule } from './recuperacao/recuperacao.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -33,6 +36,9 @@ import { AuthModule } from './auth/auth.module';
     EspecialidadesModule,
     ConsultasModule,
     RelatoriosModule,
+    PortalModule,
+    ContatosModule,
+    RecuperacaoModule,
   ],
 })
 export class AppModule {}

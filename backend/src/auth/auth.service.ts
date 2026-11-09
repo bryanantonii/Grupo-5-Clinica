@@ -37,7 +37,9 @@ export class AuthService {
       nome: usuario.nome,
       perfil: usuario.perfil,
     };
-    const accessToken = await this.jwt.signAsync(payload);
+    const accessToken = usuario.versaoSessao
+      ? await this.jwt.signAsync(payload, { jwtid: usuario.versaoSessao })
+      : await this.jwt.signAsync(payload);
     return {
       accessToken,
       usuario: {

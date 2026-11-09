@@ -2,6 +2,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types, Schema as MongoSchema } from 'mongoose';
 @Schema({ collection: 'pacientes', timestamps: true, strict: 'throw' })
 export class Paciente {
+  @Prop({ type: MongoSchema.Types.ObjectId, ref: 'Usuario' })
+  usuario?: Types.ObjectId;
   @Prop({ required: true, trim: true, minlength: 3, maxlength: 80 })
   nome: string;
   @Prop({ required: true, trim: true, lowercase: true }) email: string;
@@ -15,4 +17,13 @@ export const PacienteSchema = SchemaFactory.createForClass(Paciente);
 PacienteSchema.index(
   { email: 1 },
   { unique: true, name: 'pacientes_email_unico' },
+);
+
+PacienteSchema.index(
+  { usuario: 1 },
+  {
+    unique: true,
+    name: 'pacientes_usuario_unico',
+    partialFilterExpression: { usuario: { $type: 'objectId' } },
+  },
 );
