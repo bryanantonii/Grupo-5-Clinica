@@ -47,3 +47,5 @@ Os testes obrigatórios originais continuam em `testes-obrigatorios`. Suas cópi
 O contrato, o dicionário de dados e o roteiro do Swagger estão em [docs/aula-13](../docs/aula-13/README.md). O registro de Convênios com Mongoose permanece em [docs/aula-07-mongoose](../docs/aula-07-mongoose).
 
 A [revisão da integração real](../docs/integracao-real/README.md) detalha as novas rotas, o banco clinora, o Compass, a configuração SMTP em `.env.email.example` e as evidências. O `.env` local e os registros do MongoDB não são enviados ao GitHub.
+
+No desenvolvimento, o CORS também aceita as portas locais escolhidas pelo Angular e pelo VS Code. Em produção, configure `NODE_ENV=production` e `FRONTEND_URL` com a origem exata do site. A configuração não libera domínios externos no modo local.

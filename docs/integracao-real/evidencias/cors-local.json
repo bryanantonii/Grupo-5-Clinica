@@ -1,0 +1,25 @@
+{
+  "data": "2026-11-09T22:37:02.334Z",
+  "casos": [
+    {
+      "origem": "http://localhost:57246",
+      "permitido": "http://localhost:57246"
+    },
+    {
+      "origem": "http://localhost:4200",
+      "permitido": "http://localhost:4200"
+    },
+    {
+      "origem": "http://127.0.0.1:57246",
+      "permitido": "http://127.0.0.1:57246"
+    },
+    {
+      "origem": "https://site.example",
+      "permitido": null
+    },
+    {
+      "origem": "http://localhost.site.example:4200",
+      "permitido": null
+    }
+  ]
+}

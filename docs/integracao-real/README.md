@@ -86,7 +86,7 @@ A recuperação implementada atende contas de pacientes. A criação da conta fi
 
 | Verificação | Resultado |
 | --- | --- |
-| Backend: `npm test -- --runInBand` | 159 testes Jest, em 19 suítes |
+| Backend: `npm test -- --runInBand` | 176 testes Jest, em 20 suítes |
 | Backend: `npx eslint "src/**/*.ts"` | Sem erros |
 | Backend: `npm run build` | Compilação concluída |
 | Frontend: `npm test` | 93 testes: 48 de C1/API/autenticação, 13 de formulários/portal e 32 de rotas; tipagem incluída |
@@ -110,3 +110,13 @@ A evidência sem senhas ou tokens está em [portal-http.json](evidencias/portal-
 - Revisar os dados institucionais ainda em branco no site: endereço, telefone e horários de atendimento.
 - Para a ficha antiga das aulas 01 a 06, conferir com o integrante de Relatórios o filtro de período e sua validação: o painel atual consulta os indicadores reais gerais, mas ainda não tem filtro inicial/final. As respostas individuais, integrantes e commits de cada aluno precisam ser conferidos pelo próprio grupo. Esta integração não comprova esses itens acadêmicos.
 - Revisar e integrar o Pull Request na develop. A branch nova contém também os commits da base do PR #10; os dois PRs não devem ser tratados como implementações independentes.
+
+## Correção do login em portas locais — 09/11/2026
+
+O site iniciado pelo VS Code estava em `http://localhost:57246`, mas o CORS da API aceitava somente `http://localhost:4200`. A API e o MongoDB respondiam normalmente; o navegador bloqueava o acesso e a tela mostrava erro de conexão. Foi reproduzida a falha de login da equipe nessa porta antes da alteração.
+
+A configuração de CORS em `backend/src/main.ts` agora usa `src/config/origens-web.ts`. No desenvolvimento aceita HTTP/HTTPS nos endereços de loopback `localhost`, `127.0.0.1` e `[::1]`, incluindo a porta escolhida pelo Angular. Não aceita domínios externos ou nomes parecidos com localhost. Em produção (`NODE_ENV=production`), aceita somente a origem de `FRONTEND_URL`, cujo padrão é `http://localhost:4200`.
+
+Após reiniciar a API, o login feito pelo navegador na porta 57246 abriu a gestão e carregou os indicadores do banco. A evidência está em [login-porta-local.png](evidencias/login-porta-local.png). Os testes adicionam 17 casos unitários e a verificação HTTP de preflight confirma as origens permitidas e recusadas em [cors-local.json](evidencias/cors-local.json). Nenhum registro do banco foi alterado por essa correção.
+
+Para executar no laboratório, mantenha a API e o frontend em terminais separados: `cd backend; npm run start:dev` e `cd frontend; npm start`. O MongoDB deve continuar em execução. Iniciar apenas o frontend não inicia a API. Ao aplicar uma alteração no backend, reinicie-o; depois atualize a página do site. O endereço padrão continua `http://localhost:4200`.
