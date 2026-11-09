@@ -8,15 +8,19 @@ Projeto Integrador Sprint 5. As seções marcadas com ✏️ aguardam os dados e
 ## Sobre o sistema
 
 A Clinora reúne o catálogo de profissionais, as especialidades, os convênios,
-o agendamento demonstrativo e a gestão da clínica. A gestão possui telas de
+o agendamento integrado à API e a gestão da clínica. A gestão possui telas de
 Pacientes, Profissionais, Consultas, Especialidades, Convênios e Relatórios.
 A gestão dos cinco módulos e os Relatórios já usam a API e o MongoDB.
 A equipe faz login real em `/login`; o Angular envia JWT nas requisições
 privadas e o backend aplica as permissões de administrador e atendente.
 O catálogo público continua acessível sem login. O paciente cria sua conta em
 `/criar-conta`, entra em `/entrar` e atualiza seus dados com persistência no MongoDB.
-A conta recebe perfil `paciente` e não acessa a gestão. O agendamento público
-continua demonstrativo.
+A conta recebe perfil `paciente` e não acessa a gestão. Agendamento, histórico,
+cancelamento, convênios e contato também usam a API e o MongoDB. A recuperação
+de senha está implementada e depende de configurar o provedor SMTP no `.env`.
+
+Veja a [revisão da integração real](docs/integracao-real/README.md), com rotas,
+configuração do Compass, testes executados e pendências para a entrega.
 
 ## Integrantes, módulos e papéis
 
@@ -47,15 +51,16 @@ continua demonstrativo.
 ```bash
 # 1) Back-end
 cd backend
-npm install
+npm ci
 copy .env.example .env      # no Linux/Mac: cp .env.example .env
+# No .env, configure MONGODB_URI=mongodb://127.0.0.1:27017/clinora
 npm run configurar:auth      # prepara JWT e administrador no .env local
 npm run seed                # insere exemplos ausentes e o administrador
 npm run start:dev           # API em http://localhost:3000/api/v1
 
 # 2) Front-end (em outro terminal)
 cd frontend
-npm install
+npm ci
 npm start                   # http://localhost:4200
 ```
 
@@ -80,7 +85,7 @@ backend/
   testes-obrigatorios/  # testes da autenticação (aulas 12 e 13)
 frontend/
   src/
-    environments/    # apiUrl e usarMockProfissionais
+    environments/    # endereço da API real
     estilos-do-grupo.css  # estilos do grupo (vencem o styles.css)
     app/
       core/          # código compartilhado (modelos de resposta e de referência)

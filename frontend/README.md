@@ -17,7 +17,7 @@ Atendentes podem listar, cadastrar, editar e mudar status de consultas. Administ
 
 ## Dados reais da gestão
 
-Os cinco módulos são Pacientes, Profissionais, Consultas, Especialidades e Convênios. O painel de Relatórios consulta agregações da API. Os providers ficam em `src/app/app.config.ts`, com `usarMock: false` em `src/environments/environment.ts`. Os mocks históricos continuam disponíveis para testes; não são os providers padrão.
+Os cinco módulos são Pacientes, Profissionais, Consultas, Especialidades e Convênios. O painel de Relatórios consulta agregações da API. Os providers HTTP ficam em `src/app/app.config.ts`. `src/environments/environment.ts` contém o endereço da API; não há chave para ativar mocks em produção. Os mocks históricos permanecem para testes e não fornecem dados às telas.
 
 As referências dos formulários são obtidas da API e usam IDs do MongoDB. O campo de nascimento mantém AAAA-MM-DD; datetime-local de Consultas é convertido para ISO com fuso. A confirmação de exclusão mantém o documento inativo, e cancelamento de consulta usa a rota de status.
 
@@ -27,7 +27,9 @@ O catálogo de profissionais continua público, usando `/api/v1/catalogo`, sem c
 
 `/criar-conta` grava uma conta com perfil paciente em `clinora.usuarios`, e `/entrar` valida e-mail e senha na API. `/meus-dados` consulta e atualiza a própria conta no MongoDB. A sessão do paciente é separada da equipe e não permite acessar os cadastros da gestão. O perfil antigo de demonstração no cache não libera a área.
 
-O agendamento público e as consultas demonstrativas permanecem identificados na interface. A recuperação automática de senha ainda não está disponível; a interface não simula uma alteração de senha real. Não há envio de e-mail. Use somente dados fictícios no projeto acadêmico.
+O agendamento exige a conta do paciente e salva uma consulta real no MongoDB. Histórico, detalhe e cancelamento consultam `/conta/consultas`; os horários e convênios vêm do catálogo da API. O contato salva uma mensagem, disponível em **Gestão → Mensagens**. O admin pode criar atendentes em **Usuários e acessos**. A recuperação de senha usa a API e requer configurar SMTP no backend. Use dados fictícios no projeto acadêmico.
+
+Consulte [a integração real](../docs/integracao-real/README.md) para entender o vínculo entre usuário e paciente, o Compass, a configuração de e-mail e os limites da verificação.
 
 ## Verificar
 
@@ -36,6 +38,6 @@ npm test
 npm run build
 ```
 
-São 90 testes, incluindo autenticação, adaptadores HTTP, formulários e 32 casos com o Router real. `npm run test:tipos` confere a tipagem; `npm run test:rotas` executa somente a navegação. O build verifica os templates e gera `dist/frontend/browser`.
+São 93 testes, incluindo autenticação, adaptadores HTTP, formulários e 32 casos com o Router real. `npm run test:tipos` confere a tipagem; `npm run test:rotas` executa somente a navegação. O build verifica os templates e gera `dist/frontend/browser`.
 
 O registro, as evidências e o roteiro de apresentação ficam em [docs/aula-13](../docs/aula-13/README.md). Os registros anteriores permanecem em [docs/c1](../docs/c1) e [API de Profissionais](../docs/api-profissionais.md).
