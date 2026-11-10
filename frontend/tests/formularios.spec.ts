@@ -1,48 +1,221 @@
 import '@angular/compiler';
-import { computed, inject, Injector, signal } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Injector, signal } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { afterEach, beforeEach, test } from 'node:test';
 import assert from 'node:assert/strict';
-import { firstValueFrom, of } from 'rxjs';
+import { firstValueFrom, of, Subject, throwError } from 'rxjs';
+import { Acesso } from '../src/app/features/clinora/acesso';
 import { criarFormularioAcesso } from '../src/app/features/clinora/acesso.formulario';
 import { ClinoraService } from '../src/app/features/clinora/clinora.service';
+import { Consulta, AgendamentoEntrada } from '../src/app/features/clinora/clinora.models';
+import { PacienteAuthService, ContaPaciente } from '../src/app/core/auth/paciente-auth.service';
 import { ProfissionaisCatalogoService } from '../src/app/features/profissionais/services/profissionais-catalogo.service';
-import { ClinicaMockStore } from '../src/app/features/gestao/services/clinica-mock.store';
 import { dataHoraFutura } from '../src/app/shared/form-validadores';
-
 class MemoriaStorage {
   private dados = new Map<string, string>();
-  getItem(chave: string) { return this.dados.get(chave) ?? null; }
-  setItem(chave: string, valor: string) { this.dados.set(chave, valor); }
-  removeItem(chave: string) { this.dados.delete(chave); }
+  getItem(chave: string) {
+    return this.dados.get(chave) ?? null;
+  }
+  setItem(chave: string, valor: string) {
+    this.dados.set(chave, valor);
+  }
+  removeItem(chave: string) {
+    this.dados.delete(chave);
+  }
 }
 let injector: ReturnType<typeof Injector.create>;
-let storage: MemoriaStorage;
-let store: ClinicaMockStore;
 let clinora: ClinoraService;
+let storage: MemoriaStorage;
+let falha: HttpErrorResponse | null;
+let requisicoes: { metodo: string; url: string; corpo?: Record<string, unknown> }[];
+const usuario = signal<ContaPaciente | null>(null);
+const profissional = '665f1c2b9a1e4b0012345680';
+const especialidade = '665f1c2b9a1e4b0012345678';
+const dados = (): AgendamentoEntrada => ({
+  profissional,
+  especialidade,
+  data: '2099-12-20',
+  horario: '08:00',
+  convenio: null,
+  telefone: '(51) 99999-9999',
+  dataNascimento: '2000-01-01',
+  ciente: true,
+});
+const resposta = (): Consulta => ({
+  _id: '665f1c2b9a1e4b0012345699',
+  profissional,
+  profissionalNome: 'Dra. Ana',
+  especialidade,
+  especialidadeNome: 'Clínica geral',
+  dataHora: '2099-12-20T11:00:00.000Z',
+  data: '2099-12-20',
+  horario: '08:00',
+  convenio: 'Particular',
+  convenioId: null,
+  paciente: { nome: 'Ana', email: 'ana@example.com', telefone: '(51) 99999-9999' },
+  status: 'marcada',
+});
 beforeEach(() => {
   storage = new MemoriaStorage();
-  Object.defineProperty(globalThis, 'sessionStorage', {configurable: true, value: storage});
-  injector = Injector.create({providers: [
-    {provide: ClinicaMockStore, useFactory: () => new ClinicaMockStore()},
-    {provide: ProfissionaisCatalogoService, useFactory: () => {
-      const cadastros = inject(ClinicaMockStore);
-      return {
-        profissionais: computed(() => cadastros.profissionais().filter(p => p.ativo)),
-        especialidades: computed(() => cadastros.especialidades().filter(e => e.ativo)),
-        carregando: signal(false), erro: signal(''), carregarEquipe: () => of(undefined),
-      };
-    }},
-    {provide: ClinoraService, useFactory: () => new ClinoraService()},
-  ]});
-  store = injector.get(ClinicaMockStore);
+  falha = null;
+  requisicoes = [];
+  Object.defineProperty(globalThis, 'sessionStorage', { configurable: true, value: storage });
+  usuario.set({
+    _id: '665f1c2b9a1e4b0012345610',
+    nome: 'Ana Portal',
+    email: 'ana@example.com',
+    perfil: 'paciente',
+    telefone: '(51) 99999-9999',
+  });
+  injector = Injector.create({
+    providers: [
+      { provide: PacienteAuthService, useValue: { usuario, sair: () => usuario.set(null) } },
+      {
+        provide: HttpClient,
+        useValue: {
+          get: (url: string) => {
+            requisicoes.push({ metodo: 'GET', url });
+            return of({
+              sucesso: true,
+              dados: url.endsWith('/conta/consultas') ? [resposta()] : resposta(),
+            });
+          },
+          post: (url: string, corpo: Record<string, unknown>) => {
+            requisicoes.push({ metodo: 'POST', url, corpo });
+            return falha ? throwError(() => falha) : of({ sucesso: true, dados: resposta() });
+          },
+          patch: (url: string) => {
+            requisicoes.push({ metodo: 'PATCH', url });
+            return falha
+              ? throwError(() => falha)
+              : of({ sucesso: true, dados: { ...resposta(), status: 'cancelada' } });
+          },
+        },
+      },
+      {
+        provide: ProfissionaisCatalogoService,
+        useValue: {
+          profissionais: signal([{ _id: profissional, especialidade, ativo: true }]),
+          especialidades: signal([{ _id: especialidade, nome: 'Clínica geral' }]),
+          convenios: signal([]),
+          carregando: signal(false),
+          erro: signal(''),
+          carregarEquipe: () => of(undefined),
+        },
+      },
+      { provide: ClinoraService, useFactory: () => new ClinoraService() },
+    ],
+  });
   clinora = injector.get(ClinoraService);
 });
 afterEach(() => injector.destroy());
-const dados = () => ({
-  profissional: 'mariana-costa', especialidade: 'clinica-geral',
-  data: '2099-12-20', horario: '09:00', convenio: 'Particular',
-  paciente: {nome: 'Ana Lima', email: 'ana@example.com', telefone: '(51) 99999-9999'},
+
+class AcessoEmTeste extends Acesso {
+  get formulario() {
+    return this.form;
+  }
+  get mensagem() {
+    return this.erro();
+  }
+  get aguardando() {
+    return this.salvando();
+  }
+  enviarFormulario() {
+    this.enviar();
+  }
+}
+
+function prepararCadastro(operacao: () => ReturnType<PacienteAuthService['cadastrar']>) {
+  const navegacoes: string[] = [];
+  const contexto = Injector.create({
+    providers: [
+      { provide: FormBuilder, useValue: new FormBuilder() },
+      {
+        provide: ActivatedRoute,
+        useValue: {
+          snapshot: { queryParamMap: convertToParamMap({}), data: { modo: 'cadastro' } },
+        },
+      },
+      {
+        provide: Router,
+        useValue: {
+          navigateByUrl: (url: string) => {
+            navegacoes.push(url);
+            return Promise.resolve(true);
+          },
+        },
+      },
+      { provide: PacienteAuthService, useValue: { cadastrar: operacao, aviso: signal('') } },
+      { provide: AcessoEmTeste, useFactory: () => new AcessoEmTeste() },
+    ],
+  });
+  const tela = contexto.get(AcessoEmTeste);
+  tela.formulario.patchValue({
+    nome: 'Paciente Teste',
+    email: 'cadastro@example.com',
+    senha: 'SenhaTeste123!',
+    confirmar: 'SenhaTeste123!',
+    ciente: true,
+  });
+  return { contexto, tela, navegacoes };
+}
+
+test('cadastro sem conexão preserva os campos e permite tentar novamente após a API voltar', () => {
+  const resposta = new Subject<never>();
+  let chamadas = 0;
+  const { contexto, tela, navegacoes } = prepararCadastro(() => {
+    chamadas++;
+    return chamadas === 1
+      ? resposta
+      : of({
+          sucesso: true as const,
+          dados: {
+            accessToken: 'token-da-dependencia-substituida',
+            usuario: {
+              _id: '665f1c2b9a1e4b0012345610',
+              nome: 'Paciente Teste',
+              email: 'cadastro@example.com',
+              perfil: 'paciente' as const,
+              telefone: '',
+            },
+          },
+        });
+  });
+  try {
+    const preenchido = tela.formulario.getRawValue();
+    tela.enviarFormulario();
+    assert.equal(tela.aguardando, true);
+    tela.enviarFormulario();
+    assert.equal(chamadas, 1, 'não repete a requisição enquanto aguarda');
+    resposta.error(new HttpErrorResponse({ status: 0 }));
+    assert.match(tela.mensagem, /Não foi possível acessar o serviço da clínica/);
+    assert.equal(tela.aguardando, false);
+    assert.deepEqual(tela.formulario.getRawValue(), preenchido);
+    assert.deepEqual(navegacoes, []);
+    tela.enviarFormulario();
+    assert.equal(chamadas, 2);
+    assert.equal(tela.mensagem, '');
+    assert.deepEqual(navegacoes, ['/confirmar-email']);
+  } finally {
+    contexto.destroy();
+  }
+});
+
+test('cadastro com e-mail duplicado orienta o login sem exibir sucesso', () => {
+  const { contexto, tela, navegacoes } = prepararCadastro(() =>
+    throwError(() => new HttpErrorResponse({ status: 409 })),
+  );
+  try {
+    tela.enviarFormulario();
+    assert.match(tela.mensagem, /Já existe uma conta com este e-mail/);
+    assert.equal(tela.formulario.controls.email.value, 'cadastro@example.com');
+    assert.equal(tela.aguardando, false);
+    assert.deepEqual(navegacoes, []);
+  } finally {
+    contexto.destroy();
+  }
 });
 
 test('login exige e-mail válido e senha com oito caracteres', () => {
@@ -52,7 +225,15 @@ test('login exige e-mail válido e senha com oito caracteres', () => {
   form.patchValue({ email: 'teste@example.com', senha: 'senha123' });
   assert.equal(form.valid, true);
 });
-test('cadastro exige confirmação de senha e ciência da demonstração', () => {
+
+test('senha respeita o limite de 72 bytes inclusive com caracteres acentuados', () => {
+  const form = criarFormularioAcesso(new FormBuilder(), 'cadastro');
+  form.controls.senha.setValue('á'.repeat(37));
+  assert.equal(form.controls.senha.hasError('limiteBcrypt'), true);
+  form.controls.senha.setValue('á'.repeat(36));
+  assert.equal(form.controls.senha.valid, true);
+});
+test('cadastro exige confirmação de senha e ciência do uso de dados fictícios', () => {
   const form = criarFormularioAcesso(new FormBuilder(), 'cadastro');
   form.patchValue({ nome: 'Ana Lima', email: 'ana@example.com', senha: 'senha123', ciente: true });
   assert.equal(form.controls.confirmar.hasError('required'), true);
@@ -93,24 +274,60 @@ test('data e hora precisam existir e estar no futuro', () => {
   assert.equal(dataHoraFutura('2026-10-27', '25:00', agora), false);
 });
 
-test('agendamento usa o catálogo carregado pela integração HTTP', async () => {
+test('portal usa o catálogo compartilhado sem instanciar cadastros mock', async () => {
   await firstValueFrom(clinora.carregarEquipe());
-  assert.equal(clinora.profissionais.length, 3);
-  assert.equal(clinora.profissional('mariana-costa')?.especialidade, 'clinica-geral');
-  assert.equal(clinora.especialidade('cardiologia'), 'Cardiologia');
+  assert.equal(clinora.profissional(profissional)?.especialidade, especialidade);
+  assert.equal(clinora.especialidade(especialidade), 'Clínica geral');
 });
-test('agendamento rejeita profissional inativo ou especialidade incompatível', () => {
-  assert.throws(() => clinora.agendar({...dados(), especialidade: 'cardiologia'}), /profissional disponível/);
-  store.remover('profissionais', 'mariana-costa');
-  assert.throws(() => clinora.agendar(dados()), /profissional disponível/);
-});
-test('agendamento rejeita data passada antes de gravar na sessão', () => {
-  assert.throws(() => clinora.agendar({...dados(), data: '2000-01-01'}), /futuros/);
+test('agendamento envia os campos da API, preserva o ID e não grava consultas na sessão', async () => {
+  const c = await firstValueFrom(
+    clinora.agendar({ ...dados(), paciente: 'id-de-terceiro' } as AgendamentoEntrada),
+  );
+  assert.equal(c.status, 'marcada');
+  assert.equal(c._id, resposta()._id);
+  assert.equal(requisicoes[0].url.endsWith('/conta/consultas'), true);
+  assert.equal(requisicoes[0].corpo?.['dataHora'], '2099-12-20T08:00:00-03:00');
+  assert.equal('paciente' in requisicoes[0].corpo!, false);
   assert.equal(storage.getItem('clinora.consultas'), null);
 });
-test('agendamento conserva o ID do catálogo e evita reservar duas vezes', () => {
-  const consulta = clinora.agendar(dados());
-  assert.equal(consulta.profissional, 'mariana-costa');
-  assert.equal(consulta.status, 'confirmada');
-  assert.throws(() => clinora.agendar(dados()), /reservado/);
+test('recusa de profissional ou especialidade pela API não confirma agendamento', async () => {
+  falha = new HttpErrorResponse({ status: 400, error: { message: 'Profissional indisponível' } });
+  await assert.rejects(
+    firstValueFrom(clinora.agendar(dados())),
+    (e) => e instanceof HttpErrorResponse && e.status === 400,
+  );
+  assert.equal(clinora.consultas().length, 0);
+  assert.equal(clinora.ultimaConsulta(), null);
+});
+test('conflito de horário retorna ao chamador sem inventar um segundo cadastro', async () => {
+  await firstValueFrom(clinora.agendar(dados()));
+  falha = new HttpErrorResponse({ status: 409, error: { message: 'Horário ocupado' } });
+  await assert.rejects(
+    firstValueFrom(clinora.agendar(dados())),
+    (e) => e instanceof HttpErrorResponse && e.status === 409,
+  );
+  assert.equal(clinora.consultas().length, 1);
+});
+test('lista e detalhe são recarregados pelas rotas reais da conta', async () => {
+  await firstValueFrom(clinora.carregarConsultas());
+  assert.equal(clinora.consultas().length, 1);
+  await firstValueFrom(clinora.carregarConsulta(resposta()._id));
+  assert.equal(requisicoes[0].metodo, 'GET');
+  assert.equal(requisicoes[1].url.endsWith('/' + resposta()._id), true);
+  assert.equal(clinora.carregandoConsultas(), false);
+});
+test('cancelamento somente altera a tela após a resposta bem-sucedida da API', async () => {
+  await firstValueFrom(clinora.agendar(dados()));
+  falha = new HttpErrorResponse({ status: 500 });
+  await assert.rejects(firstValueFrom(clinora.cancelar(resposta()._id)));
+  assert.equal(clinora.consultas()[0].status, 'marcada');
+  falha = null;
+  await firstValueFrom(clinora.cancelar(resposta()._id));
+  assert.equal(clinora.consultas()[0].status, 'cancelada');
+});
+test('trocar a conta não mostra consultas guardadas para o usuário anterior', async () => {
+  await firstValueFrom(clinora.agendar(dados()));
+  assert.equal(clinora.consultas().length, 1);
+  usuario.set({ ...usuario()!, _id: '665f1c2b9a1e4b0012345611' });
+  assert.equal(clinora.consultas().length, 0);
 });

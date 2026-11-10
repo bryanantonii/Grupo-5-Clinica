@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { HydratedDocument, Types, Schema as MongoSchema } from 'mongoose';
 
 export type ProfissionalDocument = HydratedDocument<Profissional>;
 
@@ -18,7 +18,7 @@ export class Profissional {
   })
   registro: string;
 
-  @Prop({ type: Types.ObjectId, required: true })
+  @Prop({ type: MongoSchema.Types.ObjectId, required: true })
   especialidade: Types.ObjectId;
 
   @Prop({ required: true, trim: true, lowercase: true, unique: true })

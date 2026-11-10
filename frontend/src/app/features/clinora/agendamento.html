@@ -118,22 +118,32 @@
     </div>
     <h3 class="selected-day">{{ dataExtensa() }}</h3>
     <p>Horários disponíveis</p>
-    <div class="time-options">
-      @for (h of horarios; track h) {
-        <button
-          type="button"
-          [disabled]="!profissional() || ocupados().includes(h)"
-          [class.selected]="horario() === h"
-          [attr.aria-pressed]="horario() === h"
-          (click)="horario.set(h); erro.set('')"
-        >
-          @if (horario() === h) {
-            <app-icon name="check" />
-          }
-          {{ h }}<span class="sr-only">{{ ocupados().includes(h) ? ' indisponível' : '' }}</span>
-        </button>
-      }
-    </div>
+    @if (carregandoHorarios()) {
+      <p class="notice" role="status">Consultando os horários disponíveis...</p>
+    } @else if (erroHorarios()) {
+      <p class="error-notice" role="alert">{{ erroHorarios() }}</p>
+      <button type="button" class="btn btn-outline" (click)="atualizarHorarios()">
+        Tentar novamente
+      </button>
+    } @else {
+      <div class="time-options">
+        @for (h of horarios(); track h) {
+          <button
+            type="button"
+            [class.selected]="horario() === h"
+            [attr.aria-pressed]="horario() === h"
+            (click)="horario.set(h); erro.set('')"
+          >
+            @if (horario() === h) {
+              <app-icon name="check" />
+            }
+            {{ h }}
+          </button>
+        } @empty {
+          <p class="notice">Não há horários disponíveis neste dia. Escolha outra data.</p>
+        }
+      </div>
+    }
     <p class="notice">
       <app-icon name="info" /> {{ dados.especialidade(especialidade()) }} · Consulta presencial.
       Confirme a cobertura antes da visita.
@@ -154,12 +164,13 @@
     <h1 id="titulo-etapa" tabindex="-1">Agora, um pouco sobre você.</h1>
     <p class="lead">Precisamos destas informações para o seu agendamento.</p>
     <form [formGroup]="form" (ngSubmit)="continuar()" class="booking-form" novalidate>
-      <p class="form-hint">Os campos com * são obrigatórios. Use dados fictícios.</p>
+      <p class="form-hint">Os campos com * são obrigatórios. Nome e e-mail vêm da sua conta.</p>
       <div class="field">
         <label for="nome">Nome completo *</label
         ><input
           id="nome"
           formControlName="nome"
+          readonly
           autocomplete="name"
           placeholder="Como podemos chamar você?"
           [attr.aria-invalid]="invalido('nome')"
@@ -175,6 +186,7 @@
           ><input
             id="email"
             formControlName="email"
+            readonly
             type="email"
             autocomplete="email"
             placeholder="voce@exemplo.com"
@@ -202,22 +214,40 @@
         </div>
       </div>
       <div class="field">
+        <label for="dataNascimento">Data de nascimento *</label>
+        <input
+          id="dataNascimento"
+          type="date"
+          formControlName="dataNascimento"
+          [max]="hoje"
+          [attr.aria-invalid]="invalido('dataNascimento')"
+          aria-describedby="nascimento-erro"
+        />
+        @if (invalido('dataNascimento')) {
+          <span id="nascimento-erro" class="field-error"
+            >Informe uma data de nascimento válida, até hoje.</span
+          >
+        }
+      </div>
+      <div class="field">
         <label for="convenio">Forma de atendimento</label
         ><select id="convenio" formControlName="convenio">
-          <option>Particular</option>
-          <option>Convênio (confirmar cobertura)</option>
+          <option value="">Particular</option>
+          @for (c of dados.convenios; track c._id) {
+            <option [value]="c._id">{{ c.nome }}</option>
+          }
         </select>
       </div>
       <label class="checkbox-label"
         ><input type="checkbox" formControlName="ciente" /><span
-          >Entendo que este agendamento é uma demonstração acadêmica e usarei dados fictícios.</span
+          >Confirmo que os dados informados estão corretos para este agendamento.</span
         ></label
       >
       @if (invalido('ciente')) {
         <p class="field-error">Confirme que leu a informação acima.</p>
       }
       <p class="privacy-note">
-        <app-icon name="shield" /> Seus dados serão usados apenas nesta demonstração.
+        <app-icon name="shield" /> Seus dados serão usados para o agendamento e o atendimento.
       </p>
       <div class="form-actions spread">
         <button type="button" class="text-link" (click)="ir(2)">
@@ -250,7 +280,7 @@
         </div>
         <div>
           <dt>Atendimento</dt>
-          <dd>Presencial · {{ form.controls.convenio.value }}</dd>
+          <dd>Presencial · {{ dados.nomeConvenio(form.controls.convenio.value) }}</dd>
         </div>
         <div class="review-wide">
           <dt>Contato</dt>
@@ -263,8 +293,8 @@
       </dl>
     </div>
     <p class="notice">
-      <app-icon name="info" /> Este é um agendamento demonstrativo. Em um serviço real, você
-      receberia a confirmação pelos contatos informados.
+      <app-icon name="info" /> Ao confirmar, você poderá acompanhar esta consulta na sua área de
+      paciente.
     </p>
     <div class="form-actions spread">
       <button type="button" class="text-link" (click)="ir(3)">

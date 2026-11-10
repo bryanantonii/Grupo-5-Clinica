@@ -1,0 +1,18 @@
+{
+  "data": "2026-11-06",
+  "aplicativo": "MongoDB Compass",
+  "tipo": "conferencia visual somente de leitura",
+  "banco": "clinora",
+  "colecao": "pacientes",
+  "filtro": { "email": "teste.aula13.front@example.com" },
+  "documentosRetornados": 1,
+  "nomeFicticio": "Teste Aula 13 Integração",
+  "telefoneEditado": "(51) 99999-1013",
+  "ativo": false,
+  "idComoObjectId": true,
+  "convenioComoObjectId": true,
+  "createdAt": "2026-11-06T22:17:10.146Z",
+  "updatedAt": "2026-11-06T22:18:48.529Z",
+  "colecoesVisiveis": ["consultas", "convenios", "especialidades", "pacientes", "profissionais", "usuarios"],
+  "resultado": "aprovado"
+}

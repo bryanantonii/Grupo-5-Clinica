@@ -1,3 +1,4 @@
+import { ConveniosController } from './convenios.controller';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Convenio, ConvenioSchema } from './schemas/convenio.schema';
@@ -9,6 +10,7 @@ import { ConveniosService } from './convenios.service';
       { name: Convenio.name, schema: ConvenioSchema },
     ]),
   ],
+  controllers: [ConveniosController],
   providers: [ConveniosService],
   exports: [MongooseModule, ConveniosService],
 })

@@ -10,7 +10,7 @@ import {
 import { ActivatedRoute, CanDeactivateFn, Router, RouterLink } from '@angular/router';
 import { finalize, of, Subscription, switchMap } from 'rxjs';
 import { CampoFormulario, ModuloConfig } from '../modulo-config';
-import { ClinicaMockStore } from '../services/clinica-mock.store';
+import { AuthService } from '../../../core/auth/auth.service';
 
 const nomeValido: ValidatorFn = (c) =>
   typeof c.value === 'string' && !c.value.trim() ? { required: true } : null;
@@ -43,7 +43,6 @@ export class RegistroForm implements OnInit, OnDestroy {
   readonly config = this.route.snapshot.data['config'] as ModuloConfig;
   readonly id = this.route.snapshot.paramMap.get('id');
   private readonly servico = inject(this.config.servico);
-  readonly store = inject(ClinicaMockStore);
   private readonly referencias = this.config.referencias ? inject(this.config.referencias) : null;
   readonly carregando = signal(!!this.id || !!this.referencias);
   readonly salvando = signal(false);
@@ -143,7 +142,7 @@ export class RegistroForm implements OnInit, OnDestroy {
   opcoes(campo: CampoFormulario) {
     return campo.referencia
       ? (this.referencias?.opcoes(campo.referencia, String(this.form.controls[campo.nome].value)) ??
-          this.store.referencias(campo.referencia, String(this.form.controls[campo.nome].value)))
+          [])
       : [];
   }
   salvar() {
@@ -184,4 +183,4 @@ export class RegistroForm implements OnInit, OnDestroy {
   }
 }
 export const alteracoesPendentes: CanDeactivateFn<RegistroForm> = (componente) =>
-  componente.podeSair();
+  !inject(AuthService).estaAutenticado() || componente.podeSair();

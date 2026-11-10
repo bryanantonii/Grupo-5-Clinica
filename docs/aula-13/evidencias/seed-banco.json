@@ -1,0 +1,25 @@
+{
+  "data": "2026-11-06",
+  "banco": "clinora",
+  "quantidadesAntes": {
+    "convenios": 5,
+    "especialidades": 3,
+    "profissionais": 3,
+    "pacientes": 0,
+    "consultas": 0,
+    "usuarios": 1
+  },
+  "quantidadesDepois": {
+    "convenios": 5,
+    "especialidades": 3,
+    "profissionais": 3,
+    "pacientes": 0,
+    "consultas": 0,
+    "usuarios": 2
+  },
+  "cadastrosClinicosPreservados": true,
+  "usuariosExistentesPreservados": true,
+  "especialidadesSomenteCamposAusentes": true,
+  "atendenteComHashCorreto": true,
+  "produtosAusente": true
+}

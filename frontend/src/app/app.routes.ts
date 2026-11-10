@@ -1,13 +1,8 @@
-import { inject } from '@angular/core';
-import { CanActivateFn, Router, Routes } from '@angular/router';
+import { authGuard } from './core/auth/auth.guard';
+import { Routes } from '@angular/router';
 import { Layout } from './layout/layout';
 import { Inicio } from './pages/inicio/inicio';
-import { ClinoraService } from './features/clinora/clinora.service';
-// Guarda de navegação para a demonstração. A autorização real deve existir na API.
-const sessaoDemo: CanActivateFn = (_, state) =>
-  inject(ClinoraService).perfil()
-    ? true
-    : inject(Router).createUrlTree(['/entrar'], { queryParams: { retorno: state.url } });
+import { pacienteAuthGuard } from './core/auth/paciente-auth.guard';
 const resultado = () => import('./features/clinora/resultado').then((m) => m.Resultado);
 const acesso = () => import('./features/clinora/acesso').then((m) => m.Acesso);
 const area = () => import('./features/clinora/area-paciente').then((m) => m.AreaPaciente);
@@ -18,6 +13,8 @@ export const routes: Routes = [
     children: [
       {
         path: 'gestao',
+        canActivate: [authGuard],
+        canActivateChild: [authGuard],
         loadChildren: () => import('./features/gestao/gestao.routes').then((m) => m.GESTAO_ROUTES),
       },
       { path: '', component: Inicio, title: 'Clinora · Cuidar de você é o nosso propósito' },
@@ -73,7 +70,24 @@ export const routes: Routes = [
         data: { modo: 'entrar' },
         title: 'Entrar · Clinora',
       },
-      { path: 'login', redirectTo: 'entrar', pathMatch: 'full' },
+      {
+        path: 'login',
+        loadComponent: () => import('./pages/login/login').then((m) => m.Login),
+        title: 'Área da equipe · Clinora',
+      },
+      {
+        path: 'sem-permissao',
+        loadComponent: resultado,
+        title: 'Acesso restrito · Clinora',
+        data: {
+          icone: 'lock',
+          etiqueta: 'Área da equipe',
+          titulo: 'Acesso restrito',
+          descricao: 'Seu perfil não tem permissão para acessar esta área.',
+          destino: '/gestao',
+          botao: 'Voltar para a gestão',
+        },
+      },
       {
         path: 'criar-conta',
         loadComponent: acesso,
@@ -94,11 +108,13 @@ export const routes: Routes = [
       },
       {
         path: 'agendar',
+        canActivate: [pacienteAuthGuard],
         loadComponent: () => import('./features/clinora/agendamento').then((m) => m.Agendamento),
         title: 'Agendar consulta · Clinora',
       },
       {
         path: 'agendamento-concluido',
+        canActivate: [pacienteAuthGuard],
         loadComponent: () =>
           import('./features/clinora/agendamento').then((m) => m.AgendamentoConcluido),
         title: 'Agendamento concluído · Clinora',
@@ -106,28 +122,28 @@ export const routes: Routes = [
       {
         path: 'minha-area',
         loadComponent: area,
-        canActivate: [sessaoDemo],
+        canActivate: [pacienteAuthGuard],
         data: { modo: 'area' },
         title: 'Minha área · Clinora',
       },
       {
         path: 'meus-dados',
         loadComponent: area,
-        canActivate: [sessaoDemo],
+        canActivate: [pacienteAuthGuard],
         data: { modo: 'dados' },
         title: 'Meus dados · Clinora',
       },
       {
         path: 'consultas/:id/cancelar',
         loadComponent: area,
-        canActivate: [sessaoDemo],
+        canActivate: [pacienteAuthGuard],
         data: { modo: 'cancelar' },
         title: 'Confirmar cancelamento · Clinora',
       },
       {
         path: 'consultas/:id',
         loadComponent: area,
-        canActivate: [sessaoDemo],
+        canActivate: [pacienteAuthGuard],
         data: { modo: 'detalhes' },
         title: 'Detalhes da consulta · Clinora',
       },
@@ -137,10 +153,9 @@ export const routes: Routes = [
         title: 'Mensagem registrada · Clinora',
         data: {
           icone: 'mail',
-          titulo: 'Recebemos sua mensagem na demonstração.',
+          titulo: 'Recebemos sua mensagem.',
           descricao:
-            'Obrigada por entrar em contato. Em um serviço real, a equipe responderia pelo e-mail informado.',
-          aviso: 'Projeto acadêmico: nenhuma mensagem foi enviada para a clínica.',
+            'Obrigada por entrar em contato. A equipe pode acompanhar sua solicitação e responder pelo e-mail informado.',
           destino: '/',
           botao: 'Voltar ao início',
           secundario: '/contato',
@@ -149,14 +164,16 @@ export const routes: Routes = [
       },
       {
         path: 'confirmar-email',
+        canActivate: [pacienteAuthGuard],
         loadComponent: resultado,
-        title: 'Conta de demonstração criada · Clinora',
+        title: 'Conta criada · Clinora',
         data: {
           icone: 'mail',
           etiqueta: 'Seu cuidado começa aqui',
-          titulo: 'Sua conta de demonstração está pronta.',
-          descricao: 'Em um serviço real, você receberia um link para confirmar seu e-mail.',
-          aviso: 'Nenhum e-mail foi enviado. Você já pode acessar a demonstração.',
+          titulo: 'Sua conta está pronta.',
+          descricao:
+            'Seu cadastro foi salvo na clínica. Você já pode acessar sua área com e-mail e senha.',
+          aviso: 'Não é necessário confirmar o e-mail nesta versão. Nenhuma mensagem foi enviada.',
           destino: '/minha-area',
           botao: 'Acessar minha área',
         },
@@ -167,12 +184,12 @@ export const routes: Routes = [
         title: 'Recuperação de acesso · Clinora',
         data: {
           icone: 'mail',
-          titulo: 'Confira seu e-mail, em um serviço real.',
+          titulo: 'Confira seu e-mail.',
           descricao:
-            'A recuperação de acesso está representada neste protótipo. Continue para conhecer a tela de nova senha.',
-          aviso: 'Demonstração: nenhum link foi enviado por e-mail.',
-          destino: '/nova-senha',
-          botao: 'Simular redefinição de senha',
+            'Se houver uma conta de paciente com este e-mail, você receberá um link para recuperar seu acesso.',
+          aviso: 'O link é válido por 30 minutos e pode ser usado uma única vez.',
+          destino: '/entrar',
+          botao: 'Voltar para entrar',
           secundario: '/entrar',
           textoSecundario: 'Voltar para entrar',
         },
@@ -183,8 +200,8 @@ export const routes: Routes = [
         title: 'Senha · Clinora',
         data: {
           titulo: 'Tudo pronto para continuar.',
-          descricao: 'Você concluiu a demonstração de atualização de senha.',
-          aviso: 'Nenhuma credencial real foi alterada ou armazenada.',
+          descricao: 'Sua senha foi atualizada. Entre novamente com a nova senha.',
+          aviso: 'Por segurança, as sessões anteriores foram encerradas.',
           destino: '/entrar',
           botao: 'Ir para entrar',
         },
@@ -192,11 +209,11 @@ export const routes: Routes = [
       {
         path: 'dados-atualizados',
         loadComponent: resultado,
-        canActivate: [sessaoDemo],
+        canActivate: [pacienteAuthGuard],
         title: 'Dados atualizados · Clinora',
         data: {
           titulo: 'Seus dados foram atualizados.',
-          descricao: 'Suas informações de contato estão atualizadas nesta demonstração.',
+          descricao: 'Suas informações de contato foram salvas na sua conta da clínica.',
           destino: '/minha-area',
           botao: 'Voltar para minha área',
         },
@@ -204,12 +221,12 @@ export const routes: Routes = [
       {
         path: 'consulta-cancelada',
         loadComponent: resultado,
-        canActivate: [sessaoDemo],
+        canActivate: [pacienteAuthGuard],
         title: 'Consulta cancelada · Clinora',
         data: {
           titulo: 'Consulta cancelada.',
           descricao:
-            'O horário foi liberado na demonstração. Quando precisar, estaremos aqui para cuidar de você.',
+            'O horário foi liberado para novos agendamentos. Quando precisar, estaremos aqui para cuidar de você.',
           destino: '/agendar',
           botao: 'Agendar outro horário',
           secundario: '/minha-area',

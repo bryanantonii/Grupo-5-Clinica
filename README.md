@@ -8,12 +8,19 @@ Projeto Integrador Sprint 5. As seções marcadas com ✏️ aguardam os dados e
 ## Sobre o sistema
 
 A Clinora reúne o catálogo de profissionais, as especialidades, os convênios,
-o agendamento demonstrativo e a gestão da clínica. A gestão possui telas de
+o agendamento integrado à API e a gestão da clínica. A gestão possui telas de
 Pacientes, Profissionais, Consultas, Especialidades, Convênios e Relatórios.
-Profissionais já utiliza a API; os demais fluxos de frontend ainda usam mocks.
-A aula 12 acrescenta autenticação JWT na API. A gestão de Profissionais exige
-um token, que pode ser testado no Swagger; o envio pelo Angular será feito na
-aula 13. O catálogo público continua acessível sem login.
+A gestão dos cinco módulos e os Relatórios já usam a API e o MongoDB.
+A equipe faz login real em `/login`; o Angular envia JWT nas requisições
+privadas e o backend aplica as permissões de administrador e atendente.
+O catálogo público continua acessível sem login. O paciente cria sua conta em
+`/criar-conta`, entra em `/entrar` e atualiza seus dados com persistência no MongoDB.
+A conta recebe perfil `paciente` e não acessa a gestão. Agendamento, histórico,
+cancelamento, convênios e contato também usam a API e o MongoDB. A recuperação
+de senha está implementada e depende de configurar o provedor SMTP no `.env`.
+
+Veja a [revisão da integração real](docs/integracao-real/README.md), com rotas,
+configuração do Compass, testes executados e pendências para a entrega.
 
 ## Integrantes, módulos e papéis
 
@@ -36,7 +43,7 @@ aula 13. O catálogo público continua acessível sem login.
 ## Pré-requisitos
 
 - Node.js 20.19+ ou 22.12+ (`node -v`)
-- MongoDB Community rodando em `mongodb://localhost:27017` (`mongosh` para testar)
+- MongoDB local ou Atlas, com `MONGODB_URI` configurada no `.env` do backend
 - Git e VS Code
 
 ## Como rodar
@@ -44,15 +51,16 @@ aula 13. O catálogo público continua acessível sem login.
 ```bash
 # 1) Back-end
 cd backend
-npm install
+npm ci
 copy .env.example .env      # no Linux/Mac: cp .env.example .env
+# No .env, configure MONGODB_URI=mongodb://127.0.0.1:27017/clinora
 npm run configurar:auth      # prepara JWT e administrador no .env local
 npm run seed                # insere exemplos ausentes e o administrador
 npm run start:dev           # API em http://localhost:3000/api/v1
 
 # 2) Front-end (em outro terminal)
 cd frontend
-npm install
+npm ci
 npm start                   # http://localhost:4200
 ```
 
@@ -77,7 +85,7 @@ backend/
   testes-obrigatorios/  # testes da autenticação (aulas 12 e 13)
 frontend/
   src/
-    environments/    # apiUrl e usarMockProfissionais
+    environments/    # endereço da API real
     estilos-do-grupo.css  # estilos do grupo (vencem o styles.css)
     app/
       core/          # código compartilhado (modelos de resposta e de referência)
@@ -105,12 +113,14 @@ As rotas do site, da gestão e da API estão em [Rotas da Clinora](docs/rotas-cl
 
 ## Perfis de acesso
 
-O schema aceita `admin` e `atendente`. O seed cria o administrador; o cadastro
-protegido cria atendentes. Nesta aula, o guard exige JWT válido em todas as
-rotas sem `@Publico()`. As permissões específicas por perfil são da aula 13.
+O schema aceita `admin` e `atendente`. Ambos podem cadastrar, editar e mudar
+status de consultas. Somente admin pode excluir cadastros, criar contas de
+atendente e consultar Relatórios. O guard JWT verifica a identidade antes
+do PerfisGuard. O seed prepara as duas contas iniciais sem redefinir senhas.
 
 O roteiro de configuração, as respostas e o material para apresentação estão
-em [Autenticação da aula 12](docs/aula-12/README.md).
+em [Integração da aula 13](docs/aula-13/README.md). O registro da
+[autenticação da aula 12](docs/aula-12/README.md) permanece disponível.
 
 ## ✏️ Decisões técnicas (ADRs)
 
@@ -120,11 +130,10 @@ Registre as decisões importantes: o que foi decidido, por quê e qual alternati
 
 ## Limitações conhecidas e próximos passos
 
-- A autenticação da aula 12 está no backend. O acesso demonstrativo do site
-  ainda não autentica na API; o login real do Angular e o interceptor de JWT
-  pertencem à aula 13. Até lá, a gestão que chama a API recebe 401 sem token.
-- Pacientes, Consultas, Especialidades, Convênios e Relatórios ainda usam mocks
-  no frontend; seus endpoints completos aguardam integração.
+- A gestão e as contas dos pacientes estão integradas. Os agendamentos do portal
+  continuam demonstrativos. A recuperação automática de senha ainda não está disponível.
+- O JWT expira em uma hora, sem refresh token ou revogação individual nesta
+  entrega. Use somente dados fictícios no ambiente acadêmico.
 
 ## ✏️ Respostas às perguntas de verificação do manual
 

@@ -1,3 +1,4 @@
+import { ReferenciasApiService } from '../gestao/services/referencias-api.service';
 import { ModuloConfig } from '../gestao/modulo-config';
 import { ConsultasService } from './services/consultas.service';
 export const CONSULTAS_CONFIG: ModuloConfig = {
@@ -61,4 +62,5 @@ export const CONSULTAS_CONFIG: ModuloConfig = {
     ],
   },
   servico: ConsultasService,
+  referencias: ReferenciasApiService,
 };

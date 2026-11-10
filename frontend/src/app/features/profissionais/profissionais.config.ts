@@ -1,5 +1,4 @@
-import { environment } from '../../../environments/environment';
-import { ProfissionaisCatalogoService } from './services/profissionais-catalogo.service';
+import { ReferenciasApiService } from '../gestao/services/referencias-api.service';
 import { ModuloConfig } from '../gestao/modulo-config';
 import { ProfissionaisService } from './services/profissionais.service';
 export const PROFISSIONAIS_CONFIG: ModuloConfig = {
@@ -79,5 +78,5 @@ export const PROFISSIONAIS_CONFIG: ModuloConfig = {
     ],
   },
   servico: ProfissionaisService,
-  referencias: environment.usarMockProfissionais ? undefined : ProfissionaisCatalogoService,
+  referencias: ReferenciasApiService,
 };

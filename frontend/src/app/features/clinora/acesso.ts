@@ -1,9 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ClinoraService } from './clinora.service';
+import { mensagemDaApi } from '../../shared/erros-api';
 import { Icon } from './shared/icon';
 import { criarFormularioAcesso } from './acesso.formulario';
+import { HttpErrorResponse } from '@angular/common/http';
+import { finalize } from 'rxjs';
+import { PacienteAuthService, retornoPacienteSeguro } from '../../core/auth/paciente-auth.service';
 @Component({
   selector: 'app-acesso',
   imports: [ReactiveFormsModule, RouterLink, Icon],
@@ -85,11 +88,11 @@ import { criarFormularioAcesso } from './acesso.formulario';
                   </button>
                 </div>
                 <span id="senha-ajuda" class="form-hint"
-                  >Use uma senha fictícia com pelo menos 8 caracteres.</span
+                  >Use uma senha de teste com pelo menos 8 caracteres e até 72 bytes.</span
                 >
                 @if (invalido('senha')) {
                   <span id="senha-erro" class="field-error"
-                    >A senha deve ter pelo menos 8 caracteres.</span
+                    >A senha deve ter pelo menos 8 caracteres e até 72 bytes.</span
                   >
                 }
               </div>
@@ -142,29 +145,42 @@ import { criarFormularioAcesso } from './acesso.formulario';
                 <p class="field-error" role="status">Confirme que usará dados fictícios.</p>
               }
             }
-            <div class="demo-note">
+            <div class="demo-note" role="status">
               <app-icon name="info" />
               <p>
-                Modo demonstração.
                 {{
-                  modo === 'entrar'
-                    ? 'Use seu e-mail e uma senha fictícia para explorar as telas.'
-                    : 'Nenhuma senha é armazenada e nenhum e-mail é enviado.'
+                  modo === 'entrar' || modo === 'cadastro'
+                    ? 'Sua conta será validada pela clínica. Projeto acadêmico: use dados e senha de teste.'
+                    : 'A recuperação usa um link de uso único enviado ao seu e-mail.'
                 }}
               </p>
             </div>
-            <button type="submit" class="btn full-width" [disabled]="form.invalid || form.pending">
-              {{ botao }} <app-icon name="arrow" />
+            @if (erro()) {
+              <p class="field-error" role="alert">{{ erro() }}</p>
+            }
+            @if (auth.aviso()) {
+              <p class="notice" role="status">{{ auth.aviso() }}</p>
+            }
+            <button
+              type="submit"
+              class="btn full-width"
+              [attr.aria-busy]="salvando()"
+              [disabled]="form.invalid || form.pending || salvando()"
+            >
+              {{ salvando() ? 'Aguarde…' : botao }} <app-icon name="arrow" />
             </button>
           </form>
           @if (modo === 'entrar') {
-            <a routerLink="/criar-conta" class="text-link auth-switch"
+            <a
+              routerLink="/criar-conta"
+              [queryParams]="{ retorno: retorno }"
+              class="text-link auth-switch"
               >Ainda não tenho conta. Criar conta</a
             >
             <div class="divider"></div>
             <p>Só precisa de uma consulta?</p>
             <a routerLink="/agendar" class="text-link"
-              >Agendar sem criar conta <app-icon name="arrow"
+              >Consultar horários e agendar <app-icon name="arrow"
             /></a>
           } @else {
             <a routerLink="/entrar" class="text-link auth-switch"
@@ -179,7 +195,13 @@ import { criarFormularioAcesso } from './acesso.formulario';
 export class Acesso {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly dados = inject(ClinoraService);
+  protected readonly retorno = this.route.snapshot.queryParamMap.get('retorno');
+  private readonly tokenRecuperacao = this.route.snapshot.queryParamMap.get('token') ?? '';
+  protected readonly auth = inject(PacienteAuthService);
+  protected readonly salvando = signal(false);
+  protected readonly erro = signal(
+    this.route.snapshot.queryParamMap.has('expirada') ? 'Sua sessão expirou. Entre novamente.' : '',
+  );
   protected readonly modo: string = this.route.snapshot.data['modo'] ?? 'entrar';
   protected readonly mostrar = signal(false);
   protected readonly form = criarFormularioAcesso(inject(FormBuilder), this.modo);
@@ -215,42 +237,63 @@ export class Acesso {
     return !!v && v.invalid && v.touched;
   }
   protected enviar() {
+    if (this.salvando()) return;
     this.form.markAllAsTouched();
     this.form.updateValueAndValidity();
     if (this.form.invalid) return;
     const v = this.form.getRawValue();
-    if (this.modo === 'recuperar') {
-      void this.router.navigate(['/link-enviado']);
+    if (this.modo === 'recuperar' || this.modo === 'nova-senha') {
+      if (this.modo === 'nova-senha' && !/^[a-f\d]{64}$/.test(this.tokenRecuperacao)) {
+        this.erro.set(
+          'Abra o link de recuperação recebido por e-mail. Se ele expirou, solicite outro.',
+        );
+        return;
+      }
+      this.erro.set('');
+      this.salvando.set(true);
+      const operacao =
+        this.modo === 'recuperar'
+          ? this.auth.recuperar(v.email)
+          : this.auth.redefinir(this.tokenRecuperacao, v.senha);
+      operacao.pipe(finalize(() => this.salvando.set(false))).subscribe({
+        next: () => {
+          if (this.modo === 'nova-senha') this.auth.sair();
+          this.form.reset();
+          void this.router.navigate([
+            this.modo === 'recuperar' ? '/link-enviado' : '/senha-atualizada',
+          ]);
+        },
+        error: (e: unknown) => this.erro.set(mensagemDaApi(e)),
+      });
       return;
     }
-    if (this.modo === 'nova-senha') {
-      this.form.reset();
-      void this.router.navigate(['/senha-atualizada']);
-      return;
-    }
-    const anterior = this.dados.perfil();
-    const nome =
-      v.nome.trim() ||
-      (anterior?.email.toLowerCase() === v.email.trim().toLowerCase()
-        ? anterior.nome
-        : v.email
-            .split('@')[0]
-            .replace(/[._-]/g, ' ')
-            .replace(/^./, (c) => c.toUpperCase()));
-    this.dados.entrar({
-      nome,
-      email: v.email.trim().toLowerCase(),
-      telefone:
-        anterior?.email.toLowerCase() === v.email.trim().toLowerCase() ? anterior.telefone : '',
-    });
-    this.form.reset();
-    const destino = this.route.snapshot.queryParamMap.get('retorno');
-    void this.router.navigateByUrl(
+    this.erro.set('');
+    this.salvando.set(true);
+    const operacao =
       this.modo === 'cadastro'
-        ? '/confirmar-email'
-        : destino?.startsWith('/') && !destino.startsWith('//')
-          ? destino
-          : '/minha-area',
-    );
+        ? this.auth.cadastrar(v.nome, v.email, v.senha)
+        : this.auth.entrar(v.email, v.senha);
+    operacao.pipe(finalize(() => this.salvando.set(false))).subscribe({
+      next: () => {
+        this.form.reset();
+        void this.router.navigateByUrl(
+          this.modo === 'cadastro' && !this.retorno
+            ? '/confirmar-email'
+            : retornoPacienteSeguro(this.retorno),
+        );
+      },
+      error: (e: unknown) =>
+        this.erro.set(
+          e instanceof HttpErrorResponse && e.status === 409
+            ? 'Já existe uma conta com este e-mail. Entre com sua senha.'
+            : e instanceof HttpErrorResponse && e.status === 401
+              ? 'E-mail ou senha inválidos para a área do paciente.'
+              : e instanceof HttpErrorResponse && e.status === 400
+                ? 'Confira o nome, o e-mail e a senha informados.'
+                : e instanceof HttpErrorResponse && e.status === 0
+                  ? 'Não foi possível acessar o serviço da clínica. Tente novamente em instantes.'
+                  : 'O serviço da clínica está indisponível no momento. Tente novamente em instantes.',
+        ),
+    });
   }
 }

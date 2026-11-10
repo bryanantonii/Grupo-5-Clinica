@@ -1,0 +1,27 @@
+{
+  "data": "2026-11-06",
+  "backend": {
+    "testes": 143,
+    "suites": 17,
+    "lint": "aprovado",
+    "build": "aprovado",
+    "execucaoLocal": "npm run test:compat; resolvedor CJS do Node devido ao bloqueio nativo do laboratório",
+    "execucaoPadraoCI": "npm test, sem modificar o workflow do professor"
+  },
+  "frontend": {
+    "testes": 90,
+    "rotas": 32,
+    "build": "aprovado",
+    "tipagem": "aprovada"
+  },
+  "integracaoAula13": 81,
+  "regressaoAuthAula12": 31,
+  "navegador": 24,
+  "obrigatoriosSHA256": {
+    "usuarios.service.spec.ts": "4ac0ba5026745b6256db59dac5f284844f9fc0356f81e7bc4a67031ac3efbef7",
+    "auth.service.spec.ts": "a2350cbd6073ee94c8a3a90edb407f39e13dfb8a5c5f93307cc7713305931c65",
+    "perfis.guard.spec.ts": "41c8ef193eaddb51b9e5607f351ff0432dc4ca3584d6ac4cd6cd57e199405b4f"
+  },
+  "contaPacienteHTTP": 56,
+  "conferenciasContaIncluindoMongoDB": 9
+}

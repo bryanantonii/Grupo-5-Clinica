@@ -1,8 +1,15 @@
+import { PortalModule } from './portal/portal.module';
+import { ContatosModule } from './contatos/contatos.module';
+import { RecuperacaoModule } from './recuperacao/recuperacao.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProfissionaisModule } from './profissionais/profissionais.module';
 import { ConveniosModule } from './convenios/convenios.module';
+import { PacientesModule } from './pacientes/pacientes.module';
+import { EspecialidadesModule } from './especialidades/especialidades.module';
+import { ConsultasModule } from './consultas/consultas.module';
+import { RelatoriosModule } from './relatorios/relatorios.module';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
@@ -25,6 +32,13 @@ import { AuthModule } from './auth/auth.module';
     ProfissionaisModule,
     ConveniosModule,
     AuthModule,
+    PacientesModule,
+    EspecialidadesModule,
+    ConsultasModule,
+    RelatoriosModule,
+    PortalModule,
+    ContatosModule,
+    RecuperacaoModule,
   ],
 })
 export class AppModule {}

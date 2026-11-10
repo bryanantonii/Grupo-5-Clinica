@@ -1,0 +1,57 @@
+<section class="container equipe-login" aria-labelledby="titulo-login">
+  <div class="equipe-apresentacao">
+    <p class="eyebrow">Clinora · Área da equipe</p>
+    <h1 id="titulo-login">Um cuidado que começa com uma equipe conectada.</h1>
+    <p>Acesse os cadastros e a agenda da clínica com sua conta profissional.</p>
+    <a routerLink="/">Voltar ao site da Clinora →</a>
+  </div>
+  <div class="equipe-formulario">
+    <h2>Entrar na gestão</h2>
+    <p>Use a conta fornecida pela administração da clínica.</p>
+    @if (expirada) {
+      <p class="notice" role="status">Sua sessão expirou. Entre novamente para continuar.</p>
+    }
+    @if (erro()) {
+      <p id="erro-login" class="c1-feedback c1-error" role="alert">{{ erro() }}</p>
+    }
+    <form [formGroup]="form" (ngSubmit)="entrar()" [attr.aria-busy]="carregando()">
+      <div class="field">
+        <label for="email-equipe">E-mail</label
+        ><input
+          id="email-equipe"
+          type="email"
+          formControlName="email"
+          autocomplete="username"
+          [attr.aria-invalid]="form.controls.email.touched && form.controls.email.invalid"
+          aria-describedby="ajuda-email"
+        />
+        <p id="ajuda-email" class="c1-field-error">
+          @if (form.controls.email.touched && form.controls.email.invalid) {
+            Informe um e-mail válido.
+          }
+        </p>
+      </div>
+      <div class="field">
+        <label for="senha-equipe">Senha</label
+        ><input
+          id="senha-equipe"
+          [type]="mostrarSenha() ? 'text' : 'password'"
+          formControlName="senha"
+          autocomplete="current-password"
+          [attr.aria-invalid]="form.controls.senha.touched && form.controls.senha.invalid"
+        /><button
+          class="equipe-ver-senha"
+          type="button"
+          (click)="mostrarSenha.set(!mostrarSenha())"
+          [attr.aria-pressed]="mostrarSenha()"
+        >
+          {{ mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha' }}
+        </button>
+      </div>
+      <button class="btn equipe-enviar" type="submit" [disabled]="carregando()">
+        {{ carregando() ? 'Entrando...' : 'Entrar na gestão' }}
+      </button>
+    </form>
+    <p class="equipe-ajuda">Precisa de acesso? Fale com a administração da clínica.</p>
+  </div>
+</section>

@@ -1,0 +1,14 @@
+{
+  "data": "2026-11-10T21:29:45.725Z",
+  "banco": "clinora local",
+  "causaInicial": "API sem processo na porta 3000; ECONNREFUSED. Frontend e MongoDB ativos.",
+  "corsCadastro": 204,
+  "cadastroHttp": 201,
+  "usuarioPersistido": true,
+  "hashBcryptConferido": true,
+  "senhaEmTextoSalva": false,
+  "loginHttp": 200,
+  "leituraDaPropriaContaHttp": 200,
+  "usuarioFicticioRemovido": true,
+  "contasAnterioresPreservadas": true
+}

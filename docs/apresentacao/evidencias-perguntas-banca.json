@@ -1,0 +1,29 @@
+{
+  "data": "2026-11-10T00:25:05.568Z",
+  "casos": [
+    {
+      "caso": "Relatórios sem token",
+      "status": 401,
+      "mensagem": "Token não informado"
+    },
+    {
+      "caso": "Relatórios com perfil atendente",
+      "status": 403,
+      "mensagem": "Seu perfil não tem permissão para esta ação"
+    },
+    {
+      "caso": "Relatórios com perfil admin",
+      "status": 200,
+      "mensagem": "Acesso permitido"
+    },
+    {
+      "caso": "ID inválido em Convênios",
+      "status": 400,
+      "resposta": {
+        "message": "O id do convênio não é válido.",
+        "error": "Bad Request",
+        "statusCode": 400
+      }
+    }
+  ]
+}

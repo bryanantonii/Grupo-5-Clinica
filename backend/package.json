@@ -1,7 +1,7 @@
 {
   "name": "projeto-integrador-api",
   "version": "0.0.1",
-  "description": "API do Projeto Integrador â€“ Sprint 5",
+  "description": "API do Projeto Integrador – Sprint 5",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
@@ -15,14 +15,18 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:compat": "node scripts/testar-compat.cjs",
     "test:cov": "jest --coverage",
     "seed": "ts-node src/seed/seed.ts",
     "configurar:auth": "ts-node src/auth/configurar-ambiente.ts",
     "verificar:auth": "ts-node src/auth/verificar-autenticacao.ts",
+    "verificar:conta": "ts-node src/auth/verificar-conta-paciente.ts",
+    "verificar:integracao": "ts-node src/auth/verificar-integracao.ts",
     "seed:profissionais": "ts-node src/profissionais/seed-profissionais.ts",
     "verificar:seed:clinica": "ts-node src/seed/verificar-seed-clinica.ts",
     "verificar:convenios": "ts-node src/convenios/verificar-seed.ts",
-    "verificar:regras:convenios": "ts-node src/convenios/verificar-regras.ts"
+    "verificar:regras:convenios": "ts-node src/convenios/verificar-regras.ts",
+    "verificar:portal": "ts-node src/portal/verificar-portal.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -37,6 +41,7 @@
     "class-validator": "^0.15.1",
     "dotenv": "^18.0.8",
     "mongoose": "^9.11.2",
+    "nodemailer": "^10.4.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
@@ -49,6 +54,7 @@
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.0",
+    "@types/nodemailer": "^8.0.2",
     "@types/supertest": "^7.0.0",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",

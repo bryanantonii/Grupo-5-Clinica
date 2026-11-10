@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { origemWebPermitida } from './config/origens-web';
 import { RespostaInterceptor } from './common/interceptors/resposta.interceptor';
 
 async function bootstrap() {
@@ -10,8 +11,15 @@ async function bootstrap() {
   // Todas as rotas começam com /api/v1 (versionamento desde o início — PDF 04, cap. 11)
   app.setGlobalPrefix('api/v1');
 
-  // Permite que o front-end Angular (porta 4200) chame a API
-  app.enableCors({ origin: 'http://localhost:4200' });
+  // Aceita portas locais no desenvolvimento e a origem configurada em produção.
+  app.enableCors({
+    origin: (
+      origem: string | undefined,
+      permitir: (erro: Error | null, permitido: boolean) => void,
+    ) => {
+      permitir(null, origemWebPermitida(origem));
+    },
+  });
 
   // Validação automática dos DTOs (PDF 04, cap. 12 e 13)
   // whitelist: remove campos que não estão no DTO

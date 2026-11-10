@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { ClinicaMockStore } from './services/clinica-mock.store';
+import { AuthService } from '../../core/auth/auth.service';
 @Component({
   selector: 'app-gestao-layout',
   imports: [RouterLink, RouterLinkActive, RouterOutlet],
@@ -10,7 +10,7 @@ import { ClinicaMockStore } from './services/clinica-mock.store';
         <p class="eyebrow">Clinora</p>
         <h2>Gestão da clínica</h2>
       </div>
-      <span class="c1-demo-badge">C1 · Dados de exemplo</span>
+      <span class="c1-demo-badge">Gestão conectada</span>
     </header>
     <div class="c1-workspace">
       <nav class="c1-module-menu" aria-label="Módulos de gestão">
@@ -21,7 +21,7 @@ import { ClinicaMockStore } from './services/clinica-mock.store';
           ariaCurrentWhenActive="page"
           >Visão geral</a
         >
-        @for (modulo of modulos; track modulo.rota) {
+        @for (modulo of modulosVisiveis(); track modulo.rota) {
           <a
             [routerLink]="['/gestao', modulo.rota]"
             routerLinkActive="selected"
@@ -32,13 +32,18 @@ import { ClinicaMockStore } from './services/clinica-mock.store';
       </nav>
       <div class="c1-content"><router-outlet /></div>
     </div>
-    @if (store.avisoArmazenamento()) {
-      <p class="notice" role="status">{{ store.avisoArmazenamento() }}</p>
+    @if (auth.aviso()) {
+      <p class="notice" role="status">{{ auth.aviso() }}</p>
     }
   </section>`,
 })
 export class GestaoLayout {
-  readonly store = inject(ClinicaMockStore);
+  readonly auth = inject(AuthService);
+  modulosVisiveis() {
+    return this.modulos.filter(
+      (m) => !['relatorios', 'usuarios'].includes(m.rota) || this.auth.administrador(),
+    );
+  }
   readonly modulos = [
     { rota: 'pacientes', nome: 'Pacientes' },
     { rota: 'profissionais', nome: 'Profissionais' },
@@ -46,5 +51,7 @@ export class GestaoLayout {
     { rota: 'especialidades', nome: 'Especialidades' },
     { rota: 'convenios', nome: 'Convênios' },
     { rota: 'relatorios', nome: 'Relatórios' },
+    { rota: 'mensagens', nome: 'Mensagens' },
+    { rota: 'usuarios', nome: 'Usuários e acessos' },
   ];
 }

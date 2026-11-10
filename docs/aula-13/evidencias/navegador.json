@@ -1,0 +1,71 @@
+{
+  "data": "2026-11-06",
+  "total": 16,
+  "casos": [
+    {
+      "caso": "Login real como atendente",
+      "resultado": "aprovado"
+    },
+    {
+      "caso": "Cadastro real de paciente pelo Angular",
+      "resultado": "aprovado"
+    },
+    {
+      "caso": "Atendente não vê Excluir",
+      "resultado": "aprovado"
+    },
+    {
+      "caso": "Edição e busca persistidas na API",
+      "resultado": "aprovado"
+    },
+    {
+      "caso": "Recarregar conserva login e consulta o registro salvo",
+      "resultado": "aprovado"
+    },
+    {
+      "caso": "Atendente bloqueado ao abrir relatórios pelo endereço",
+      "resultado": "aprovado"
+    },
+    {
+      "caso": "Logout e novo login como administrador",
+      "resultado": "aprovado"
+    },
+    {
+      "caso": "Resumo real do MongoDB disponível ao administrador",
+      "resultado": "aprovado"
+    },
+    {
+      "caso": "Administrador confirma exclusão lógica do registro fictício de teste",
+      "resultado": "aprovado"
+    },
+    {
+      "caso": "Mostrar inativos conserva o histórico do paciente de teste",
+      "resultado": "aprovado"
+    },
+    {
+      "caso": "Profissionais carrega a equipe real da API",
+      "resultado": "aprovado"
+    },
+    {
+      "caso": "Especialidades carrega os dados reais completados pelo seed",
+      "resultado": "aprovado"
+    },
+    {
+      "caso": "Convênios carrega a coleção real",
+      "resultado": "aprovado"
+    },
+    {
+      "caso": "Consultas mostra corretamente o banco real ainda sem agendamentos",
+      "resultado": "aprovado"
+    },
+    {
+      "caso": "Relatórios mostram os totais atuais do MongoDB",
+      "resultado": "aprovado"
+    },
+    {
+      "caso": "Gestão em 390px sem rolagem horizontal da página",
+      "resultado": "aprovado"
+    }
+  ],
+  "registroDeTeste": "Paciente fictício Teste Aula 13 Integração criado, editado e inativado; nenhum cadastro anterior foi excluído."
+}
