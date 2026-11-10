@@ -2,9 +2,11 @@ import '@angular/compiler';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injector, signal } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { afterEach, beforeEach, test } from 'node:test';
 import assert from 'node:assert/strict';
-import { firstValueFrom, of, throwError } from 'rxjs';
+import { firstValueFrom, of, Subject, throwError } from 'rxjs';
+import { Acesso } from '../src/app/features/clinora/acesso';
 import { criarFormularioAcesso } from '../src/app/features/clinora/acesso.formulario';
 import { ClinoraService } from '../src/app/features/clinora/clinora.service';
 import { Consulta, AgendamentoEntrada } from '../src/app/features/clinora/clinora.models';
@@ -109,6 +111,113 @@ beforeEach(() => {
   clinora = injector.get(ClinoraService);
 });
 afterEach(() => injector.destroy());
+
+class AcessoEmTeste extends Acesso {
+  get formulario() {
+    return this.form;
+  }
+  get mensagem() {
+    return this.erro();
+  }
+  get aguardando() {
+    return this.salvando();
+  }
+  enviarFormulario() {
+    this.enviar();
+  }
+}
+
+function prepararCadastro(operacao: () => ReturnType<PacienteAuthService['cadastrar']>) {
+  const navegacoes: string[] = [];
+  const contexto = Injector.create({
+    providers: [
+      { provide: FormBuilder, useValue: new FormBuilder() },
+      {
+        provide: ActivatedRoute,
+        useValue: {
+          snapshot: { queryParamMap: convertToParamMap({}), data: { modo: 'cadastro' } },
+        },
+      },
+      {
+        provide: Router,
+        useValue: {
+          navigateByUrl: (url: string) => {
+            navegacoes.push(url);
+            return Promise.resolve(true);
+          },
+        },
+      },
+      { provide: PacienteAuthService, useValue: { cadastrar: operacao, aviso: signal('') } },
+      { provide: AcessoEmTeste, useFactory: () => new AcessoEmTeste() },
+    ],
+  });
+  const tela = contexto.get(AcessoEmTeste);
+  tela.formulario.patchValue({
+    nome: 'Paciente Teste',
+    email: 'cadastro@example.com',
+    senha: 'SenhaTeste123!',
+    confirmar: 'SenhaTeste123!',
+    ciente: true,
+  });
+  return { contexto, tela, navegacoes };
+}
+
+test('cadastro sem conexão preserva os campos e permite tentar novamente após a API voltar', () => {
+  const resposta = new Subject<never>();
+  let chamadas = 0;
+  const { contexto, tela, navegacoes } = prepararCadastro(() => {
+    chamadas++;
+    return chamadas === 1
+      ? resposta
+      : of({
+          sucesso: true as const,
+          dados: {
+            accessToken: 'token-da-dependencia-substituida',
+            usuario: {
+              _id: '665f1c2b9a1e4b0012345610',
+              nome: 'Paciente Teste',
+              email: 'cadastro@example.com',
+              perfil: 'paciente' as const,
+              telefone: '',
+            },
+          },
+        });
+  });
+  try {
+    const preenchido = tela.formulario.getRawValue();
+    tela.enviarFormulario();
+    assert.equal(tela.aguardando, true);
+    tela.enviarFormulario();
+    assert.equal(chamadas, 1, 'não repete a requisição enquanto aguarda');
+    resposta.error(new HttpErrorResponse({ status: 0 }));
+    assert.match(tela.mensagem, /Não foi possível acessar o serviço da clínica/);
+    assert.equal(tela.aguardando, false);
+    assert.deepEqual(tela.formulario.getRawValue(), preenchido);
+    assert.deepEqual(navegacoes, []);
+    tela.enviarFormulario();
+    assert.equal(chamadas, 2);
+    assert.equal(tela.mensagem, '');
+    assert.deepEqual(navegacoes, ['/confirmar-email']);
+  } finally {
+    contexto.destroy();
+  }
+});
+
+test('cadastro com e-mail duplicado orienta o login sem exibir sucesso', () => {
+  const { contexto, tela, navegacoes } = prepararCadastro(() =>
+    throwError(() => new HttpErrorResponse({ status: 409 })),
+  );
+  try {
+    tela.enviarFormulario();
+    assert.match(tela.mensagem, /Já existe uma conta com este e-mail/);
+    assert.equal(tela.formulario.controls.email.value, 'cadastro@example.com');
+    assert.equal(tela.aguardando, false);
+    assert.deepEqual(navegacoes, []);
+  } finally {
+    contexto.destroy();
+  }
+});
+
 test('login exige e-mail válido e senha com oito caracteres', () => {
   const form = criarFormularioAcesso(new FormBuilder(), 'entrar');
   form.patchValue({ email: 'invalido', senha: '123' });

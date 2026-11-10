@@ -7,6 +7,26 @@ Interface baseada no Penpot. A gestão da equipe usa a API NestJS e o MongoDB po
 Na pasta frontend, execute `npm ci` e `npm start`. Abra http://localhost:4200.
 Inicie também o backend conforme o [README da API](../backend/README.md).
 
+O `npm start` desta pasta inicia somente o site. A API precisa continuar ligada
+em outro terminal; o MongoDB local também precisa estar em execução. Para o uso
+diário, com as dependências e o `.env` já preparados:
+
+```powershell
+# Terminal 1, aberto na raiz do projeto
+cd backend
+npm run start:dev
+```
+
+```powershell
+# Terminal 2, aberto na raiz do projeto
+cd frontend
+npm start
+```
+
+Mantenha os dois terminais abertos. Antes de testar o cadastro, confira se
+`http://localhost:3000/api/docs` abre. Se o site abre, mas esse endereço não abre,
+a API não está acessível. Abrir o Compass não inicia a API.
+
 ## Login da equipe
 
 Abra `/gestao`; sem sessão, o Router redireciona para `/login`. As credenciais de administrador e atendente ficam no `.env` do backend, preparadas por `npm run configurar:auth` e `npm run seed`. Não são credenciais do GitHub ou do Atlas.
@@ -38,6 +58,6 @@ npm test
 npm run build
 ```
 
-São 93 testes, incluindo autenticação, adaptadores HTTP, formulários e 32 casos com o Router real. `npm run test:tipos` confere a tipagem; `npm run test:rotas` executa somente a navegação. O build verifica os templates e gera `dist/frontend/browser`.
+São 95 testes, incluindo autenticação, adaptadores HTTP, formulários e 32 casos com o Router real. Há testes do cadastro com API inacessível, repetição após a recuperação e e-mail duplicado. `npm run test:tipos` confere a tipagem; `npm run test:rotas` executa somente a navegação. O build verifica os templates e gera `dist/frontend/browser`.
 
 O registro, as evidências e o roteiro de apresentação ficam em [docs/aula-13](../docs/aula-13/README.md). Os registros anteriores permanecem em [docs/c1](../docs/c1) e [API de Profissionais](../docs/api-profissionais.md).

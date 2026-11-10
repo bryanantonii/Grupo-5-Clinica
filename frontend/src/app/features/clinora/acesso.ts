@@ -290,7 +290,9 @@ export class Acesso {
               ? 'E-mail ou senha inválidos para a área do paciente.'
               : e instanceof HttpErrorResponse && e.status === 400
                 ? 'Confira o nome, o e-mail e a senha informados.'
-                : 'Não foi possível concluir. Confira a conexão com a clínica e tente novamente.',
+                : e instanceof HttpErrorResponse && e.status === 0
+                  ? 'Não foi possível acessar o serviço da clínica. Tente novamente em instantes.'
+                  : 'O serviço da clínica está indisponível no momento. Tente novamente em instantes.',
         ),
     });
   }

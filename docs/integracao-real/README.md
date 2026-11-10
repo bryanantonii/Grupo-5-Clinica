@@ -89,7 +89,7 @@ A recuperação implementada atende contas de pacientes. A criação da conta fi
 | Backend: `npm test -- --runInBand` | 176 testes Jest, em 20 suítes |
 | Backend: `npx eslint "src/**/*.ts"` | Sem erros |
 | Backend: `npm run build` | Compilação concluída |
-| Frontend: `npm test` | 93 testes: 48 de C1/API/autenticação, 13 de formulários/portal e 32 de rotas; tipagem incluída |
+| Frontend: `npm test` | 95 testes: 48 de C1/API/autenticação, 15 de formulários/portal e 32 de rotas; tipagem incluída (reverificado em 10/11/2026) |
 | Frontend: `npm run build` | Build de produção concluído |
 | `npm run verificar:integracao` | 81 verificações HTTP/MongoDB da gestão |
 | `npm run verificar:conta` | 56 verificações HTTP/MongoDB da conta |
@@ -134,3 +134,41 @@ Para conferir a gravação na instância usada pelo site, foi criado um usuário
 - **Ver novas gravações no Compass:** abra Documents na coleção correta e clique no ícone de atualizar; limpe um filtro antigo se ele ocultar o novo registro.
 
 Evidências: [conexão salva e coleções](evidencias/compass-conexao-local.jpg), [consulta fictícia durante a verificação](evidencias/compass-consulta-verificacao.jpg) e [resultado sem senhas, hashes ou tokens](evidencias/compass-persistencia-local.json). A consulta do print foi removida ao encerrar o teste. O banco ficou com os mesmos registros anteriores à verificação.
+
+## Cadastro sem conexão — 10/11/2026
+
+O site estava aberto na porta 4200 e o MongoDB estava ativo na porta 27017,
+mas não havia processo escutando na porta 3000. A chamada ao catálogo da API
+retornou `ECONNREFUSED`. A mensagem genérica do formulário não diferenciava
+a indisponibilidade do serviço de outras falhas. Iniciar somente `npm start`
+em `frontend` não inicia o backend.
+
+Foi iniciado `npm run start:dev` em `backend`, sem erros de compilação e com
+conexão ao banco local `clinora`. Um cadastro fictício pela rota real retornou
+201, foi conferido diretamente em `usuarios` e autenticou com resposta 200.
+O hash bcrypt foi validado com `bcrypt.compare`, com custo 10 e sem senha em
+texto no documento ou na resposta. O preflight CORS do cadastro foi aceito
+para `http://localhost:4200`. Foi removido apenas o usuário fictício criado
+pela verificação, e as contas anteriores foram preservadas. Resultado:
+[cadastro-servico-local.json](evidencias/cadastro-servico-local.json).
+
+A tela agora informa quando não consegue acessar o serviço da clínica,
+preserva os campos e permite tentar novamente. O erro HTTP de rede com status
+0 não identifica sozinho a causa: também pode ser rede ou bloqueio do
+navegador. Neste caso, a ausência do processo e o `ECONNREFUSED` confirmaram
+que a API estava desligada. Não foi necessário reconfigurar nem apagar o banco.
+
+Dois testes de regressão verificam o comportamento do componente: falha de
+conexão sem apagar o formulário, prevenção de envio duplicado enquanto aguarda,
+nova tentativa bem-sucedida e mensagem específica para e-mail duplicado. A
+tipagem e os 95 testes do frontend passaram. Esses testes do componente usam
+dependências substituídas; a conferência HTTP/MongoDB descrita acima usa a API
+e o banco reais.
+
+Para o uso diário, depois da instalação inicial, mantenha dois terminais
+abertos: `npm run start:dev` na pasta `backend` e `npm start` na pasta
+`frontend`. O MongoDB deve continuar ligado. Confira se
+`http://localhost:3000/api/docs` abre antes de testar o cadastro. Fechar o
+terminal ou interromper a API exige iniciá-la novamente; abrir o Compass não
+inicia o servidor NestJS. Os comandos estão também no
+[README do frontend](../../frontend/README.md#executar).
