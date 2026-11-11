@@ -1,0 +1,50 @@
+{
+  "data": "2026-11-11",
+  "documentos": [
+    {
+      "arquivo": "docs/documento-de-visao.docx",
+      "paginas": 5,
+      "sha256": "8194f7924e37376c73ba87abd0d4e2317f99706196cd520b019745119bd8cdc5",
+      "revisaoVisual": "Todas as páginas da versão final inspecionadas."
+    },
+    {
+      "arquivo": "docs/contrato-da-api.docx",
+      "paginas": 8,
+      "sha256": "05e7215e32b72edb31be65c92fa908fe39348f4f69a1f7a2107ad14a6d8ea557",
+      "revisaoVisual": "Todas as páginas da versão final inspecionadas."
+    },
+    {
+      "arquivo": "docs/dicionario-de-dados.docx",
+      "paginas": 9,
+      "sha256": "3b2cd84e01c08b2787a26796c2f706a8a7b4d49294c85d7d359835d97b7483db",
+      "revisaoVisual": "Todas as páginas da versão final inspecionadas."
+    },
+    {
+      "arquivo": "docs/manual-do-usuario.docx",
+      "paginas": 9,
+      "sha256": "dc631067ca484accee70b5181af92bb4605b1f97e366038a11e8ec0fa9e2117a",
+      "revisaoVisual": "Todas as páginas da versão final inspecionadas."
+    },
+    {
+      "arquivo": "docs/plano-de-testes.docx",
+      "paginas": 5,
+      "sha256": "d15f909f8687e4d6ee3e1a92e6dc813755a42d85ca3d4e7c2d2fe861efab7792",
+      "revisaoVisual": "Todas as páginas da versão final inspecionadas."
+    },
+    {
+      "arquivo": "docs/roteiro-da-apresentacao.docx",
+      "paginas": 3,
+      "sha256": "7414052ff81cc50648b0406bf31fdd4fdac6fb28ab3e71cf0aa7cb4446b674c5",
+      "revisaoVisual": "Todas as páginas da versão final inspecionadas."
+    }
+  ],
+  "totalPaginasWord": 39,
+  "respostas": {
+    "integrantes": 6,
+    "perguntasPorIntegrante": 33
+  },
+  "operacoesApi": 54,
+  "linksLocaisConferidos": true,
+  "segredosLocaisAusentes": true,
+  "modelosProfessorPreservados": true
+}

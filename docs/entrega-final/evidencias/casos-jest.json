@@ -1,0 +1,897 @@
+[
+  {
+    "arquivo": "backend/src/auth/auth.service.spec.ts",
+    "caso": "AuthService (testes que precisam passar na aula 12) devolve token e dados do usuário quando a senha confere",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/auth.service.spec.ts",
+    "caso": "AuthService (testes que precisam passar na aula 12) coloca no token só id, nome e perfil (payload mínimo)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/auth.service.spec.ts",
+    "caso": "AuthService (testes que precisam passar na aula 12) nunca devolve o hash da senha",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/auth.service.spec.ts",
+    "caso": "AuthService (testes que precisam passar na aula 12) recusa senha errada com a mensagem genérica \"Credenciais inválidas\"",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/auth.service.spec.ts",
+    "caso": "AuthService (testes que precisam passar na aula 12) recusa e-mail inexistente com a MESMA mensagem (não revela se o e-mail existe)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/conta-paciente.regras.spec.ts",
+    "caso": "Isolamento da conta pública recusa paciente em rotas sem perfil explícito da equipe",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/conta-paciente.regras.spec.ts",
+    "caso": "Isolamento da conta pública recusa paciente em rotas administrativas",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/conta-paciente.regras.spec.ts",
+    "caso": "Isolamento da conta pública permite paciente na própria conta",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/conta-paciente.regras.spec.ts",
+    "caso": "Isolamento da conta pública não aceita perfil, ID ou status enviados no cadastro público",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/conta-paciente.regras.spec.ts",
+    "caso": "Isolamento da conta pública recusa campos de senha, perfil e ID na edição da conta",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/conta-paciente.regras.spec.ts",
+    "caso": "Isolamento da conta pública recusa senha que excede o limite de bytes do bcrypt",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/conta-paciente.regras.spec.ts",
+    "caso": "Isolamento da conta pública perfil paciente não autentica no acesso equipe",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/conta-paciente.regras.spec.ts",
+    "caso": "Isolamento da conta pública perfil admin não autentica no acesso paciente",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/conta-paciente.regras.spec.ts",
+    "caso": "Isolamento da conta pública perfil atendente não autentica no acesso paciente",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/auth.regras.spec.ts",
+    "caso": "não autentica um usuário inativo mesmo com a senha correta",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/usuarios/usuarios.service.spec.ts",
+    "caso": "UsuariosService (testes que precisam passar na aula 12) grava o hash bcrypt, e não a senha em texto puro",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/usuarios/usuarios.service.spec.ts",
+    "caso": "UsuariosService (testes que precisam passar na aula 12) não devolve o hash na resposta",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/usuarios/usuarios.service.spec.ts",
+    "caso": "UsuariosService (testes que precisam passar na aula 12) recusa e-mail já cadastrado com 409",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/documentacao/completar-openapi.spec.ts",
+    "caso": "Documentação OpenAPI diferencia o envio público de contato da leitura protegida e documenta o cadastro com 201",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/documentacao/completar-openapi.spec.ts",
+    "caso": "Documentação OpenAPI mantém DELETE sem corpo e informa os erros de autenticação e permissão",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/documentacao/completar-openapi.spec.ts",
+    "caso": "Documentação OpenAPI explica o limite real de Relatórios e mantém as rotas existentes",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios cria um convênio ativo e preserva o zero inicial do ANS",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios RN10 impede ANS de outro convênio com ativo=true",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios RN10 impede ANS de outro convênio com ativo=false",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios RN10 também impede trocar o ANS por um já utilizado na edição",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios permite conservar o próprio ANS na edição, excluindo o próprio ID da busca",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios atualização parcial preserva os campos omitidos e aceita cobertura zero",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios nome único segue a mesma comparação de maiúsculas e acentos do índice existente",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios traduz E11000 de codigoAns para 409 no cadastro concorrente",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios traduz E11000 de nome para 409 no cadastro concorrente",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios traduz E11000 para 409 quando outro cadastro ocupa o ANS durante a edição",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios mantém erros inesperados do banco para não mascarar indisponibilidade como duplicidade",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios RN11 lista somente os ativos por padrão",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios RN11 permite consultar os inativos ao solicitar todos explicitamente",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios busca usa texto literal e conserva o filtro de ativos",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios RN11 inativa e preserva o cadastro quando o estado atual é true",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios RN11 inativa e preserva o cadastro quando o estado atual é false",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios detalhes permitem consultar um convênio inativo preservado",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios buscarPorId recusa ID inválido antes de acessar o banco",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios atualizar recusa ID inválido antes de acessar o banco",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios remover recusa ID inválido antes de acessar o banco",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios buscarPorId devolve 404 quando o cadastro não existe",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios atualizar devolve 404 quando o cadastro não existe",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios remover um cadastro inexistente devolve 404",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/convenios.service.spec.ts",
+    "caso": "Regras de negócio de Convênios edição devolve 404 se o registro deixar de existir entre a leitura e a escrita",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais aceita e apara dados válidos",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais rejeita nome inválido: \"An\"",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais rejeita nome inválido: \"    \"",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais rejeita nome inválido: \"NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN\"",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais rejeita registro inválido: \"CRM\"",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais rejeita registro inválido: \"RRRRRRRRRRRRRRRRRRRRR\"",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais rejeita email inválido: \"invalido\"",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais rejeita telefone inválido: \"51999999999\"",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais rejeita especialidade inválido: \"abc\"",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais rejeita nome inválido: null",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais rejeita email inválido: null",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais rejeita campos desconhecidos e ativo na criação",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais aceita PATCH parcial e ativo booleano",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais não aceita nulo ou tipo inválido no PATCH: {\"nome\": null}",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais não aceita nulo ou tipo inválido no PATCH: {\"registro\": null}",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais não aceita nulo ou tipo inválido no PATCH: {\"email\": null}",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais não aceita nulo ou tipo inválido no PATCH: {\"especialidade\": null}",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais não aceita nulo ou tipo inválido no PATCH: {\"ativo\": null}",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais não aceita nulo ou tipo inválido no PATCH: {\"ativo\": \"false\"}",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/dto/profissional.dto.spec.ts",
+    "caso": "DTOs de Profissionais converte todos=true/false e rejeita outros valores e filtros inválidos",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/jwt-auth.guard.spec.ts",
+    "caso": "JWT real no guard global libera somente a rota marcada como pública",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/jwt-auth.guard.spec.ts",
+    "caso": "JWT real no guard global respeita a marcação pública no controller",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/jwt-auth.guard.spec.ts",
+    "caso": "JWT real no guard global recusa ausência de token com 401",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/jwt-auth.guard.spec.ts",
+    "caso": "JWT real no guard global recusa cabeçalho malformado Basic abc",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/jwt-auth.guard.spec.ts",
+    "caso": "JWT real no guard global recusa cabeçalho malformado Bearer",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/jwt-auth.guard.spec.ts",
+    "caso": "JWT real no guard global recusa cabeçalho malformado Bearer a b",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/jwt-auth.guard.spec.ts",
+    "caso": "JWT real no guard global recusa cabeçalho malformado abc",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/jwt-auth.guard.spec.ts",
+    "caso": "JWT real no guard global confere assinatura e preenche a identidade da requisição",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/jwt-auth.guard.spec.ts",
+    "caso": "JWT real no guard global recusa assinatura feita com outro segredo",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/jwt-auth.guard.spec.ts",
+    "caso": "JWT real no guard global recusa token expirado",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/jwt-auth.guard.spec.ts",
+    "caso": "JWT real no guard global recusa token sem expiração mesmo com assinatura válida",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/jwt-auth.guard.spec.ts",
+    "caso": "JWT real no guard global recusa perfil ou ID fora do contrato",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/profissionais.service.spec.ts",
+    "caso": "ProfissionaisService lista somente ativos por padrão e devolve a referência com nome",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/profissionais.service.spec.ts",
+    "caso": "ProfissionaisService inclui inativos e filtra busca literal e especialidade",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/profissionais.service.spec.ts",
+    "caso": "ProfissionaisService rejeita ID inválido na busca, atualização e inativação",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/profissionais.service.spec.ts",
+    "caso": "ProfissionaisService devolve 404 para profissional inexistente",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/profissionais.service.spec.ts",
+    "caso": "ProfissionaisService busca um profissional por ID",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/profissionais.service.spec.ts",
+    "caso": "ProfissionaisService cria com registro em maiúsculas, e-mail normalizado e ativo automático",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/profissionais.service.spec.ts",
+    "caso": "ProfissionaisService bloqueia registro repetido com 409",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/profissionais.service.spec.ts",
+    "caso": "ProfissionaisService bloqueia email repetido com 409",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/profissionais.service.spec.ts",
+    "caso": "ProfissionaisService não cria se a especialidade não existir",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/profissionais.service.spec.ts",
+    "caso": "ProfissionaisService converte violação de índice único por concorrência em 409",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/profissionais.service.spec.ts",
+    "caso": "ProfissionaisService atualiza sem acusar duplicidade do próprio registro",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/profissionais.service.spec.ts",
+    "caso": "ProfissionaisService valida a nova especialidade ao editar",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/profissionais.service.spec.ts",
+    "caso": "ProfissionaisService não atualiza um profissional inexistente",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/profissionais.service.spec.ts",
+    "caso": "ProfissionaisService inativa sem apagar o registro",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/profissionais.service.spec.ts",
+    "caso": "ProfissionaisService devolve 404 ao inativar ID inexistente",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/profissionais.service.spec.ts",
+    "caso": "ProfissionaisService permite reativar por PATCH",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/profissionais.service.spec.ts",
+    "caso": "ProfissionaisService propaga falha de banco sem transformá-la em sucesso",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/sessao-revogada.spec.ts",
+    "caso": "Revogação de sessão no servidor permite o JWT que corresponde à versão atual da conta",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/sessao-revogada.spec.ts",
+    "caso": "Revogação de sessão no servidor revoga o JWT anterior depois da recuperação de senha",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/sessao-revogada.spec.ts",
+    "caso": "Revogação de sessão no servidor recusa conta inexistente, inativa ou com perfil alterado: null",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/sessao-revogada.spec.ts",
+    "caso": "Revogação de sessão no servidor recusa conta inexistente, inativa ou com perfil alterado: {\"ativo\":false,\"perfil\":\"paciente\"}",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/sessao-revogada.spec.ts",
+    "caso": "Revogação de sessão no servidor recusa conta inexistente, inativa ou com perfil alterado: {\"ativo\":true,\"perfil\":\"atendente\"}",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/schemas/convenio.schema.spec.ts",
+    "caso": "Schema de Convênios aceita os cinco exemplos sem precisar conectar ao banco",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/schemas/convenio.schema.spec.ts",
+    "caso": "Schema de Convênios preserva zeros do código ANS e aplica os valores padrão",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/schemas/convenio.schema.spec.ts",
+    "caso": "Schema de Convênios aceita modalidade coletiva e cadastro inativo",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/schemas/convenio.schema.spec.ts",
+    "caso": "Schema de Convênios rejeita nome inválido (Ab)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/schemas/convenio.schema.spec.ts",
+    "caso": "Schema de Convênios rejeita nome inválido (AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/schemas/convenio.schema.spec.ts",
+    "caso": "Schema de Convênios rejeita codigoAns inválido (12345)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/schemas/convenio.schema.spec.ts",
+    "caso": "Schema de Convênios rejeita codigoAns inválido (1234567)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/schemas/convenio.schema.spec.ts",
+    "caso": "Schema de Convênios rejeita codigoAns inválido (ABC123)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/schemas/convenio.schema.spec.ts",
+    "caso": "Schema de Convênios rejeita percentualCobertura inválido (-1)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/schemas/convenio.schema.spec.ts",
+    "caso": "Schema de Convênios rejeita percentualCobertura inválido (101)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/schemas/convenio.schema.spec.ts",
+    "caso": "Schema de Convênios rejeita percentualCobertura inválido (80.5)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/schemas/convenio.schema.spec.ts",
+    "caso": "Schema de Convênios rejeita modalidade inválido (qualquer)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/schemas/convenio.schema.spec.ts",
+    "caso": "Schema de Convênios rejeita telefone inválido (123)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/schemas/convenio.schema.spec.ts",
+    "caso": "Schema de Convênios exige os três campos obrigatórios de criação",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/schemas/convenio.schema.spec.ts",
+    "caso": "Schema de Convênios aceita cobertura nos dois limites e telefone ausente",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/schemas/convenio.schema.spec.ts",
+    "caso": "Schema de Convênios remove espaços das extremidades dos textos",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/convenios/schemas/convenio.schema.spec.ts",
+    "caso": "Schema de Convênios recusa campos desconhecidos em vez de persistir permissões ou senhas",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/portal/portal.dto.spec.ts",
+    "caso": "Contrato do agendamento do próprio paciente aceita particular e preserva os IDs, sem permitir identidade enviada pelo navegador",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/portal/portal.dto.spec.ts",
+    "caso": "Contrato do agendamento do próprio paciente recusa profissional fora do contrato (1)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/portal/portal.dto.spec.ts",
+    "caso": "Contrato do agendamento do próprio paciente recusa especialidade fora do contrato (inexistente)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/portal/portal.dto.spec.ts",
+    "caso": "Contrato do agendamento do próprio paciente recusa convenio fora do contrato (nome-do-plano)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/portal/portal.dto.spec.ts",
+    "caso": "Contrato do agendamento do próprio paciente recusa dataNascimento fora do contrato (2000-02-30)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/portal/portal.dto.spec.ts",
+    "caso": "Contrato do agendamento do próprio paciente recusa dataHora fora do contrato (2099-12-01T08:00:00)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/portal/portal.dto.spec.ts",
+    "caso": "Contrato do agendamento do próprio paciente recusa telefone fora do contrato (123)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/portal/portal.dto.spec.ts",
+    "caso": "Contrato do agendamento do próprio paciente recusa ciente fora do contrato (false)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/portal/portal.dto.spec.ts",
+    "caso": "Contrato do agendamento do próprio paciente recusa ciente fora do contrato (true)",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/portal/portal.dto.spec.ts",
+    "caso": "Contrato do agendamento do próprio paciente não aceita campos administrativos no agendamento",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/portal/portal.dto.spec.ts",
+    "caso": "Contrato do agendamento do próprio paciente a disponibilidade rejeita datas impossíveis antes de consultar o banco",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/pacientes/pacientes.regras.spec.ts",
+    "caso": "Regras de Pacientes na API recusa nascimento futuro sem gravar no banco",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/pacientes/pacientes.regras.spec.ts",
+    "caso": "Regras de Pacientes na API recusa e-mail já cadastrado mesmo para um paciente inativo",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/pacientes/pacientes.regras.spec.ts",
+    "caso": "Regras de Pacientes na API recusa convênio inexistente ou inativo",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/pacientes/pacientes.regras.spec.ts",
+    "caso": "Regras de Pacientes na API a exclusão lógica conserva o documento e altera somente ativo",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/consultas/consultas.regras.spec.ts",
+    "caso": "Regras da agenda no MongoDB aceita dias úteis entre 8h e 18h no fuso de Brasília",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/consultas/consultas.regras.spec.ts",
+    "caso": "Regras da agenda no MongoDB recusa horário fora da regra: 2026-11-07T13:00:00Z",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/consultas/consultas.regras.spec.ts",
+    "caso": "Regras da agenda no MongoDB recusa horário fora da regra: 2026-11-09T10:59:00Z",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/consultas/consultas.regras.spec.ts",
+    "caso": "Regras da agenda no MongoDB recusa horário fora da regra: 2026-11-09T21:00:00Z",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/consultas/consultas.regras.spec.ts",
+    "caso": "Regras da agenda no MongoDB recusa horário fora da regra: 2026-11-05T15:00:00Z",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/consultas/consultas.regras.spec.ts",
+    "caso": "Regras da agenda no MongoDB recusa horário fora da regra: inválida",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/consultas/consultas.regras.spec.ts",
+    "caso": "Regras da agenda no MongoDB detecta profissional ocupado antes de inserir uma consulta",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/consultas/consultas.regras.spec.ts",
+    "caso": "Regras da agenda no MongoDB recusa paciente ou profissional que não está ativo",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/consultas/consultas.regras.spec.ts",
+    "caso": "Regras da agenda no MongoDB não permite reabrir consulta encerrada nem saltar confirmação",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/consultas/consultas.regras.spec.ts",
+    "caso": "Regras da agenda no MongoDB recusa edição dos campos de uma consulta realizada",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/consultas/consultas.regras.spec.ts",
+    "caso": "Regras da agenda no MongoDB conserva uma mudança de status concorrente em vez de sobrescrevê-la",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/usuarios/dto/usuario.dto.spec.ts",
+    "caso": "Entradas de autenticação normaliza nome e e-mail sem alterar a senha",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/usuarios/dto/usuario.dto.spec.ts",
+    "caso": "Entradas de autenticação recusa criação de administrador pelo corpo da requisição",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/usuarios/dto/usuario.dto.spec.ts",
+    "caso": "Entradas de autenticação rejeita senha curta",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/usuarios/dto/usuario.dto.spec.ts",
+    "caso": "Entradas de autenticação rejeita truncamento do bcrypt em UTF-8 no cadastro e no login",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/usuarios/dto/usuario.dto.spec.ts",
+    "caso": "Entradas de autenticação recusa campos internos enviados pelo cliente",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/especialidades/especialidades.regras.spec.ts",
+    "caso": "Regras de Especialidades impede nome duplicado usando a mesma collation do índice",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/especialidades/especialidades.regras.spec.ts",
+    "caso": "Regras de Especialidades traduz a corrida de inserção do índice único em 409",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/especialidades/especialidades.regras.spec.ts",
+    "caso": "Regras de Especialidades exclusão de ID inexistente retorna 404",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/relatorios/relatorios.service.spec.ts",
+    "caso": "Relatórios da clínica conta pacientes ativos, consultas marcadas ou confirmadas e faltas",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/relatorios/relatorios.service.spec.ts",
+    "caso": "Relatórios da clínica agrupa os status no MongoDB e aceita uma coleção vazia",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/relatorios/relatorios.service.spec.ts",
+    "caso": "Relatórios da clínica consulta somente realizadas e cruza profissionais e especialidades",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/profissionais/schemas/profissional.schema.spec.ts",
+    "caso": "Referência de Especialidade em Profissionais grava ObjectId e não Mixed para permitir os cruzamentos dos relatórios",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/perfis.guard.spec.ts",
+    "caso": "PerfisGuard (testes que precisam passar na aula 13) libera a rota quando ela não exige perfil",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/perfis.guard.spec.ts",
+    "caso": "PerfisGuard (testes que precisam passar na aula 13) libera quando o perfil do usuário está entre os exigidos",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/guards/perfis.guard.spec.ts",
+    "caso": "PerfisGuard (testes que precisam passar na aula 13) bloqueia com 403 quando o perfil não tem permissão",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/jwt.config.spec.ts",
+    "caso": "Configuração do JWT não inicia com segredo ausente ou de exemplo",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/jwt.config.spec.ts",
+    "caso": "Configuração do JWT não inicia com segredo ausente ou de exemplo",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/jwt.config.spec.ts",
+    "caso": "Configuração do JWT não inicia com segredo ausente ou de exemplo",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/jwt.config.spec.ts",
+    "caso": "Configuração do JWT não inicia com segredo ausente ou de exemplo",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/auth/jwt.config.spec.ts",
+    "caso": "Configuração do JWT usa uma hora e restringe a assinatura a HS256",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/config/origens-web.spec.ts",
+    "caso": "Origem do frontend no navegador permite o endereço local de desenvolvimento http://localhost:4200",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/config/origens-web.spec.ts",
+    "caso": "Origem do frontend no navegador permite o endereço local de desenvolvimento http://localhost:57246",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/config/origens-web.spec.ts",
+    "caso": "Origem do frontend no navegador permite o endereço local de desenvolvimento http://127.0.0.1:57246",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/config/origens-web.spec.ts",
+    "caso": "Origem do frontend no navegador permite o endereço local de desenvolvimento http://[::1]:4200",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/config/origens-web.spec.ts",
+    "caso": "Origem do frontend no navegador permite o endereço local de desenvolvimento https://localhost:4200",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/config/origens-web.spec.ts",
+    "caso": "Origem do frontend no navegador permite o endereço local de desenvolvimento http://localhost:4201",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/config/origens-web.spec.ts",
+    "caso": "Origem do frontend no navegador recusa uma origem externa ou malformada https://site.example",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/config/origens-web.spec.ts",
+    "caso": "Origem do frontend no navegador recusa uma origem externa ou malformada http://localhost.site.example:4200",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/config/origens-web.spec.ts",
+    "caso": "Origem do frontend no navegador recusa uma origem externa ou malformada http://127.0.0.1.site.example",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/config/origens-web.spec.ts",
+    "caso": "Origem do frontend no navegador recusa uma origem externa ou malformada null",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/config/origens-web.spec.ts",
+    "caso": "Origem do frontend no navegador recusa uma origem externa ou malformada file:///C:/projeto/index.html",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/config/origens-web.spec.ts",
+    "caso": "Origem do frontend no navegador recusa uma origem externa ou malformada http://localhost:57246/caminho",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/config/origens-web.spec.ts",
+    "caso": "Origem do frontend no navegador recusa uma origem externa ou malformada http://usuario:senha@localhost:4200",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/config/origens-web.spec.ts",
+    "caso": "Origem do frontend no navegador mantém a origem padrão exata em produção",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/config/origens-web.spec.ts",
+    "caso": "Origem do frontend no navegador em produção só permite a origem configurada, sem liberar outras portas locais",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/config/origens-web.spec.ts",
+    "caso": "Origem do frontend no navegador uma configuração inválida em produção não libera sites externos",
+    "resultado": "passed"
+  },
+  {
+    "arquivo": "backend/src/config/origens-web.spec.ts",
+    "caso": "Origem do frontend no navegador requisições sem Origin continuam funcionando para terminal e verificadores",
+    "resultado": "passed"
+  }
+]

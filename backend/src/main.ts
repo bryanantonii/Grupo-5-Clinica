@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { origemWebPermitida } from './config/origens-web';
 import { RespostaInterceptor } from './common/interceptors/resposta.interceptor';
+import { completarOpenApi } from './documentacao/completar-openapi';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -46,7 +47,7 @@ async function bootstrap() {
   SwaggerModule.setup(
     'api/docs',
     app,
-    SwaggerModule.createDocument(app, config),
+    completarOpenApi(SwaggerModule.createDocument(app, config)),
   );
 
   const porta = process.env.PORT ?? 3000;

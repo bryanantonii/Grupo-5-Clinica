@@ -1,5 +1,8 @@
 # Perguntas da banca por integrante
 
+> Registro da preparação anterior. O PR 11 foi integrado à develop em 10/11/2026. Use [o roteiro final atualizado](../roteiro-da-apresentacao.md) para nomes, tempo e situação atual.
+
+
 Clinora  Grupo 5  SENAI  Aula 15  9 de novembro de 2026
 
 Cada integrante responde uma das seis perguntas da banca e apresenta uma evidência concreta do projeto. Use a resposta pronta para ensaiar, depois faça a demonstração nos arquivos e nas telas indicadas. As perguntas foram distribuídas de acordo com os papéis e os módulos do grupo.
