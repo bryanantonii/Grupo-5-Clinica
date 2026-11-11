@@ -1,146 +1,131 @@
-# Clinora — Clínica Geral Integrada
+# Clinora Clínica Geral Integrada
 
-Projeto Integrador Sprint 5. As seções marcadas com ✏️ aguardam os dados e a revisão do grupo.
+Projeto Integrador do Grupo 5, tema Clínica, turma Programador Full Stack do SENAI em 2026.
 
-**Grupo:** 5 · **Tema:** Clínica
-**Turma:** Programador Full-Stack · SENAI · 2026
+A Clinora integra um site Angular, uma API NestJS e MongoDB. Pacientes criam sua conta, consultam horários, agendam e acompanham consultas próprias. A equipe mantém os cinco cadastros, a agenda e as mensagens; administradores também consultam Relatórios e gerenciam acessos. Todos esses fluxos usam a API real. Os mocks históricos ficam nos testes.
 
-## Sobre o sistema
+A integração do PR [#11](https://github.com/bryanantonii/Grupo-5-Clinica/pull/11) entrou na `develop` em 10/11/2026, merge `d8f60ed`. A documentação atual está em [docs/LEIA-ME.md](docs/LEIA-ME.md).
 
-A Clinora reúne o catálogo de profissionais, as especialidades, os convênios,
-o agendamento integrado à API e a gestão da clínica. A gestão possui telas de
-Pacientes, Profissionais, Consultas, Especialidades, Convênios e Relatórios.
-A gestão dos cinco módulos e os Relatórios já usam a API e o MongoDB.
-A equipe faz login real em `/login`; o Angular envia JWT nas requisições
-privadas e o backend aplica as permissões de administrador e atendente.
-O catálogo público continua acessível sem login. O paciente cria sua conta em
-`/criar-conta`, entra em `/entrar` e atualiza seus dados com persistência no MongoDB.
-A conta recebe perfil `paciente` e não acessa a gestão. Agendamento, histórico,
-cancelamento, convênios e contato também usam a API e o MongoDB. A recuperação
-de senha está implementada e depende de configurar o provedor SMTP no `.env`.
+## Integrantes e responsabilidades
 
-Veja a [revisão da integração real](docs/integracao-real/README.md), com rotas,
-configuração do Compass, testes executados e pendências para a entrega.
-
-## Integrantes, módulos e papéis
-
-| Aluno | Módulo | Papel transversal | GitHub |
+| Integrante | Módulo | Papel | GitHub |
 | --- | --- | --- | --- |
-| ✏️ | ✏️ | PO / Scrum Master | ✏️ |
-| ✏️ | ✏️ | Git e Integração | ✏️ |
-| ✏️ | ✏️ | Segurança | ✏️ |
-| ✏️ | ✏️ | Testes e Qualidade | ✏️ |
-| ✏️ | ✏️ | UX/UI e Acessibilidade | ✏️ |
-| ✏️ | Relatórios | Documentação e Apresentação | ✏️ |
+| William Davi Georg | A Pacientes | PO e Scrum Master | [WilliamGeorg04](https://github.com/WilliamGeorg04) |
+| Bryan Eduardo de Antoni da Silva | B Profissionais | Git e Integração | [bryanantonii](https://github.com/bryanantonii) |
+| Valentina de Los Angeles Pena Aguirre | C Consultas | Segurança | [ValentinadelosAngeles](https://github.com/ValentinadelosAngeles) |
+| Kamila Valentina Mujica Yepez | D Especialidades | Testes e Qualidade | [Kamila-Mujica](https://github.com/Kamila-Mujica) |
+| Henrique Guilherme Rosa | E Convênios | UX UI e Acessibilidade | [henriquerosaaa](https://github.com/henriquerosaaa) |
+| Neirkis Patricia Subero Subero | F Relatórios | Documentação e Apresentação | [FanTheUSA](https://github.com/FanTheUSA) |
 
-## Tecnologias
+A divisão acima foi informada pelo grupo. A autoria de alterações é a registrada nos commits e nos Pull Requests.
 
-- **Front-end:** Angular 21 (standalone, signals, formulários reativos)
-- **Back-end:** NestJS 11 (módulos, controllers, services, DTOs)
-- **Banco:** MongoDB com Mongoose
-- **Testes:** Jest · **Documentação da API:** Swagger
+## Preparar o projeto pela primeira vez
 
-## Pré-requisitos
+Use Node.js compatível com Angular 21, npm e MongoDB. No laboratório, o banco local é `clinora`, na porta 27017. O Compass é uma interface de consulta; abrir o Compass não inicia a API.
 
-- Node.js 20.19+ ou 22.12+ (`node -v`)
-- MongoDB local ou Atlas, com `MONGODB_URI` configurada no `.env` do backend
-- Git e VS Code
+Na raiz do projeto, prepare o backend:
 
-## Como rodar
-
-```bash
-# 1) Back-end
+```powershell
 cd backend
 npm ci
-copy .env.example .env      # no Linux/Mac: cp .env.example .env
-# No .env, configure MONGODB_URI=mongodb://127.0.0.1:27017/clinora
-npm run configurar:auth      # prepara JWT e administrador no .env local
-npm run seed                # insere exemplos ausentes e o administrador
-npm run start:dev           # API em http://localhost:3000/api/v1
+if (!(Test-Path .env)) { Copy-Item .env.example .env }
+```
 
-# 2) Front-end (em outro terminal)
+Edite `backend/.env` e configure `MONGODB_URI=mongodb://127.0.0.1:27017/clinora`. Para um banco compartilhado, use a URI autorizada do grupo. Não sobrescreva um `.env` que já funciona. Em seguida, ainda em `backend`:
+
+```powershell
+npm run configurar:auth
+npm run seed
+npm run start:dev
+```
+
+O configurador preenche variáveis ausentes; o seed preserva as contas e os registros já existentes. Reexecutar o seed não redefine a senha de um usuário existente. As credenciais iniciais ficam somente no `.env` local.
+
+Abra outro terminal na raiz do projeto:
+
+```powershell
 cd frontend
 npm ci
-npm start                   # http://localhost:4200
+npm start
 ```
 
-- Documentação da API (Swagger): http://localhost:3000/api/docs
-- Testes do back-end: `cd backend && npm test`
+## Ligar no dia a dia
 
-> Se o `npm install` mostrar o erro `Cannot read properties of null (reading 'edgesOut')`, rode `npx npm@11 install`.
+Com as dependências e o `.env` já preparados, mantenha dois terminais abertos:
 
-## Estrutura de pastas
+- Na pasta `backend`: `npm run start:dev`.
+- Na pasta `frontend`: `npm start`.
 
+O MongoDB deve estar em execução. Iniciar somente o frontend permite abrir a página, mas não cadastrar nem autenticar pela API. Confira se [Swagger](http://localhost:3000/api/docs) abre antes de testar o site em [localhost:4200](http://localhost:4200).
+
+## Acessos e permissões
+
+| Perfil | Entrada | Pode fazer |
+| --- | --- | --- |
+| Público | Site e `/criar-conta` | Consultar catálogo, criar a própria conta e enviar contato. |
+| Paciente | `/entrar` | Manter a própria conta e agendar, consultar ou cancelar atendimentos próprios elegíveis. |
+| Atendente | `/login` | Cadastrar, editar, consultar e mudar status dos atendimentos; ler mensagens. |
+| Administrador | `/login` | Ações da equipe, exclusões lógicas, Relatórios e criação de atendentes. |
+
+JWT válido é exigido nas rotas privadas. O servidor, e não o menu, decide a permissão. A senha fica como hash bcrypt com custo 10 e nunca sai na resposta. O JWT expira em uma hora; redefinir a senha revoga as sessões anteriores. Não há refresh token.
+
+Criar conta no site grava em `usuarios`. A ficha em `pacientes` é criada no primeiro agendamento ou pela equipe, e `consultas` guarda o atendimento. Git não copia os dados do MongoDB nem o `.env` entre computadores.
+
+## Regras de negócio
+
+| Regra | Comportamento |
+| --- | --- |
+| Paciente | E-mail único, nascimento não futuro e convênio válido quando informado. |
+| Profissional | Registro e e-mail únicos; especialidade existente. |
+| Consulta | Horário futuro em dia útil, das 08h até antes das 18h no fuso de Brasília; mesmo profissional e mesmo instante não se repetem, salvo cancelada. |
+| Estados | marcada → confirmada/cancelada; confirmada → realizada/falta/cancelada; estados finais sem saída. |
+| Especialidade | Nome único, duração inteira de 15 a 120 e valor não negativo. |
+| Convênio | Nome e ANS únicos; ANS string de seis dígitos; cobertura inteira de 0 a 100. |
+| Relatórios | Somente admin; dados gerais e realizadas por especialidade. |
+
+As regras completas, RF01 a RF24 e a matriz de acesso estão nos documentos finais.
+
+## Estrutura e decisões
+
+`frontend/src/app/core` reúne sessão, guards, interceptors e contratos. `layout` e `pages` organizam a navegação pública. `features` reúne os módulos, com telas e serviços compartilhados na gestão. O backend divide controllers, DTOs, services e schemas por módulo. `referencias/produtos` preserva o exemplo do professor, fora dos aplicativos.
+
+- [Arquitetura e fluxo entre tela, API e banco](docs/entrega-final/arquitetura-e-execucao.md).
+- [ADR 001 sobre referências ObjectId](docs/adr/001-referencias-entre-modulos.md).
+- [Contrato com as 54 operações](docs/contrato-da-api.md) e [dicionário das oito coleções](docs/dicionario-de-dados.md).
+- [Padrão visual e wireframes](docs/uiux/README.md).
+
+## Testes e evidências
+
+Revisão de 11/11/2026: **179 testes Jest em 21 suítes** e **95 testes do frontend** aprovados. Os builds e o lint foram conferidos. A cobertura unitária global de linhas é **24,62%**, com a configuração padrão que também inclui seeds, controllers e verificadores; ela não é uma declaração de cobertura total. Os testes HTTP de integração têm evidências separadas.
+
+```powershell
+# Na pasta backend
+npm test -- --runInBand
+npm run test:cov -- --runInBand
+npx eslint "src/**/*.ts"
+npm run build
+
+# Em outro terminal, na pasta frontend
+npm test
+npm run build
 ```
-guia/                # material do professor: manual do tema, receitas, templates (não altere)
-docs/                # documentos do grupo (visão, contrato, dicionário, testes...)
-backend/
-  src/
-    common/          # código compartilhado (padrão de resposta, filtros)
-    profissionais/  # API de Profissionais, schemas, DTOs e testes
-    convenios/      # schema, regras de negócio e testes de Convênios
-    usuarios/       # cadastro, hash de senha e administrador inicial
-    auth/           # login JWT, guard global e rotas públicas
-    seed/           # exemplos dos módulos disponíveis da clínica
-  testes-obrigatorios/  # testes da autenticação (aulas 12 e 13)
-frontend/
-  src/
-    environments/    # endereço da API real
-    estilos-do-grupo.css  # estilos do grupo (vencem o styles.css)
-    app/
-      core/          # código compartilhado (modelos de resposta e de referência)
-      layout/        # cabeçalho e menu
-      pages/         # telas gerais (início, 404)
-      features/
-        pacientes/       # cadastros da clínica
-        profissionais/
-        consultas/
-        especialidades/
-        convenios/
-        relatorios/
-        gestao/          # layout, rotas e componentes compartilhados
-        clinora/         # agendamento e páginas públicas
-referencias/produtos/    # exemplo original do professor, fora dos aplicativos
-```
 
-As rotas do site, da gestão e da API estão em [Rotas da Clinora](docs/rotas-clinora.md).
+Consulte o [Plano de Testes](docs/plano-de-testes.md), os [resultados atuais](docs/entrega-final/evidencias/qualidade.json) e os verificadores de integração descritos no [README do backend](backend/README.md).
 
-## ✏️ Regras de negócio implementadas
+## Limitações e entrega acadêmica
 
-| Código | Regra | Módulo | Onde está (arquivo) |
-| --- | --- | --- | --- |
-| RN01 | ✏️ | ✏️ | ✏️ |
+- Relatórios ainda não possui filtro de período.
+- O filtro global próprio de erros e os logs de cada requisição da aula 14 ainda não foram implementados; a API usa o formato padrão do NestJS para erros.
+- A recuperação está preparada, mas depende de SMTP configurado e teste de entrega externa.
+- A auditoria completa com teclado, leitor de tela, contraste e zoom continua pendente. A revisão atual mediu largura e navegação dos seis módulos.
+- A cobertura unitária precisa aumentar, em especial em Portal, Contatos e Recuperação. Os testes HTTP não substituem essa medição.
+- Nem todos os módulos possuem cartão próprio com `input()` e `output()`; o exemplo explícito é ProfissionalCard. A ficha antiga das aulas deve ser conferida com esse limite.
+- `main`, tag `v1.0`, ensaio e apresentação são etapas do fechamento do grupo. A documentação não afirma que já ocorreram.
 
-## Perfis de acesso
+Os [seis arquivos de respostas](docs/LEIA-ME.md#respostas-dos-integrantes) cobrem as 33 perguntas das aulas 01 a 14 para estudo e revisão. Cada integrante precisa conseguir explicá-las; a existência do arquivo não comprova autoria individual ou participação na banca.
 
-O schema aceita `admin` e `atendente`. Ambos podem cadastrar, editar e mudar
-status de consultas. Somente admin pode excluir cadastros, criar contas de
-atendente e consultar Relatórios. O guard JWT verifica a identidade antes
-do PerfisGuard. O seed prepara as duas contas iniciais sem redefinir senhas.
+## Documentos e material de apoio
 
-O roteiro de configuração, as respostas e o material para apresentação estão
-em [Integração da aula 13](docs/aula-13/README.md). O registro da
-[autenticação da aula 12](docs/aula-12/README.md) permanece disponível.
+[Documentação final em Word e Markdown](docs/LEIA-ME.md) · [Conferência da entrega](docs/entrega-final/conferencia.md) · [Manual do Usuário](docs/manual-do-usuario.md) · [Roteiro da Apresentação](docs/roteiro-da-apresentacao.md) · [Contribuição](CONTRIBUTING.md) · [Guia do professor](guia/README.md).
 
-## ✏️ Decisões técnicas (ADRs)
-
-Registre as decisões importantes: o que foi decidido, por quê e qual alternativa foi descartada.
-
-1. ✏️
-
-## Limitações conhecidas e próximos passos
-
-- A gestão e as contas dos pacientes estão integradas. Os agendamentos do portal
-  continuam demonstrativos. A recuperação automática de senha ainda não está disponível.
-- O JWT expira em uma hora, sem refresh token ou revogação individual nesta
-  entrega. Use somente dados fictícios no ambiente acadêmico.
-
-## ✏️ Respostas às perguntas de verificação do manual
-
-Cada aluno responde às perguntas do seu módulo aqui ou em `docs/respostas-<nome>.md`.
-
-## Material de apoio
-
-- [`COMECE-AQUI.md`](COMECE-AQUI.md) — fork, clone e atualizações da base
-- [`guia/`](guia/) — manual do tema, receitas, Manual de Construção e templates
-- [`CONTRIBUTING.md`](CONTRIBUTING.md) — branches, commits e Pull Requests
+Os registros das aulas permanecem como histórico. Dados de pacientes, senhas, tokens e o `.env` não devem ser enviados ao GitHub. Use dados fictícios no projeto acadêmico.

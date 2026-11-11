@@ -1,0 +1,156 @@
+{
+  "data": "2026-11-11",
+  "ambiente": "Banco temporário com dados fictícios; checagem de largura e navegação nas seis telas, sem certificação integral de acessibilidade.",
+  "medidas": [
+    {
+      "rota": "/gestao/pacientes",
+      "viewport": "1440x960",
+      "conteudo": 1425,
+      "largura": 1425,
+      "titulo": "Pacientes"
+    },
+    {
+      "rota": "/gestao/profissionais",
+      "viewport": "1440x960",
+      "conteudo": 1425,
+      "largura": 1425,
+      "titulo": "Profissionais"
+    },
+    {
+      "rota": "/gestao/consultas",
+      "viewport": "1440x960",
+      "conteudo": 1425,
+      "largura": 1425,
+      "titulo": "Consultas"
+    },
+    {
+      "rota": "/gestao/especialidades",
+      "viewport": "1440x960",
+      "conteudo": 1425,
+      "largura": 1425,
+      "titulo": "Especialidades"
+    },
+    {
+      "rota": "/gestao/convenios",
+      "viewport": "1440x960",
+      "conteudo": 1425,
+      "largura": 1425,
+      "titulo": "Convênios"
+    },
+    {
+      "rota": "/gestao/relatorios",
+      "viewport": "1440x960",
+      "conteudo": 1425,
+      "largura": 1425,
+      "titulo": "Relatórios"
+    },
+    {
+      "rota": "/gestao/pacientes",
+      "viewport": "360x900",
+      "conteudo": 345,
+      "largura": 345
+    },
+    {
+      "rota": "/gestao/profissionais",
+      "viewport": "360x900",
+      "conteudo": 345,
+      "largura": 345
+    },
+    {
+      "rota": "/gestao/consultas",
+      "viewport": "360x900",
+      "conteudo": 345,
+      "largura": 345
+    },
+    {
+      "rota": "/gestao/especialidades",
+      "viewport": "360x900",
+      "conteudo": 345,
+      "largura": 345
+    },
+    {
+      "rota": "/gestao/convenios",
+      "viewport": "360x900",
+      "conteudo": 345,
+      "largura": 345
+    },
+    {
+      "rota": "/gestao/relatorios",
+      "viewport": "360x900",
+      "conteudo": 345,
+      "largura": 345
+    },
+    {
+      "rota": "/gestao/pacientes",
+      "viewport": "390x900",
+      "conteudo": 375,
+      "largura": 375
+    },
+    {
+      "rota": "/gestao/profissionais",
+      "viewport": "390x900",
+      "conteudo": 375,
+      "largura": 375
+    },
+    {
+      "rota": "/gestao/consultas",
+      "viewport": "390x900",
+      "conteudo": 375,
+      "largura": 375
+    },
+    {
+      "rota": "/gestao/especialidades",
+      "viewport": "390x900",
+      "conteudo": 375,
+      "largura": 375
+    },
+    {
+      "rota": "/gestao/convenios",
+      "viewport": "390x900",
+      "conteudo": 375,
+      "largura": 375
+    },
+    {
+      "rota": "/gestao/relatorios",
+      "viewport": "390x900",
+      "conteudo": 375,
+      "largura": 375
+    },
+    {
+      "rota": "/gestao/pacientes",
+      "viewport": "768x900",
+      "conteudo": 753,
+      "largura": 753
+    },
+    {
+      "rota": "/gestao/profissionais",
+      "viewport": "768x900",
+      "conteudo": 753,
+      "largura": 753
+    },
+    {
+      "rota": "/gestao/consultas",
+      "viewport": "768x900",
+      "conteudo": 753,
+      "largura": 753
+    },
+    {
+      "rota": "/gestao/especialidades",
+      "viewport": "768x900",
+      "conteudo": 753,
+      "largura": 753
+    },
+    {
+      "rota": "/gestao/convenios",
+      "viewport": "768x900",
+      "conteudo": 753,
+      "largura": 753
+    },
+    {
+      "rota": "/gestao/relatorios",
+      "viewport": "768x900",
+      "conteudo": 753,
+      "largura": 753
+    }
+  ]
+}

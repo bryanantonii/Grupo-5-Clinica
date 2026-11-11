@@ -1,5 +1,8 @@
 # Roteiro de apresentação da Clinora
 
+> Registro da preparação anterior. O PR 11 foi integrado à develop em 10/11/2026. Use [o roteiro final atualizado](../roteiro-da-apresentacao.md) para nomes, tempo e situação atual.
+
+
 Grupo 5  SENAI  Programador Full Stack  9 de novembro de 2026
 
 Este roteiro organiza a apresentação dos seis integrantes: o que cada módulo faz, como a função transversal contribui para o projeto e como demonstrar a entrega no site, no código e nos Pull Requests. A sequência sugerida dura de 15 a 20 minutos, seguida das perguntas da banca.

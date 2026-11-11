@@ -1,44 +1,21 @@
 # Checklist de acessibilidade e responsividade
 
-Referência: front Clinora em `bb7e7af093d9fe61dfb6e7a8290ffd60ba8a6914`, revisão anterior em 26 de outubro de 2026. Este arquivo é um ponto de partida para a pessoa responsável por UI/UX.
+Revisão de 11/11/2026, responsável do grupo Henrique Guilherme Rosa. O quadro distingue implementação, verificação executada e itens que ainda exigem auditoria.
 
-**Implementado** indica que o recurso existe no código; **verificado anteriormente** indica evidência registrada na revisão do front; **pendente** exige execução e registro pelo responsável. Nenhum estado abaixo certifica conformidade integral de acessibilidade.
-
-| Item | Situação inicial | Evidência ou próxima ação |
+| Item | Situação | Evidência ou próxima ação |
 | --- | --- | --- |
-| Padrão visual do grupo centralizado | Implementado | `frontend/src/estilos-do-grupo.css` |
-| Foco visível nos controles | Implementado | Regras `:focus-visible`; percorrer todas as telas pelo teclado |
-| Link para pular ao conteúdo | Implementado | Layout; conferir destino e ordem de foco em cada rota |
-| Rótulos e mensagens nos formulários | Implementado | Telas do front; revisar associação e leitura em todos os campos |
-| Menu do celular | Implementado | Layout responsivo; repetir abertura, fechamento e navegação pelo teclado |
-| Lista vazia e ação de recuperação | Verificado anteriormente | Captura de lista vazia e teste de Limpar filtros |
-| Listagem em 390 px sem transbordamento horizontal | Verificado anteriormente | `docs/evidencias/listagem-profissionais-celular.jpg` |
-| Listagem no computador | Verificado anteriormente | `docs/evidencias/listagem-profissionais-desktop.jpg` |
-| Início mais compacto no celular | Verificado anteriormente | Ajuste anterior da abertura; responsável deve registrar nova evidência na revisão |
-| Faixa horizontal com pausa e interação manual | Implementado e verificado anteriormente | `pages/inicio/inicio.ts`; repetir com toque e teclado |
-| Respeito a movimento reduzido | Implementado | CSS e verificação de preferência no carrossel; validar a preferência no dispositivo |
-| Todas as rotas em 360, 390, 768 e 1440 px | Pendente | Anotar navegador, viewport, resultado e capturas |
-| Todas as ações somente pelo teclado | Pendente | Ordem de foco, Enter, Espaço, setas e retorno de foco |
-| Leitor de tela | Pendente | Verificar nomes, títulos, erros e mudanças de estado |
-| Zoom em 200% e reflow em 400% | Pendente | Verificar corte de texto, sobreposição e controles acessíveis |
-| Contraste de texto, bordas, foco e estados | Pendente | Medir as combinações usadas nas telas |
-| Informação compreensível sem depender só da cor | Pendente | Conferir etiquetas, seleção, mensagens e erros em todas as páginas |
-| Textos alternativos e ícones decorativos | Pendente | Revisar a finalidade de cada imagem e ícone |
-| Mensagens de carregamento e falha da API real | Pendente de integração | Revisar junto com o front após conectar os serviços |
-| Wireframes atualizados no Penpot | Pendente de revisão do responsável | Registrar versão, data e link compartilhado |
+| Estilos comuns e padrão de ações | Implementado | estilos-do-grupo.css e telas compartilhadas. |
+| Rótulos, estados de validação e mensagens | Implementado | RegistroForm e Acesso; testes de formulários. |
+| Foco visível e link para conteúdo | Implementado | CSS e layout; auditoria completa por teclado pendente. |
+| Seis módulos em 360, 390, 768 e 1440 px | Verificado quanto à largura | 24 medições sem overflow da página em responsividade.json. |
+| Navegação autenticada dos seis módulos | Executada | Prints atuais com dados fictícios no Manual do Usuário. |
+| Mensagem quando a API está inacessível | Testada no componente | Campos preservados e repetição após recuperação do serviço. |
+| Wireframes estruturais dos seis módulos | Documentado | wireframes.html, derivados da implementação. |
+| Movimento reduzido e pausa do carrossel | Implementado | CSS e controle de destaques; repetir em dispositivos assistivos. |
+| Todas as tarefas somente com teclado | Pendente | Registrar ordem de foco, acionamento e retorno de foco. |
+| Leitor de tela | Pendente | Conferir nomes, descrições, erros, estado e navegação. |
+| Contraste de todas as combinações | Pendente | Medir textos, campos, foco, botões e etiquetas. |
+| Zoom 200% e reflow 400% | Pendente | Validar cortes, sobreposição e alcance de controles. |
+| Alternativas textuais de todas as imagens | Pendente de auditoria | Revisar finalidade e decoração em todas as páginas. |
 
-## Registro da próxima execução
-
-Copie a linha abaixo para cada verificação realizada:
-
-| Data | Pessoa responsável | Rota | Navegador e viewport | Item | Esperado | Obtido | Evidência/bug |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
-
-Os campos da linha de registro estão intencionalmente vazios de resultados: devem refletir a execução real do integrante.
-
-## Referências
-
-- [Guia visual da Clinora](README.md).
-- [Organização das branches](../organizacao-das-branches.md).
-- [Capturas existentes](../evidencias/).
+Este checklist não declara conformidade integral com um padrão de acessibilidade. Resultados que dependem de execução humana ou de dispositivos específicos não foram marcados como aprovados apenas por inspeção do código.

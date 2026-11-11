@@ -108,7 +108,7 @@ A evidência sem senhas ou tokens está em [portal-http.json](evidencias/portal-
 - Se o objetivo for compartilhar registros entre salas, definir o MongoDB compartilhado ou providenciar a migração dos registros; um clone do Git não resolve isso.
 - Revisar os dados institucionais ainda em branco no site: endereço, telefone e horários de atendimento.
 - Para a ficha antiga das aulas 01 a 06, conferir com o integrante de Relatórios o filtro de período e sua validação: o painel atual consulta os indicadores reais gerais, mas ainda não tem filtro inicial/final. As respostas individuais, integrantes e commits de cada aluno precisam ser conferidos pelo próprio grupo. Esta integração não comprova esses itens acadêmicos.
-- Revisar e integrar o Pull Request na develop. A branch nova contém também os commits da base do PR #10; os dois PRs não devem ser tratados como implementações independentes.
+- O PR #11 foi integrado à develop em 10/11/2026, merge d8f60ed. Ele inclui a base do PR #10; os dois PRs não devem ser tratados como implementações independentes. A documentação atual está em ../LEIA-ME.md.
 
 ## Correção do login em portas locais — 09/11/2026
 

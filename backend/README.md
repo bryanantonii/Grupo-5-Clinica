@@ -49,3 +49,7 @@ O contrato, o dicionário de dados e o roteiro do Swagger estão em [docs/aula-1
 A [revisão da integração real](../docs/integracao-real/README.md) detalha as novas rotas, o banco clinora, o Compass, a configuração SMTP em `.env.email.example` e as evidências. O `.env` local e os registros do MongoDB não são enviados ao GitHub.
 
 No desenvolvimento, o CORS também aceita as portas locais escolhidas pelo Angular e pelo VS Code. Em produção, configure `NODE_ENV=production` e `FRONTEND_URL` com a origem exata do site. A configuração não libera domínios externos no modo local.
+
+## Documentação final
+
+O [contrato consolidado](../docs/contrato-da-api.md), o [dicionário das oito coleções](../docs/dicionario-de-dados.md) e o [Plano de Testes](../docs/plano-de-testes.md) são as referências atuais. O Swagger complementado possui 54 operações, descrições, exemplos de entrada e respostas. A exportação está em [openapi.json](../docs/entrega-final/openapi.json). A revisão atual aprovou 179 testes em 21 suítes e registrou a cobertura real; os registros das aulas permanecem históricos.
